@@ -1,0 +1,40 @@
+*.iml
+.gradle
+.kotlin
+local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Build outputs
+*.apk
+*.aab
+
+# Signing
+*.keystore
+*.jks
+keystore.properties
+
+# Satoshi fonts — licensed by Fontshare (ITF), not redistributable.
+# See README "Building from source" for setup instructions.
+app/src/main/res/font/*.otf
+
+# Local tooling
+Claude.md
+CLAUDE.md
+.claude/
+
+# Local working files (design sources, kept out of the public repo)
+*.pen
+design/
+docs/
+DESIGN*.md
+logo_white_2.svg
+Soutien/
+images/
+Screenshot_*.png
+Success Check.json

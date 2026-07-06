@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Contactless waves only (no circle border), light weight -->
+    <path
+        android:pathData="M6.5,9.97c0.35,0.62 0.55,1.3 0.55,2.03 0,0.73 -0.2,1.41 -0.55,2.03"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M10,7.5c0.75,1.36 1.15,2.88 1.15,4.5s-0.4,3.14 -1.15,4.5"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M13.5,5c1.17,2.1 1.8,4.47 1.8,7s-0.63,4.9 -1.8,7"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+</vector>

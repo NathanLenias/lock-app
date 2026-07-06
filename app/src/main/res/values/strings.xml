@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lock</string>
+    <string name="accessibility_service_description">Lock uses this service to detect which apps are in use and block the ones you selected during your focus sessions.</string>
+
+    <!-- Common -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_back">Back</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_support">Support</string>
+    <string name="label_info">Info</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home Screen -->
+    <string name="home_status_pause">PAUSE</string>
+    <string name="home_status_unlocking">UNLOCKING</string>
+    <string name="home_status_locked_one">%d APP\nBLOCKED</string>
+    <string name="home_status_locked_many">%d APPS\nBLOCKED</string>
+    <string name="home_status_free">FREE</string>
+    <string name="home_emergency_return">Back in %1$d:%2$s</string>
+    <string name="home_resume_blocking">Resume blocking</string>
+    <string name="home_no_apps">No apps to block</string>
+    <string name="home_configure_apps">Configure apps in Settings</string>
+    <string name="home_apps_to_block_one">%d app to block</string>
+    <string name="home_apps_to_block_many">%d apps to block</string>
+    <string name="home_associate_nfc">Pair an NFC tag to enable blocking</string>
+    <string name="home_or_scan_nfc">or scan the NFC tag</string>
+    <string name="home_activate_lock">Activate blocking</string>
+
+    <!-- Emergency -->
+    <string name="emergency_unlock_cd">Emergency unlock</string>
+    <string name="emergency_remaining">%d remaining</string>
+    <string name="emergency_title">Emergency unlock</string>
+    <string name="emergency_body">You will have access to all apps for %1$d minute%2$s, then blocking will resume automatically.\n\n%3$d emergency unlock(s) remaining</string>
+    <string name="emergency_confirm">Confirm unlock</string>
+
+    <!-- Grace period -->
+    <string name="grace_cancel">Cancel</string>
+
+    <!-- Splash -->
+    <string name="splash_unlocking">UNLOCKING</string>
+    <string name="splash_lock">LOCK</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_nfc_tags">NFC Tags</string>
+    <string name="settings_nfc_tags_count">%1$d tag%2$s paired</string>
+    <string name="settings_session">Session</string>
+    <string name="settings_session_subtitle">Grace period, duration, …</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_on">Enabled</string>
+    <string name="settings_notifications_off">Disabled</string>
+    <string name="settings_system">SYSTEM</string>
+    <string name="settings_permissions">Permissions</string>
+    <string name="settings_permissions_ok">All enabled</string>
+    <string name="settings_permissions_missing">%s missing</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_breathing">Relaxation moment</string>
+    <string name="settings_privacy">Privacy policy</string>
+    <string name="settings_about">About</string>
+    <string name="settings_rate">Rate us on the Play Store</string>
+
+    <!-- Theme -->
+    <string name="theme_auto">Auto</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- Profile Card -->
+    <string name="profile_apps_to_block">Apps to block</string>
+    <string name="profile_apps_selected">%d apps selected</string>
+
+    <!-- Permissions Screen -->
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_accessibility_title">Accessibility service</string>
+    <string name="permissions_accessibility_subtitle">Detects and blocks apps</string>
+    <string name="permissions_battery_title">Battery optimization</string>
+    <string name="permissions_battery_subtitle">Prevents Android from stopping the service</string>
+    <string name="permissions_overlay_title">Display over other apps</string>
+    <string name="permissions_overlay_subtitle">Shows the blocking screen</string>
+    <string name="permissions_all_granted">All permissions are enabled</string>
+    <string name="permissions_missing_accessibility">accessibility</string>
+    <string name="permissions_missing_overlay">overlay</string>
+    <string name="permissions_missing_notifications">notifications</string>
+    <string name="permissions_missing_suffix">missing</string>
+
+    <!-- NFC Tags Screen -->
+    <string name="nfc_tags_title">NFC Tags</string>
+    <string name="nfc_tags_count">%1$d/5 tag(s) paired</string>
+    <string name="nfc_tags_add">Add a tag</string>
+    <string name="nfc_tags_empty">No tags paired. Tap + to add one.</string>
+    <string name="nfc_tags_already_exists">This tag already exists: %s</string>
+    <string name="nfc_tags_default_name">NFC Tag</string>
+    <string name="nfc_tags_default_name_n">NFC Tag %d</string>
+    <string name="nfc_tags_paired">Tag paired!</string>
+    <string name="nfc_tags_paired_subtitle">Your NFC tag has been added successfully.</string>
+    <string name="nfc_tags_waiting">Waiting for NFC tag…</string>
+    <string name="nfc_tags_waiting_subtitle">Hold your NFC tag to the back of your phone.</string>
+    <string name="nfc_tags_rename_title">Rename tag</string>
+    <string name="nfc_tags_name_title">Name this tag</string>
+    <string name="nfc_tags_name_label">Name</string>
+    <string name="nfc_tags_rename_cd">Rename</string>
+    <string name="nfc_tags_delete_cd">Delete</string>
+    <string name="nfc_tags_associated_count">%1$d / %2$d tags paired</string>
+    <string name="nfc_info_row">A tag activates one profile and can unlock the others. Learn more.</string>
+    <string name="nfc_help_title">How do tags work?</string>
+    <string name="nfc_help_rule1_title">One tag = one profile</string>
+    <string name="nfc_help_rule1_body">Scanning a tag starts the profile assigned to it.</string>
+    <string name="nfc_help_rule2_title">Any tag unlocks</string>
+    <string name="nfc_help_rule2_body">You can stop an ongoing block with any tag. Exception: no-escape profiles run to the end, no tag stops them.</string>
+    <string name="nfc_help_cta">Got it</string>
+    <string name="nfc_pick_profile_title">Activate which profile?</string>
+    <string name="nfc_pick_profile_subtitle">When you scan the tag \"%s\"</string>
+
+    <!-- App Picker Screen -->
+    <string name="app_picker_title">Apps to block</string>
+    <string name="app_picker_search">Search for an app…</string>
+    <string name="app_picker_suggestions">Suggestions</string>
+    <string name="app_picker_blocked_count">%d apps blocked</string>
+    <string name="app_picker_expand">Tap to expand</string>
+    <string name="app_picker_collapse">Tap to collapse</string>
+    <string name="app_picker_no_blocked">No blocked apps</string>
+    <string name="app_picker_remove_cd">Remove %s</string>
+    <string name="app_picker_add_all">Add all</string>
+    <string name="app_picker_remove_all">Remove all</string>
+    <string name="app_picker_category_all">All</string>
+    <string name="app_picker_category_social">Social</string>
+    <string name="app_picker_category_games">Games</string>
+    <string name="app_picker_category_tools">Tools</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Statistics</string>
+    <string name="stats_sessions">sessions</string>
+    <string name="stats_total">total</string>
+    <string name="stats_average">average</string>
+    <string name="stats_this_week">This week</string>
+    <string name="stats_recent_sessions">Recent sessions</string>
+    <string name="stats_history">History</string>
+    <string name="stats_streak_days">days in a row</string>
+    <string name="stats_previous_week">Previous week</string>
+    <string name="stats_next_week">Next week</string>
+    <string name="stats_vs_previous_week_positive">+%dh vs previous week</string>
+    <string name="stats_vs_previous_week_negative">-%dh vs previous week</string>
+
+    <!-- Breathing -->
+    <string name="breathing_inhale">Breathe in</string>
+    <string name="breathing_hold">Hold</string>
+    <string name="breathing_exhale">Breathe out</string>
+    <string name="breathing_subtitle">Take a moment to breathe</string>
+
+    <!-- Session Settings -->
+    <string name="session_settings_title">Session settings</string>
+    <string name="session_settings_desc">Configure blocking behavior: delay before activation, emergency unlocks, and maximum duration.</string>
+    <string name="session_grace_period">GRACE PERIOD</string>
+    <string name="session_grace_period_title">Grace period</string>
+    <string name="session_grace_period_tooltip">Time allowed to cancel a block after manual or NFC activation. Lets you cancel if the activation was accidental.</string>
+    <string name="session_grace_immediate">Immediate</string>
+    <string name="session_grace_15s">15 seconds</string>
+    <string name="session_grace_30s">30 seconds</string>
+    <string name="session_grace_1m">1 minute</string>
+    <string name="session_grace_2m">2 minutes</string>
+    <string name="session_emergency_unlocks">EMERGENCY UNLOCKS</string>
+    <string name="session_emergency_unlocks_title">Emergency unlocks</string>
+    <string name="session_emergency_unlocks_tooltip">Number of unlocks available per session. Each unlock gives temporary access to blocked apps and Lock settings. These unlocks reset with each new block.</string>
+    <string name="session_emergency_duration">EMERGENCY UNLOCK DURATION</string>
+    <string name="session_emergency_duration_title">Emergency unlock duration</string>
+    <string name="session_emergency_duration_tooltip">Duration of access to blocked apps and Lock settings for each emergency unlock.</string>
+    <string name="session_emergency_2m">2 minutes</string>
+    <string name="session_emergency_5m">5 minutes</string>
+    <string name="session_emergency_10m">10 minutes</string>
+    <string name="session_max_duration">MAXIMUM SESSION DURATION</string>
+    <string name="session_max_duration_title">Maximum session duration</string>
+    <string name="session_max_duration_tooltip">Safety net in case of a lost tag. Blocking automatically deactivates after this duration.</string>
+    <string name="session_timeout_2h">2 hours</string>
+    <string name="session_timeout_3h">3 hours</string>
+    <string name="session_timeout_5h">5 hours</string>
+    <string name="session_timeout_8h">8 hours</string>
+    <string name="session_timeout_unlimited">Unlimited</string>
+    <string name="session_unlimited_warning_title">Unlimited duration</string>
+    <string name="session_unlimited_warning_body">By selecting unlimited, your session will never end if you lose the tag. The only option will be to uninstall Lock.</string>
+    <string name="session_unlimited_confirm">I understand, activate</string>
+
+    <!-- Data Screen -->
+    <string name="data_title">Data</string>
+    <string name="data_privacy_text">On Lock, your usage is 100\u00A0% private\u00A0: we do not collect any usage data. Your data stays on your phone. If you want to keep it when switching devices, export it using the button below.</string>
+    <string name="data_privacy_scope">Data included\u00A0: profiles, tags, statistics</string>
+    <string name="data_export">Export</string>
+    <string name="data_export_subtitle">Save profiles and tags as JSON</string>
+    <string name="data_import">Import</string>
+    <string name="data_import_subtitle">Restore from a JSON file</string>
+    <string name="data_export_success">Backup exported</string>
+    <string name="data_import_success">Imported: %1$d profile(s), %2$d tag(s)</string>
+    <string name="data_info_title">Your data, your privacy</string>
+    <string name="data_info_body">We do not store your data on a server. If you want to keep your usage data (profile, blocked apps, registered tags, stats) to re-import later, tap Export.</string>
+    <string name="data_info_cd">Information</string>
+    <string name="data_management_title">DATA MANAGEMENT</string>
+
+    <!-- NFC Tags Card (settings) -->
+    <string name="nfc_card_title">NFC Tags</string>
+    <string name="nfc_card_count">%d tag(s) paired</string>
+
+    <!-- Service Notifications -->
+    <string name="notification_channel_name">Lock Session</string>
+    <string name="notification_channel_desc">Active blocking session notification</string>
+    <string name="notification_session_active">Session active</string>
+    <string name="notification_session_active_count">Session active · %1$d app%2$s blocked</string>
+
+    <!-- Onboarding: Welcome (Page 0) -->
+    <string name="onboarding_welcome_title">Take back control\nof your attention</string>
+    <string name="onboarding_welcome_desc">Block distracting apps with a simple NFC tag.</string>
+    <string name="onboarding_welcome_accent">Simple and 100% free</string>
+    <string name="onboarding_welcome_cta">Get started</string>
+
+    <!-- Onboarding: How it works (Page 1) -->
+    <string name="onboarding_how_title">How does it work?</string>
+    <string name="onboarding_how_subtitle">In 3 simple steps</string>
+    <string name="onboarding_how_step1_title">Scan your tag</string>
+    <string name="onboarding_how_step1_desc">Place your phone on the NFC tag to activate blocking.</string>
+    <string name="onboarding_how_step2_title">Apps are blocked</string>
+    <string name="onboarding_how_step2_desc">Selected apps become inaccessible.</string>
+    <string name="onboarding_how_step3_title">Scan again to unblock</string>
+    <string name="onboarding_how_step3_desc">A new scan deactivates blocking. That\'s it.</string>
+
+    <!-- Onboarding: Why physical (Page 2) -->
+    <string name="onboarding_why_title">Get up to unblock.</string>
+    <string name="onboarding_why_accent">That\'s what changes everything.</string>
+    <string name="onboarding_why_arg1_title">A physical gesture, not a tap</string>
+    <string name="onboarding_why_arg1_desc">You have to get up and scan the tag. Friction creates intention.</string>
+    <string name="onboarding_why_arg2_title">Impossible to bypass</string>
+    <string name="onboarding_why_arg2_desc">No hidden button, no cheating. The tag is the only key.</string>
+    <string name="onboarding_why_arg3_title">Not another screen time app</string>
+    <string name="onboarding_why_arg3_desc">Lock doesn\'t track your time. It makes scrolling impossible.</string>
+
+    <!-- Onboarding: Permissions (Page 3) -->
+    <string name="onboarding_perm_title">Permissions</string>
+    <string name="onboarding_perm_subtitle">Lock needs 3 permissions to work</string>
+    <string name="onboarding_perm_accessibility_title">Accessibility service</string>
+    <string name="onboarding_perm_accessibility_desc">Detects when blocked apps are opened</string>
+    <string name="onboarding_perm_accessibility_detail">This service allows Lock to detect when you open a blocked app. Without this permission, blocking cannot work.\n\nThis is the core of how Lock works.</string>
+    <string name="onboarding_perm_overlay_title">Display over other apps</string>
+    <string name="onboarding_perm_overlay_desc">Shows a blocking screen</string>
+    <string name="onboarding_perm_overlay_detail">This service allows Lock to display the blocking screen over targeted apps. Without this permission, the blocking screen cannot appear.</string>
+    <string name="onboarding_perm_battery_title">Battery optimization</string>
+    <string name="onboarding_perm_battery_desc">Prevents Android from stopping Lock</string>
+    <string name="onboarding_perm_battery_detail">Android may stop Lock in the background to save battery.\n\nThis permission ensures blocking stays active even when the screen is off.</string>
+    <string name="onboarding_perm_info">Each permission is configured manually in Android settings. No data is collected.</string>
+    <string name="onboarding_perm_cta">Configure permissions</string>
+    <string name="onboarding_perm_cta_done">Continue</string>
+    <string name="onboarding_perm_skip">Configure later</string>
+    <string name="onboarding_perm_note">Required for Lock to work</string>
+    <string name="onboarding_perm_open_settings">Open settings</string>
+
+    <!-- Onboarding: App Picker (Page 4) -->
+    <string name="onboarding_apps_title">Choose your apps\nto block</string>
+    <string name="onboarding_apps_subtitle">You can change this list later</string>
+    <string name="onboarding_apps_counter">%d apps selected</string>
+    <string name="onboarding_apps_popular">POPULAR</string>
+    <string name="onboarding_apps_all">ALL APPS</string>
+    <string name="onboarding_apps_search">Search for an app…</string>
+    <string name="onboarding_apps_cta">Continue · %d apps</string>
+    <string name="onboarding_apps_skip">Choose later</string>
+
+    <!-- Onboarding: NFC (Page 5) -->
+    <string name="onboarding_nfc_title">Scan your NFC tag</string>
+    <string name="onboarding_nfc_desc">Hold your NFC tag to the back of your phone to pair it with Lock.</string>
+    <string name="onboarding_nfc_waiting">Waiting for NFC tag…</string>
+    <string name="onboarding_nfc_hint">You can add up to 5 NFC tags to cover all your scenarios: office, home, wallet…</string>
+    <string name="onboarding_nfc_skip">Skip for now</string>
+
+    <!-- Onboarding: Completion (Page 6) — complete -->
+    <string name="onboarding_done_title">All set!</string>
+    <string name="onboarding_done_subtitle">Lock is configured and ready to help you stay focused.</string>
+    <string name="onboarding_done_cta">Go to home</string>
+    <string name="onboarding_done_hint">Scan your NFC tag to activate blocking</string>
+
+    <!-- Onboarding: Completion (Page 6) — incomplete -->
+    <string name="onboarding_incomplete_title">Well done!</string>
+    <string name="onboarding_incomplete_subtitle">You\'ve made great progress\nsetting up Lock.</string>
+    <string name="onboarding_incomplete_cta">Explore Lock</string>
+    <string name="onboarding_incomplete_hint">You can finish setup from Settings,\nat your own pace.</string>
+    <string name="onboarding_incomplete_permissions">Permissions granted</string>
+    <string name="onboarding_incomplete_apps">Apps to block</string>
+    <string name="onboarding_incomplete_nfc">NFC Tag</string>
+
+    <!-- Home: Setup Checklist -->
+    <string name="setup_progress">%1$d/%2$d steps completed</string>
+    <string name="setup_permissions_title">Enable permissions</string>
+    <string name="setup_permissions_desc">Required for Lock to work</string>
+    <string name="setup_permissions_cta">Configure</string>
+    <string name="setup_apps_title">Choose apps to block</string>
+    <string name="setup_apps_desc">Select the apps that distract you the most</string>
+    <string name="setup_apps_cta">Configure</string>
+    <string name="setup_nfc_title">Pair an NFC tag</string>
+    <string name="setup_nfc_desc">Required to lock and unlock your phone</string>
+    <string name="setup_nfc_cta">Scan</string>
+    <string name="setup_permissions_done">Permissions granted</string>
+    <string name="setup_apps_done_one">App selected</string>
+    <string name="setup_apps_done_many">Apps selected</string>
+    <string name="setup_apps_done_count_one">%d app blocked</string>
+    <string name="setup_apps_done_count_many">%d apps blocked</string>
+    <string name="setup_nfc_done">NFC tag paired</string>
+
+    <!-- Manual Mode -->
+    <string name="manual_mode_card_title">Manual mode</string>
+    <string name="manual_mode_card_desc">Use Lock without an NFC tag. You can deactivate blocking at any time from the app.</string>
+    <string name="manual_mode_card_warning">Limited use, for trying Lock</string>
+    <string name="manual_mode_card_cta">Enable manual mode</string>
+    <string name="manual_mode_banner">Manual mode active</string>
+    <string name="manual_mode_info_title">Manual mode</string>
+    <string name="manual_mode_info_body">Manual mode lets you try Lock without an NFC tag.\n\nYou can activate and deactivate blocking directly from the app. For the best experience, pair an NFC tag, and manual mode will be disabled automatically.</string>
+    <string name="manual_mode_lock_cta">Activate blocking</string>
+    <string name="manual_mode_unlock_title">Unblock</string>
+    <string name="manual_mode_unlock_body">Blocking will be deactivated and you will regain access to all your apps.</string>
+    <string name="manual_mode_unlock_confirm">Confirm unblock</string>
+    <string name="manual_mode_unlock_cd">Unblock</string>
+    <string name="manual_mode_disable">Disable manual mode</string>
+    <string name="manual_mode_sub_free">Blocking is deactivated</string>
+    <string name="manual_mode_nfc_nudge_title">Switch to NFC tag</string>
+    <string name="manual_mode_nfc_nudge_desc">For the best experience</string>
+    <string name="manual_mode_nfc_nudge_cta">Pair an NFC tag</string>
+    <string name="manual_mode_separator">or</string>
+
+    <!-- Support -->
+    <string name="support_title">Support Lock</string>
+    <string name="support_body">Lock is developed by one person, is 100\u00A0% free and will stay that way. If you enjoy the app and it helps you daily, your support, even symbolic, helps fund future features and keep the app up to date.\n\nThank you in advance ❤️</string>
+    <string name="support_cta">I support Lock</string>
+
+    <!-- Onboarding: Common -->
+    <string name="onboarding_continue">Continue</string>
+
+    <!-- Stats: Today Card -->
+    <string name="stats_today">Today</string>
+    <string name="stats_today_sessions_one">%d session</string>
+    <string name="stats_today_sessions_many">%d sessions</string>
+    <string name="stats_today_focus_hours">%1$dh%2$s focus</string>
+    <string name="stats_today_focus_minutes">%dmin focus</string>
+    <string name="stats_today_focus_zero">0h focus</string>
+
+    <!-- Misc -->
+    <string name="default_profile_name">Default</string>
+    <string name="error_export">Export failed</string>
+    <string name="error_import">Import failed</string>
+    <string name="nfc_tags_paired_success">Tag paired!</string>
+    <string name="nfc_tags_paired_success_subtitle">Your NFC tag has been added successfully.</string>
+
+    <!-- Block Overlay -->
+    <string name="overlay_title">Stay focused!</string>
+    <string name="overlay_subtitle">%s is currently blocked!\nTo access it again, Lock must be deactivated with a tag.</string>
+    <string name="overlay_subtitle_no_escape">%s is blocked until your session ends.\nNo tag can unlock it, come back when the timer is done.</string>
+    <string name="overlay_button">Ok</string>
+
+    <!-- NFC Toasts -->
+    <string name="toast_blocking_on">Blocking activated%s</string>
+    <string name="toast_blocking_off">Blocking deactivated%s</string>
+    <string name="toast_unknown_tag">Unknown tag</string>
+    <string name="toast_no_escape_active">Session in progress, can\'t unlock.</string>
+
+    <!-- Profiles -->
+    <string name="profiles_section_title">Profiles</string>
+    <string name="profiles_section_principal">Main profile</string>
+    <string name="profiles_section_others">Other profiles</string>
+    <string name="profiles_new">New profile</string>
+    <string name="profiles_max_reached">%1$d / %2$d profiles · maximum reached</string>
+    <string name="profile_type_short_standard">Normal</string>
+    <string name="profile_type_short_no_escape">No escape</string>
+    <string name="profiles_all_title">All profiles</string>
+    <string name="profiles_all_subtitle">%1$d profiles · Default: %2$s</string>
+    <string name="profiles_manage_subtitle">Manage your blocking modes</string>
+    <string name="profiles_count_badge">%1$d / %2$d</string>
+    <string name="profiles_max_reached_text">Maximum of %d profiles reached.</string>
+    <string name="profile_row_subtitle">%1$s · %2$d apps</string>
+
+    <!-- New profile wizard -->
+    <string name="wizard_title">New profile</string>
+    <string name="wizard_step_counter">Step %1$d of %2$d</string>
+    <string name="wizard_continue">Continue</string>
+    <string name="wizard_continue_count">Continue (%d)</string>
+    <string name="wizard_create">Create profile</string>
+    <string name="wizard_type_label">Blocking type</string>
+    <string name="wizard_type_normal_title">Normal</string>
+    <string name="wizard_type_normal_subtitle">Blocks your apps. Unlock anytime with your NFC tag.</string>
+    <string name="wizard_type_no_escape_title">No escape</string>
+    <string name="wizard_type_no_escape_badge">5-20 min</string>
+    <string name="wizard_type_no_escape_subtitle">Blocks your apps for a fixed duration. Can\'t stop before the end.</string>
+    <string name="wizard_name_label">Profile name</string>
+    <string name="wizard_source_label">Starting point</string>
+    <string name="wizard_source_scratch_title">Start from scratch</string>
+    <string name="wizard_source_scratch_subtitle">No app selected</string>
+    <string name="wizard_source_copy_title">Copy from %s</string>
+    <string name="wizard_source_copy_subtitle">%d apps</string>
+    <string name="wizard_duration_info">This profile is no-escape: choose its duration.</string>
+    <string name="wizard_duration_label">Blocking duration</string>
+    <string name="wizard_duration_warning">Once started, it can\'t be stopped before the timer ends.</string>
+    <string name="wizard_recap_title">Summary</string>
+    <string name="wizard_recap_subtitle">Review before creating your profile</string>
+    <string name="wizard_recap_name">Name</string>
+    <string name="wizard_recap_type">Type</string>
+    <string name="wizard_recap_apps">Apps</string>
+    <string name="wizard_recap_apps_value">%d apps</string>
+    <string name="wizard_recap_duration">Duration</string>
+    <string name="wizard_recap_default">Set as default profile</string>
+    <string name="wizard_recap_default_subtitle">Started from the home screen</string>
+    <string name="profile_badge_default">Default</string>
+    <string name="profile_badge_no_escape">No escape</string>
+    <string name="profile_type_standard_title">Standard blocking</string>
+    <string name="profile_type_standard_subtitle">Turns on and off with your NFC tag.</string>
+    <string name="profile_type_no_escape_title">No-escape session</string>
+    <string name="profile_type_no_escape_subtitle">Pick a duration, start, and stay focused until the end.</string>
+    <string name="profile_apps_count_blocked">%d apps will be blocked</string>
+    <string name="profile_apps_count_inaccessible">%d apps will be inaccessible</string>
+    <string name="profile_default_toggle">Default profile</string>
+    <string name="profile_default_toggle_subtitle">Activated from the home screen</string>
+    <string name="profile_default_locked_info">A no-escape profile can\'t be set as default.</string>
+    <string name="profile_header_subtitle_standard">Standard blocking, unlockable</string>
+    <string name="profile_header_subtitle_no_escape">Timed blocking, no escape</string>
+    <string name="profile_duration_title">Duration</string>
+    <string name="profile_duration_minutes">%d min</string>
+    <string name="profile_associate_tag">Link a tag</string>
+    <string name="nfc_associate_another">Link another tag</string>
+    <string name="tag_status_associated">Linked</string>
+    <string name="profile_no_tag">No tag linked</string>
+    <string name="profile_start">Start</string>
+    <string name="profile_start_with_duration">Start · %d min</string>
+    <string name="profile_delete">Delete profile</string>
+    <string name="profile_delete_confirm_title">Delete this profile?</string>
+    <string name="profile_delete_confirm_body">The profile \"%s\" and its settings will be permanently deleted. This action cannot be undone.</string>
+    <string name="profile_delete_confirm_action">Delete permanently</string>
+    <string name="profile_rename">Rename profile</string>
+    <string name="profile_new_choose_type">Profile type</string>
+    <string name="profile_new_name">Profile name</string>
+    <string name="profile_new_copy_apps">Copy apps from an existing profile</string>
+    <string name="profile_delete_blocked_default">Can\'t delete the default profile. Set another profile as default first.</string>
+    <string name="profile_delete_blocked_active">Can\'t delete a profile during an active session.</string>
+    <string name="profile_se_confirm_title">Start a no-escape session?</string>
+    <string name="profile_se_confirm_body">For %d minutes, these apps will be inaccessible. No unlock possible before the end.</string>
+    <string name="tag_pick_profile_title">Which profile does this tag activate?</string>
+    <string name="profile_manual_mode_title">Manual mode</string>
+    <string name="profile_manual_mode_body">No NFC tag is set up. You can turn off blocking at any time from the app.</string>
+    <string name="profile_perm_required_title">Permission required</string>
+    <string name="profile_perm_required_body">The accessibility service must be enabled to block apps. Without it, starting a profile blocks nothing.</string>
+    <string name="profile_perm_required_cta">Enable accessibility</string>
+    <string name="home_status_locked_no_escape">NO\nESCAPE</string>
+    <!-- In-app cards -->
+    <string name="inapp_support_title">Do you like Lock?</string>
+    <string name="inapp_support_body">Lock is developed by one person, with no ads or tracking. A little support helps keep the app free and build the next features.</string>
+    <string name="inapp_support_cta">Support the project</string>
+    <string name="inapp_support_later">Maybe later</string>
+    <string name="inapp_changelog_version">VERSION %s</string>
+    <string name="inapp_changelog_title">What\'s new in Lock</string>
+    <string name="inapp_changelog_cta">Discover</string>
+    <string name="inapp_changelog_1_title">Multiple profiles</string>
+    <string name="inapp_changelog_1_body">Create profiles tailored to your needs: Work, social, sleep…</string>
+    <string name="inapp_changelog_2_title">Temporary profiles</string>
+    <string name="inapp_changelog_2_body">A timed profile that can\'t be turned off with an NFC tag.</string>
+    <string name="inapp_changelog_3_title">German translation</string>
+    <string name="inapp_changelog_3_body">German joins English and French in the app!</string>
+</resources>
