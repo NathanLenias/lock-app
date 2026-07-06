@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 /** No-escape session duration options. */
@@ -31,7 +31,7 @@ fun DurationSelector(
     onSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp),

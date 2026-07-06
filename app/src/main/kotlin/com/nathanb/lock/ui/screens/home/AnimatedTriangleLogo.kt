@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -45,7 +45,7 @@ internal fun AnimatedTriangleLogo(
     fillProgress: Float = 0f,
     accentColor: Color? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val strokeProgress = remember { Animatable(if (isLocked) 1f else 0f) }
     val fillAlpha = remember { Animatable(if (isLocked) 0.85f else 0f) }
     val circleColorAnim = remember { Animatable(if (isLocked) 1f else 0f) }

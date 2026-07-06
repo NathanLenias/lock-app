@@ -84,7 +84,7 @@ import com.nathanb.lock.ui.screens.settings.SettingsCard
 import com.nathanb.lock.ui.screens.settings.SettingsDivider
 import com.nathanb.lock.ui.screens.settings.SettingsRow
 import com.nathanb.lock.ui.screens.settings.ThemeSelector
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.ui.viewmodel.LockViewModel
@@ -104,7 +104,7 @@ fun SettingsScreen(
     onNavigateToData: () -> Unit,
     onNavigateToSessionSettings: () -> Unit = {},
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     val sortedProfiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
     val nfcTags by viewModel.nfcTags.collectAsStateWithLifecycle()
@@ -490,13 +490,13 @@ private fun ActionCard(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    subtitleColor: Color = BrickTheme.colors.onSurfaceVariant,
+    subtitleColor: Color = LockTheme.colors.onSurfaceVariant,
     badge: String? = null,
     showChevron: Boolean = false,
     trailing: @Composable (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Card(
         modifier = modifier

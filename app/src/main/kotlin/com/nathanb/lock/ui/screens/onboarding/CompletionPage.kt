@@ -39,7 +39,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.SetupStatus
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun CompletionPage(
@@ -47,7 +47,7 @@ internal fun CompletionPage(
     setupStatus: SetupStatus,
     onComplete: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var playConfetti by remember { mutableStateOf(false) }
     val confettiComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
     val confettiProgress by animateLottieCompositionAsState(
@@ -172,7 +172,7 @@ internal fun CompletionPage(
 
 @Composable
 private fun RecapCard(status: SetupStatus) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Column(
         modifier = Modifier
@@ -201,7 +201,7 @@ private fun RecapCard(status: SetupStatus) {
 
 @Composable
 private fun RecapRow(label: String, isDone: Boolean) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

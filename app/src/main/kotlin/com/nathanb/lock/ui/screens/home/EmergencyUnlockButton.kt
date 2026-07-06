@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.delay
 
 private const val LONG_PRESS_DURATION_MS = 1000L
@@ -47,7 +47,7 @@ internal fun EmergencyUnlockButton(
     modifier: Modifier = Modifier,
     showRemainingLabel: Boolean = true,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val view = LocalView.current
     var isPressed by remember { mutableStateOf(false) }
     var shakeTrigger by remember { mutableIntStateOf(0) }

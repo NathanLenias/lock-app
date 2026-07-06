@@ -28,13 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun HowItWorksPage(
     onNext: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Column(
         modifier = Modifier
@@ -97,7 +97,7 @@ private fun StepCard(
     title: String,
     description: String,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier

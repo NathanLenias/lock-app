@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.InstalledApp
 
@@ -42,7 +42,7 @@ internal fun AppCard(
     icon: ImageBitmap?,
     onToggle: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -106,7 +106,7 @@ private fun CustomCheckbox(
     checked: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Box(
         modifier = modifier

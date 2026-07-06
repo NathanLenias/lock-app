@@ -47,7 +47,7 @@ import com.nathanb.lock.ui.screens.apppicker.AppSearchBar
 import com.nathanb.lock.ui.screens.apppicker.BlockedAppsCard
 import com.nathanb.lock.ui.screens.apppicker.CategoryPills
 import com.nathanb.lock.ui.screens.apppicker.SuggestionsSection
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import com.nathanb.lock.util.Constants
 
@@ -57,7 +57,7 @@ internal fun AppPickerPage(
     onNext: (selectedPackages: List<String>) -> Unit,
     onSkip: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val installedApps by viewModel.installedApps.collectAsStateWithLifecycle()
     val isLoading by viewModel.installedAppsLoading.collectAsStateWithLifecycle()
     val iconCache by viewModel.appIconCache.collectAsStateWithLifecycle()

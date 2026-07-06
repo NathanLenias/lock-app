@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +46,7 @@ internal fun DataManagementSection(
     onExport: () -> Unit,
     onImport: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var showDataInfoSheet by remember { mutableStateOf(false) }
 
     // Header with info button

@@ -74,7 +74,7 @@ import com.nathanb.lock.ui.screens.home.ManualLockButton
 import com.nathanb.lock.ui.screens.home.ManualOrange
 import com.nathanb.lock.ui.screens.home.ManualUnlockBottomSheet
 import com.nathanb.lock.ui.screens.home.SetupChecklistSection
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import com.nathanb.lock.util.PermissionHelper
 import kotlinx.coroutines.delay
@@ -86,7 +86,7 @@ fun HomeScreen(
     onNavigateToPermissions: () -> Unit = {},
     onNavigateToNfcTags: () -> Unit = {},
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
     val lockState by viewModel.lockState.collectAsStateWithLifecycle()
     val isEmergencyActive by viewModel.isEmergencyActive.collectAsStateWithLifecycle()
@@ -134,7 +134,7 @@ fun HomeScreen(
     }
     val manualLockFill = remember { Animatable(0f) }
 
-    // Visual state lags behind isLocked — stays "bricked" until unlock animation finishes
+    // Visual state lags behind isLocked — stays "locked" until unlock animation finishes
     val visualLocked by viewModel.visualLocked.collectAsStateWithLifecycle()
     val isUnlocking = !isLocked && visualLocked
 
@@ -518,7 +518,7 @@ private fun ManualModeNfcNudge(
     onCancelNfcScan: () -> Unit,
     onNfcScanSuccess: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var expanded by remember { mutableStateOf(false) }
 
     AnimatedContent(

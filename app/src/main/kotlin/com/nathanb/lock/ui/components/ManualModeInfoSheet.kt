@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.screens.home.ManualOrange
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 fun ManualModeInfoSheet(
@@ -49,7 +49,7 @@ fun ManualModeInfoSheet(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = BrickTheme.colors.onSurfaceVariant,
+                    contentColor = LockTheme.colors.onSurfaceVariant,
                 ),
             ) {
                 Text(stringResource(R.string.action_cancel))

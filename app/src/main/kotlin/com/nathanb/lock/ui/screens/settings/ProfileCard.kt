@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 @Composable
@@ -47,7 +47,7 @@ internal fun ProfileCard(
     appIconBitmaps: List<ImageBitmap>,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val isNoEscape = ProfileType.fromValue(profile.type) == ProfileType.NO_ESCAPE
     val blockedCount = profile.blockedPackages.size
 
@@ -150,7 +150,7 @@ internal fun AllProfilesCard(
     defaultName: String,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -247,7 +247,7 @@ private fun AppIconsRow(
     totalCount: Int,
     maxVisible: Int = 5,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,

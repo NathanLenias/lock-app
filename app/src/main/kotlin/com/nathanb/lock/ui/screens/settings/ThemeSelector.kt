@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.ThemeMode
 
 @Composable
@@ -39,7 +39,7 @@ internal fun ThemeSelector(
     onModeSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val options = listOf(
         Triple(ThemeMode.SYSTEM, Icons.Outlined.Contrast, stringResource(R.string.theme_auto)),
         Triple(ThemeMode.LIGHT, Icons.Outlined.LightMode, stringResource(R.string.theme_light)),

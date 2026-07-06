@@ -72,7 +72,7 @@ import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.nfc.NfcResult
 import com.nathanb.lock.ui.components.NfcScanCard
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
@@ -85,7 +85,7 @@ fun NfcTagsScreen(
     onBack: () -> Unit,
     preselectProfileId: Long? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
     val tags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val profiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
@@ -313,7 +313,7 @@ private fun TagCard(
     onRename: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -358,7 +358,7 @@ private fun TagCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TagHelpSheet(onDismiss: () -> Unit) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -406,7 +406,7 @@ private fun TagHelpSheet(onDismiss: () -> Unit) {
 
 @Composable
 private fun HelpRule(icon: ImageVector, title: String, body: String) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -428,7 +428,7 @@ private fun TagProfilePickerSheet(
     onSave: (Long) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var selected by remember { mutableStateOf(currentProfileId ?: profiles.firstOrNull()?.id) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,

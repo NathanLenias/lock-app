@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun StatPill(
@@ -28,7 +28,7 @@ internal fun StatPill(
     modifier: Modifier = Modifier,
     suffix: String? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),

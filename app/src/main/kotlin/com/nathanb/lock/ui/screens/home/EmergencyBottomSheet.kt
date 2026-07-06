@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun EmergencyBottomSheet(
@@ -25,7 +25,7 @@ internal fun EmergencyBottomSheet(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val durationMinutes = (emergencyDurationMs / 60_000).toInt()
 
     LockBottomSheet(

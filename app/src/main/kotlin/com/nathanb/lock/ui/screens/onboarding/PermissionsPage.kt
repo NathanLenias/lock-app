@@ -49,14 +49,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.util.PermissionHelper
 
 @Composable
 internal fun PermissionsPage(
     onNext: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -270,7 +270,7 @@ private fun PermissionCard(
     onCardClick: () -> Unit,
     onInfoClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val bgColor by animateColorAsState(
         if (isGranted) colors.primary.copy(alpha = 0.08f) else colors.cardContainer,
         label = "permBg",

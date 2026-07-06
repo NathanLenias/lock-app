@@ -44,7 +44,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.airbnb.lottie.compose.rememberLottieDynamicProperties
 import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.delay
 
 /**
@@ -63,7 +63,7 @@ fun NfcScanCard(
     onCtaClick: (() -> Unit)? = null,
     onSuccessAnimationEnd: (() -> Unit)? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     // --- Radar pulse animations (active when not success) ---
     val infiniteTransition = rememberInfiniteTransition(label = "nfcRadar")

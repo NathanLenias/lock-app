@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.InstalledApp
 
@@ -53,7 +53,7 @@ internal fun BlockedAppsCard(
     onToggleExpand: () -> Unit,
     onRemoveApp: (String) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 0f else -90f,
         label = "chevron",
@@ -135,7 +135,7 @@ internal fun BlockedAppsCard(
 
 @Composable
 private fun AvatarStack() {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val icons = listOf(Icons.Outlined.Block, Icons.Outlined.Lock, Icons.Outlined.Shield)
 
     Box(modifier = Modifier.size(width = 68.dp, height = 36.dp)) {
@@ -170,7 +170,7 @@ private fun BlockedChip(
     label: String,
     onRemove: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier

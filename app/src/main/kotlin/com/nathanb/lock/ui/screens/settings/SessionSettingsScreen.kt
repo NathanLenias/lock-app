@@ -43,7 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
 @Composable
@@ -51,7 +51,7 @@ fun SessionSettingsScreen(
     viewModel: LockViewModel,
     onBack: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     val gracePeriodMs by viewModel.gracePeriodMs.collectAsStateWithLifecycle()
     val maxEmergencyUnlocks by viewModel.maxEmergencyUnlocks.collectAsStateWithLifecycle()
@@ -254,7 +254,7 @@ fun SessionSettingsScreen(
 
 @Composable
 private fun SectionLabel(text: String, sheetTitle: String = text, tooltip: String? = null) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var showSheet by remember { mutableStateOf(false) }
 
     Row(
@@ -297,7 +297,7 @@ private fun RadioRow(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier

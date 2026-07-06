@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 /** Shared centered modal card: rounded container, close (X), a banner slot, then content. */
@@ -53,7 +53,7 @@ fun InAppCardDialog(
     banner: @Composable () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -99,7 +99,7 @@ fun InAppCardDialog(
 /** Placeholder banner (rounded, green gradient + icon) until a real illustration is dropped in. */
 @Composable
 private fun BannerPlaceholder(icon: ImageVector) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,7 +122,7 @@ fun SupportCard(
     onLater: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     InAppCardDialog(
         onDismiss = onDismiss,
         banner = {
@@ -187,7 +187,7 @@ fun ChangelogCard(
     onDiscover: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     InAppCardDialog(
         onDismiss = onDismiss,
         banner = { BannerPlaceholder(Icons.Outlined.AutoAwesome) },
@@ -242,7 +242,7 @@ fun ChangelogCard(
 
 @Composable
 private fun ChangelogRow(icon: ImageVector, titleRes: Int, bodyRes: Int) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

@@ -16,14 +16,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun ManualUnlockBottomSheet(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     LockBottomSheet(
         onDismiss = onDismiss,

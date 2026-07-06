@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.NfcScanCard
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun NfcPairingPage(
@@ -43,7 +43,7 @@ internal fun NfcPairingPage(
     onSkip: () -> Unit,
     onSuccessAnimationEnd: (() -> Unit)? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     val infiniteTransition = rememberInfiniteTransition(label = "nfcPulse")
 

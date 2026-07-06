@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun PermissionsCard(
@@ -37,7 +37,7 @@ internal fun PermissionsCard(
     cardColors: CardColors,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val allPermissionsOk = overlayOk && accessibilityOk && notificationsOk
 
     Card(

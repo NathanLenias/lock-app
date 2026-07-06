@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.data.model.Session
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -31,7 +31,7 @@ private val sessionDateFormatter = DateTimeFormatter.ofPattern("EEE d MMM", Loca
 
 @Composable
 internal fun SessionRow(session: Session, modifier: Modifier = Modifier) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val zone = ZoneId.systemDefault()
     val date = Instant.ofEpochMilli(session.startTime).atZone(zone).toLocalDate()
     val dateText = date.format(sessionDateFormatter)

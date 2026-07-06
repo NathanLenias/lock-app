@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -44,7 +44,7 @@ fun SplashScreen(
     isUnlocking: Boolean = false,
     onSplashFinished: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     // All animatables start at 0 — unlocking branch snaps them to locked state before animating.
     // Keyed on isLocked so the effect restarts when the real value arrives from DataStore.

@@ -43,7 +43,7 @@ import com.nathanb.lock.ui.screens.stats.formatDuration
 import com.nathanb.lock.ui.screens.stats.formatValue
 import com.nathanb.lock.ui.screens.stats.getRecentSessions
 import com.nathanb.lock.ui.screens.stats.getWeekForDate
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -105,7 +105,7 @@ fun StatsScreen(
         if (sessionCount > 0) totalMs / sessionCount else 0L
     }
 
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Scaffold(
         containerColor = colors.surface,

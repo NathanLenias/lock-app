@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 @Composable
@@ -31,7 +31,7 @@ fun TypeCard(
     isNoEscape: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     // Translucent accent tint so the card + adaptive text read in both light and dark themes.
     val accent = if (isNoEscape) Color(0xFFEF6C00) else colors.primary
     val bg = accent.copy(alpha = 0.12f)

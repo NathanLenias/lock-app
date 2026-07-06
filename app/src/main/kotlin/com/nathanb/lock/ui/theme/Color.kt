@@ -3,10 +3,10 @@ package com.nathanb.lock.ui.theme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
-// --- BrickColors: centralized design-system palette ---
+// --- LockColors: centralized design-system palette ---
 
 @Immutable
-data class BrickColors(
+data class LockColors(
     val primary: Color,
     val primaryDark: Color,
     val surface: Color,
@@ -23,7 +23,7 @@ data class BrickColors(
     val lockedOnContainer: Color,
 )
 
-val DarkBrickColors = BrickColors(
+val DarkLockColors = LockColors(
     primary = Color(0xFF73DB9A),          // Emerald
     primaryDark = Color(0xFF2F9C61),      // derived from primary
     surface = Color(0xFF100B00),          // Pitch Black (warm near-black)
@@ -40,7 +40,7 @@ val DarkBrickColors = BrickColors(
     lockedOnContainer = Color(0xFFF4CBC6), // Cotton Rose
 )
 
-val LightBrickColors = BrickColors(
+val LightLockColors = LockColors(
     primary = Color(0xFF3CCD74),          // Emerald (saturated for light)
     primaryDark = Color(0xFF2BA85E),      // derived darker
     surface = Color(0xFFF9F9F9),          // Near-white neutral

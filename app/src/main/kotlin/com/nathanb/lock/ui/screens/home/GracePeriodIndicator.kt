@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -37,7 +37,7 @@ internal fun GracePeriodIndicator(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val view = LocalView.current
     val scope = rememberCoroutineScope()
     val totalMs = gracePeriodMs.coerceAtLeast(1L).toFloat()

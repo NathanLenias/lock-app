@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 /**
  * Reusable bottom sheet with Lock styling.
@@ -49,7 +49,7 @@ fun LockBottomSheet(
     bodyFontSize: TextUnit = TextUnit.Unspecified,
     actions: @Composable ColumnScope.() -> Unit = {},
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun WelcomePage(
@@ -94,7 +94,7 @@ internal fun WelcomePage(
                 painter = painterResource(R.drawable.ic_lock_logo),
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
-                colorFilter = ColorFilter.tint(BrickTheme.colors.primary),
+                colorFilter = ColorFilter.tint(LockTheme.colors.primary),
             )
             Spacer(Modifier.width(3.dp))
             Text(

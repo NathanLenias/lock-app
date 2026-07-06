@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 internal val ManualOrange = Color(0xFFE6A04C)
 
@@ -38,7 +38,7 @@ fun ManualModeCard(
     onActivate: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val isDark = colors.surface.luminance() < 0.5f
     val cardBg = if (isDark) Color(0xFF2A1A08) else Color(0xFFFFF8F0)
     val cardBorder = if (isDark) Color(0xFF4A3018) else Color(0xFFF0E0CC)

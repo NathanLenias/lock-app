@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -55,7 +55,7 @@ internal fun WeeklyBarChart(
     onPreviousWeek: () -> Unit,
     onNextWeek: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val maxDailyMs = week.days.maxOfOrNull { it.totalMs }?.coerceAtLeast(1L) ?: 1L
 
     val dateFormatter = DateTimeFormatter.ofPattern("d", Locale.FRANCE)

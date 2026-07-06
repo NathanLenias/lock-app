@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +46,7 @@ import com.nathanb.lock.ui.theme.SatoshiFamily
 internal fun BreathingBottomSheet(
     onDismiss: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     // 5-1-5-1 cycle (12s total)
     val transition = rememberInfiniteTransition(label = "breathing")

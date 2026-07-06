@@ -49,7 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
@@ -62,7 +62,7 @@ fun ProfilesListScreen(
     onNavigateToProfileDetail: (Long) -> Unit,
     onNewProfile: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val profiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -184,7 +184,7 @@ private fun ProfileListItem(
     profile: Profile,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val isNoEscape = ProfileType.fromValue(profile.type) == ProfileType.NO_ESCAPE
     Card(
         modifier = Modifier.fillMaxWidth(),

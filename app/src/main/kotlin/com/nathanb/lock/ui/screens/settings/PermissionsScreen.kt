@@ -46,14 +46,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.util.PermissionHelper
 
 @Composable
 fun PermissionsScreen(
     onBack: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -149,7 +149,7 @@ private fun PermissionRow(
     isGranted: Boolean,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier

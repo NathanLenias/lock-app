@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.SetupStatus
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import com.nathanb.lock.util.PermissionHelper
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ fun OnboardingScreen(
     viewModel: LockViewModel,
     onOnboardingComplete: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = { PAGE_COUNT })
     val scope = rememberCoroutineScope()

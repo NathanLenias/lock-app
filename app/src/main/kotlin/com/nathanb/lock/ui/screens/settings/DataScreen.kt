@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.data.backup.BackupManager
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
 @Composable
@@ -43,7 +43,7 @@ fun DataScreen(
     viewModel: LockViewModel,
     onBack: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val context = LocalContext.current
 
     val exportLauncher = rememberLauncherForActivityResult(

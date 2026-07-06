@@ -73,7 +73,7 @@ import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.screens.profile.DURATION_OPTIONS_MS
 import com.nathanb.lock.ui.screens.profile.DurationSelector
 import com.nathanb.lock.ui.screens.profile.TypeCard
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import kotlinx.coroutines.launch
@@ -86,7 +86,7 @@ fun ProfileDetailScreen(
     onEditApps: (Long) -> Unit,
     onAssociateTag: (Long) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val profiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
     val tags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val profile = profiles.find { it.id == profileId }
@@ -665,7 +665,7 @@ fun ProfileDetailScreen(
 
 @Composable
 private fun AssociatedTagRow(name: String) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -714,6 +714,6 @@ private fun SectionLabel(text: String) {
         fontFamily = SatoshiFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
-        color = BrickTheme.colors.onSurfaceVariant,
+        color = LockTheme.colors.onSurfaceVariant,
     )
 }

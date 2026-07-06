@@ -24,21 +24,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 @Composable
 internal fun SettingsRow(
     icon: ImageVector,
-    iconColor: Color = BrickTheme.colors.primary,
+    iconColor: Color = LockTheme.colors.primary,
     iconBgColor: Color = iconColor.copy(alpha = 0.1f),
     title: String,
     subtitle: String? = null,
-    subtitleColor: Color = BrickTheme.colors.onSurfaceVariant,
+    subtitleColor: Color = LockTheme.colors.onSurfaceVariant,
     onClick: (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()

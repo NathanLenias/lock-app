@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
 internal enum class AppCategory(val labelResId: Int, val androidCategory: Int?) {
@@ -46,7 +46,7 @@ internal fun AppSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     TextField(
         value = query,
@@ -90,7 +90,7 @@ internal fun CategoryPills(
     selected: AppCategory,
     onSelect: (AppCategory) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier
@@ -127,7 +127,7 @@ internal fun BulkActions(
     onAddAll: () -> Unit,
     onRemoveAll: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier.fillMaxWidth(),

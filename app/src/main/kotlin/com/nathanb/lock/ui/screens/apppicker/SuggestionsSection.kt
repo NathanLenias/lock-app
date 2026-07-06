@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.InstalledApp
 
@@ -34,7 +34,7 @@ internal fun SuggestionsSection(
     suggestions: List<InstalledApp>,
     onAddApp: (String) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
@@ -74,7 +74,7 @@ private fun SuggestionChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = modifier

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import androidx.compose.ui.graphics.Color
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ internal fun ManualLockButton(
     showSubtitle: Boolean = true,
     accentColor: Color? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val tintColor = accentColor ?: colors.onSurface
     val view = LocalView.current
     var isPressed by remember { mutableStateOf(false) }

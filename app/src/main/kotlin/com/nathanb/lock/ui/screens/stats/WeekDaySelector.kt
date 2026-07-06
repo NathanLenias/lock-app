@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import java.time.LocalDate
 
 private val DAY_LABELS = listOf("L", "M", "M", "J", "V", "S", "D")
@@ -30,7 +30,7 @@ internal fun WeekDaySelector(
     weekDays: List<DayStats>,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val today = LocalDate.now()
 
     Row(

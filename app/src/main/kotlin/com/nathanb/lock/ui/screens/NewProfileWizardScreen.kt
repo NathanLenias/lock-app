@@ -68,7 +68,7 @@ import com.nathanb.lock.ui.screens.apppicker.AppSearchBar
 import com.nathanb.lock.ui.screens.apppicker.CategoryPills
 import com.nathanb.lock.ui.screens.profile.DURATION_OPTIONS_MS
 import com.nathanb.lock.ui.screens.profile.DurationSelector
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
@@ -80,7 +80,7 @@ fun NewProfileWizardScreen(
     onBack: () -> Unit,
     onCreated: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val profiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
 
     var type by remember { mutableStateOf(ProfileType.STANDARD) }
@@ -266,7 +266,7 @@ fun NewProfileWizardScreen(
 
 @Composable
 private fun StepType(type: ProfileType, onSelect: (ProfileType) -> Unit) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -307,7 +307,7 @@ private fun TypeChoiceCard(
     badge: String?,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -380,7 +380,7 @@ private fun StepNameSource(
     onSelectScratch: () -> Unit,
     onSelectCopy: (Long) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -426,7 +426,7 @@ private fun SourceRow(
     icons: List<androidx.compose.ui.graphics.ImageBitmap>,
     onClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -467,7 +467,7 @@ private fun StepApps(
     viewModel: LockViewModel,
     selectedApps: androidx.compose.runtime.snapshots.SnapshotStateMap<String, Boolean>,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val installedApps by viewModel.installedApps.collectAsStateWithLifecycle()
     val iconCache by viewModel.appIconCache.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
@@ -534,7 +534,7 @@ private fun StepApps(
 
 @Composable
 private fun StepDuration(durationMs: Long, onSelect: (Long) -> Unit) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -588,7 +588,7 @@ private fun StepRecap(
     makeDefault: Boolean,
     onToggleDefault: (Boolean) -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -639,7 +639,7 @@ private fun StepRecap(
 
 @Composable
 private fun RecapRow(label: String, value: String, valueIsBadge: Boolean, badgeNoEscape: Boolean) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -667,6 +667,6 @@ private fun WizLabel(text: String) {
         fontFamily = SatoshiFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
-        color = BrickTheme.colors.onSurfaceVariant,
+        color = LockTheme.colors.onSurfaceVariant,
     )
 }

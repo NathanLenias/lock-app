@@ -12,14 +12,14 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
-// --- CompositionLocal for BrickColors ---
+// --- CompositionLocal for LockColors ---
 
-val LocalBrickColors = staticCompositionLocalOf { DarkBrickColors }
+val LocalLockColors = staticCompositionLocalOf { DarkLockColors }
 val LocalIsDark = staticCompositionLocalOf { true }
 
-object BrickTheme {
-    val colors: BrickColors
-        @Composable get() = LocalBrickColors.current
+object LockTheme {
+    val colors: LockColors
+        @Composable get() = LocalLockColors.current
     val isDark: Boolean
         @Composable get() = LocalIsDark.current
 }
@@ -40,11 +40,11 @@ fun LockTheme(
         ThemeMode.DARK -> true
     }
 
-    val brickColors = if (isDark) DarkBrickColors else LightBrickColors
+    val lockColors = if (isDark) DarkLockColors else LightLockColors
     val materialScheme = if (isDark) DarkMaterialScheme else LightMaterialScheme
 
     CompositionLocalProvider(
-        LocalBrickColors provides brickColors,
+        LocalLockColors provides lockColors,
         LocalIsDark provides isDark,
     ) {
         MaterialTheme(

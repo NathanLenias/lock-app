@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 private enum class NavTab(
     val route: String,
@@ -55,7 +55,7 @@ fun FloatingNavBar(
     onTabSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val navBarBackground = colors.surfaceContainer.copy(alpha = 0.95f)
 
     Surface(
@@ -96,7 +96,7 @@ private fun NavBarItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     val selectedBg = colors.primary.copy(alpha = 0.12f)
     val selectedContent = colors.primary
     val unselectedContent = colors.onSurfaceVariant.copy(alpha = 0.7f)

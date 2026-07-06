@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.SetupStatus
 import com.nathanb.lock.ui.components.NfcScanCard
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 fun SetupChecklistSection(
@@ -62,7 +62,7 @@ fun SetupChecklistSection(
     onActivateManualMode: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     var nfcScanExpanded by remember { mutableStateOf(false) }
 
     Column(
@@ -224,7 +224,7 @@ private fun CompletedCard(
     title: String,
     subtitle: String? = null,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier
@@ -297,7 +297,7 @@ private fun SetupCard(
     ctaLabel: String,
     onCtaClick: () -> Unit,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
 
     Row(
         modifier = Modifier

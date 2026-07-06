@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nathanb.lock.ui.theme.BrickTheme
+import com.nathanb.lock.ui.theme.LockTheme
 
 @Composable
 internal fun OnboardingButton(
@@ -21,7 +21,7 @@ internal fun OnboardingButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val colors = BrickTheme.colors
+    val colors = LockTheme.colors
     Button(
         onClick = onClick,
         enabled = enabled,
