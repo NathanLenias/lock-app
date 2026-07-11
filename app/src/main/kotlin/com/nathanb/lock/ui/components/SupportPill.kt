@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.theme.SatoshiFamily
 
-private const val SUPPORT_URL = "https://buymeacoffee.com/nathanpmlen"
+private const val SUPPORT_URL = "https://ko-fi.com/nathanpmdev"
 
-/** Opens the support (Buy Me a Coffee) page. */
+/** Opens the support (Ko-fi) page. */
 fun openSupportPage(context: android.content.Context) {
     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SUPPORT_URL)))
 }
