@@ -90,7 +90,6 @@ import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import com.nathanb.lock.util.Constants
 import com.nathanb.lock.util.RateHelper
-import com.nathanb.lock.util.findActivity
 import com.nathanb.lock.util.PermissionHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -389,8 +388,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .height(52.dp)
                         .clickable {
-                            context.findActivity()?.let { RateHelper.requestReview(it) }
-                                ?: RateHelper.openPlayStore(context)
+                            RateHelper.openPlayStore(context)
                         }
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,

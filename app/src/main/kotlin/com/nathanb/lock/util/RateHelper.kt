@@ -3,17 +3,18 @@ package com.nathanb.lock.util
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import com.google.android.play.core.review.ReviewManagerFactory
 
 /**
- * Triggers Google's native In-App Review card, with a Play Store fallback.
+ * Rating entry points. The explicit "Rate on the store" button uses [openPlayStore]: the
+ * In-App Review card is quota-limited and silently skipped by Google (already reviewed,
+ * sideloaded build, opaque eligibility rules) with no way to detect it, so a button wired
+ * to it regularly does nothing at all.
  *
- * Note: the native card is quota-limited and controlled by Google — it may not appear even when
- * requested (e.g. already reviewed, quota exceeded, debug builds). When the request itself fails,
- * we fall back to opening the Play Store listing so the action always leads somewhere.
+ * [requestReview] is kept for a future contextual prompt (e.g. after a successful session),
+ * the use case the In-App Review API is actually designed for. Not wired to any UI today.
  */
 object RateHelper {
 
@@ -44,11 +45,4 @@ object RateHelper {
             )
         }
     }
-}
-
-/** Walk up the context wrappers to find the hosting Activity (needed by the review flow). */
-tailrec fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
 }
