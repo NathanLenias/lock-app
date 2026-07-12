@@ -235,6 +235,21 @@ class ScheduleWindowCalculatorTest {
         assertEquals(1, coveringOccurrences(listOf(s), at(dstSunday, 4)).size)
     }
 
+    // --- startsLaterToday (edit-reactivation rule) ---
+
+    @Test
+    fun `future start today reactivates`() {
+        val s = schedule(start = 16 * 60, end = 18 * 60)
+        assertTrue(ScheduleWindowCalculator.startsLaterToday(s, at(monday, 15)))
+    }
+
+    @Test
+    fun `past or current start today does not reactivate`() {
+        val s = schedule(start = 14 * 60, end = 18 * 60)
+        assertTrue(!ScheduleWindowCalculator.startsLaterToday(s, at(monday, 15)))
+        assertTrue(!ScheduleWindowCalculator.startsLaterToday(s, at(monday, 14, 0)))
+    }
+
     // --- pruneConsumed ---
 
     @Test

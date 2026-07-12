@@ -658,6 +658,22 @@ class LockRepositoryTest {
     }
 
     @Test
+    fun `updateSchedule with a past start keeps today's consumption`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        // 00:00 start: never strictly in the future, so consumption must survive the edit.
+        val id = repository.createSchedule(0b1111111, 0, 0, listOf(profileId))
+        repository.startScheduledSession(profileId, setOf("com.a"))
+        repository.endLockSession(EndReason.NFC.value)
+        assertEquals(1, repository.getConsumedWindowKeys().size)
+
+        repository.updateSchedule(scheduleDao.getById(id)!!.copy(startMinuteOfDay = 0), listOf(profileId))
+
+        assertEquals(1, repository.getConsumedWindowKeys().size)
+    }
+
+    @Test
     fun `consumed keys can be pruned via setConsumedWindowKeys`() = testScope.runTest {
         val profileId = profileDao.insert(
             com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))

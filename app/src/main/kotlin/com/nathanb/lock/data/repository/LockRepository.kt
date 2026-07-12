@@ -463,6 +463,14 @@ class LockRepository(
         scheduleProfileDao.insertAll(
             standardProfileIds(profileIds).map { ScheduleProfileLink(schedule.id, it) }
         )
+        // Rescheduling a window cancelled today to a FUTURE start reactivates it for the day.
+        // A past start stays consumed: clearing it would start a session the moment of the save.
+        val now = ZonedDateTime.now()
+        val todayKey = ScheduleWindowCalculator.consumptionKey(schedule.id, now.toLocalDate())
+        val consumed = getConsumedWindowKeys()
+        if (todayKey in consumed && ScheduleWindowCalculator.startsLaterToday(schedule, now)) {
+            setConsumedWindowKeys(consumed - todayKey)
+        }
     }
 
     suspend fun setScheduleEnabled(scheduleId: Long, enabled: Boolean) {

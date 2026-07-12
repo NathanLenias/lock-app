@@ -102,6 +102,18 @@ object ScheduleWindowCalculator {
         return best
     }
 
+    /**
+     * True when today's occurrence of [schedule] starts strictly after [now]. Used when the
+     * user edits a schedule cancelled today: a future start lifts the consumption (intent:
+     * "run it"), a past start keeps it (clearing would lock instantly on save).
+     */
+    fun startsLaterToday(schedule: Schedule, now: ZonedDateTime): Boolean {
+        val start = now.toLocalDate()
+            .atStartOfDay(now.zone)
+            .plusMinutes(schedule.startMinuteOfDay.toLong())
+        return start.isAfter(now)
+    }
+
     /** Keeps only consumption keys for occurrences starting today or yesterday. */
     fun pruneConsumed(keys: Set<String>, today: LocalDate): Set<String> {
         val threshold = today.minusDays(1).toEpochDay()

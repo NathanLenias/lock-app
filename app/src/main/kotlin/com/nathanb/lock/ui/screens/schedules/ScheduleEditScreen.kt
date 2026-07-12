@@ -56,9 +56,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.ui.components.LockBottomSheet
+import androidx.compose.ui.platform.LocalContext
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
+import com.nathanb.lock.util.PermissionHelper
 
 @Composable
 fun ScheduleEditScreen(
@@ -93,6 +95,8 @@ fun ScheduleEditScreen(
     var showEndPicker by remember { mutableStateOf(false) }
     var showProfilePicker by remember { mutableStateOf(false) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
+    var showAlarmPermBeforeExit by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     val overnight = endMin <= startMin && startMin != endMin
     val sameTime = startMin == endMin
@@ -150,7 +154,13 @@ fun ScheduleEditScreen(
                             selectedProfileIds,
                         )
                     }
-                    onBack()
+                    // Saving an active schedule without the exact-alarm permission:
+                    // explain it once before leaving (degraded inexact mode otherwise).
+                    if (!PermissionHelper.canScheduleExactAlarms(context)) {
+                        showAlarmPermBeforeExit = true
+                    } else {
+                        onBack()
+                    }
                 },
                 enabled = canSave,
                 modifier = Modifier
@@ -257,20 +267,26 @@ fun ScheduleEditScreen(
         }
     }
 
+    if (showAlarmPermBeforeExit) {
+        AlarmPermissionSheet(
+            onDismiss = {
+                showAlarmPermBeforeExit = false
+                onBack()
+            },
+        )
+    }
     if (showStartPicker) {
         TimePickerSheet(
             title = stringResource(R.string.schedule_start_label),
             minuteOfDay = startMin,
-            onConfirm = { startMin = it; showStartPicker = false },
-            onDismiss = { showStartPicker = false },
+            onDone = { startMin = it; showStartPicker = false },
         )
     }
     if (showEndPicker) {
         TimePickerSheet(
             title = stringResource(R.string.schedule_end_label),
             minuteOfDay = endMin,
-            onConfirm = { endMin = it; showEndPicker = false },
-            onDismiss = { showEndPicker = false },
+            onDone = { endMin = it; showEndPicker = false },
         )
     }
     if (showProfilePicker) {
@@ -492,8 +508,7 @@ private fun ProfileRow(name: String, appCount: Int, onRemove: () -> Unit) {
 private fun TimePickerSheet(
     title: String,
     minuteOfDay: Int,
-    onConfirm: (Int) -> Unit,
-    onDismiss: () -> Unit,
+    onDone: (Int) -> Unit,
 ) {
     val colors = LockTheme.colors
     val state = rememberTimePickerState(
@@ -502,13 +517,14 @@ private fun TimePickerSheet(
         is24Hour = true,
     )
     LockBottomSheet(
-        onDismiss = onDismiss,
+        // Dismissing by tapping outside (or swiping down) also keeps the picked time.
+        onDismiss = { onDone(state.hour * 60 + state.minute) },
         title = title,
         body = "",
     ) {
         TimePicker(state = state)
         Button(
-            onClick = { onConfirm(state.hour * 60 + state.minute) },
+            onClick = { onDone(state.hour * 60 + state.minute) },
             modifier = Modifier.fillMaxWidth().height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colors.primary, contentColor = Color.White),
             shape = RoundedCornerShape(14.dp),

@@ -101,7 +101,12 @@ fun HomeScreen(
     // When locked, reflect the ACTIVE session's profile; otherwise the default profile.
     val displayProfile = lockState.activeProfileId?.let { id -> profiles.find { it.id == id } }
         ?: profiles.firstOrNull { it.isDefault } ?: profiles.firstOrNull()
-    val appCount = displayProfile?.blockedPackages?.size ?: 0
+    // Locked count = the set actually enforced (a scheduled session can block the union of
+    // several profiles, not just the carrier profile). Profile fallback covers the brief
+    // window where the blocked set hasn't been derived yet.
+    val liveBlockedPackages by viewModel.liveBlockedPackages.collectAsStateWithLifecycle()
+    val profileAppCount = displayProfile?.blockedPackages?.size ?: 0
+    val appCount = if (isLocked) maxOf(liveBlockedPackages.size, profileAppCount) else profileAppCount
     val nfcTags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val hasNfcTags = nfcTags.isNotEmpty()
     val completedSessionCount by viewModel.completedSessionCount.collectAsStateWithLifecycle()

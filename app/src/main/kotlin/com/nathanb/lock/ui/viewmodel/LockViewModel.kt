@@ -732,6 +732,9 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     // --- Schedules (recurring auto-lock windows) ---
 
+    /** The set actually enforced by the blocker (union of profile + scheduled windows). */
+    val liveBlockedPackages: StateFlow<Set<String>> = repository.blockedPackages
+
     val schedules: StateFlow<List<Schedule>> = repository.schedules
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
