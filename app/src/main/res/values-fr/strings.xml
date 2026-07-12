@@ -5,6 +5,7 @@
 
     <!-- Common -->
     <string name="action_cancel">Annuler</string>
+    <string name="action_done">Terminé</string>
     <string name="action_confirm">Valider</string>
     <string name="action_continue">Continuer</string>
     <string name="action_back">Retour</string>
@@ -459,4 +460,43 @@
     <string name="inapp_changelog_2_body">Un profil avec minuteur, non désactivable via tag NFC.</string>
     <string name="inapp_changelog_3_title">Traduction allemande</string>
     <string name="inapp_changelog_3_body">L\'allemand rejoint l\'anglais et le français de l\'app !</string>
+
+    <!-- Plannings -->
+    <string name="schedule_settings_entry">Plannings</string>
+    <string name="schedule_settings_subtitle">Bloquez vos profils aux horaires définis</string>
+    <string name="schedules_title">Plannings</string>
+    <string name="schedules_subtitle">Blocage automatique</string>
+    <string name="schedules_empty_title">Aucun planning</string>
+    <string name="schedules_empty_body">Créez un planning pour bloquer vos profils automatiquement aux horaires définis, sans scanner votre tag.</string>
+    <string name="schedules_new">Nouveau planning</string>
+    <string name="schedule_edit_title_new">Nouveau planning</string>
+    <string name="schedule_edit_title_edit">Modifier le planning</string>
+    <string name="schedule_days_label">Jours</string>
+    <string name="schedule_hours_label">Horaires</string>
+    <string name="schedule_start_label">Début</string>
+    <string name="schedule_end_label">Fin</string>
+    <string name="schedule_time_range">%1$s – %2$s</string>
+    <string name="schedule_time_range_overnight">%1$s – %2$s (+1)</string>
+    <string name="schedule_every_day">Tous les jours</string>
+    <string name="schedule_overnight_hint">La fenêtre passe minuit : le blocage se termine le lendemain à %1$s.</string>
+    <string name="schedule_days_required">Sélectionnez au moins un jour</string>
+    <string name="schedule_same_time_error">L\'heure de début et de fin doivent être différentes</string>
+    <string name="schedule_profiles_label">Profils à bloquer</string>
+    <string name="schedule_profiles_hint">Les apps des profils choisis seront bloquées pendant la fenêtre.</string>
+    <string name="schedule_add_profile">Ajouter un profil</string>
+    <string name="schedule_no_profile">Aucun profil</string>
+    <string name="schedule_profile_apps">%1$d apps</string>
+    <string name="schedule_picker_title">Profils à bloquer</string>
+    <string name="schedule_picker_empty">Aucun profil classique disponible.</string>
+    <string name="schedule_save">Enregistrer</string>
+    <string name="schedule_delete">Supprimer le planning</string>
+    <string name="schedule_delete_confirm_title">Supprimer ce planning ?</string>
+    <string name="schedule_delete_confirm_body">Ses fenêtres de blocage ne se déclencheront plus.</string>
+    <string name="schedule_delete_confirm_cta">Supprimer</string>
+    <string name="schedule_alarm_perm_title">Autoriser les alarmes et rappels</string>
+    <string name="schedule_alarm_perm_body">Lock a besoin de cette autorisation pour démarrer et arrêter vos blocages planifiés à l\'heure exacte.</string>
+    <string name="schedule_alarm_perm_later">Plus tard</string>
+    <string-array name="schedule_day_initials">
+        <item>L</item><item>M</item><item>M</item><item>J</item><item>V</item><item>S</item><item>D</item>
+    </string-array>
 </resources>

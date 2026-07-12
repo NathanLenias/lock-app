@@ -43,6 +43,8 @@ import com.nathanb.lock.ui.screens.NewProfileWizardScreen
 import com.nathanb.lock.ui.screens.HomeScreen
 import com.nathanb.lock.ui.screens.NfcTagsScreen
 import com.nathanb.lock.ui.screens.SettingsScreen
+import com.nathanb.lock.ui.screens.schedules.ScheduleEditScreen
+import com.nathanb.lock.ui.screens.schedules.SchedulesListScreen
 import com.nathanb.lock.ui.screens.onboarding.OnboardingScreen
 import com.nathanb.lock.ui.screens.SplashScreen
 import com.nathanb.lock.ui.screens.StatsScreen
@@ -164,8 +166,37 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
                             onNavigateToSessionSettings = {
                                 navController.navigate("session-settings")
                             },
+                            onNavigateToSchedules = {
+                                navController.navigate("schedules")
+                            },
                         )
                     }
+                }
+
+                composable(
+                    "schedules",
+                    enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(300)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(300)) },
+                ) {
+                    SchedulesListScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() },
+                        onNavigateToEdit = { id -> navController.navigate("schedule-edit?scheduleId=$id") },
+                    )
+                }
+
+                composable(
+                    "schedule-edit?scheduleId={scheduleId}",
+                    arguments = listOf(navArgument("scheduleId") { type = NavType.LongType; defaultValue = -1L }),
+                    enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(300)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(300)) },
+                ) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getLong("scheduleId") ?: -1L
+                    ScheduleEditScreen(
+                        viewModel = viewModel,
+                        scheduleId = id,
+                        onBack = { navController.popBackStack() },
+                    )
                 }
 
                 composable(

@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LightMode
@@ -102,6 +103,7 @@ fun SettingsScreen(
     onNavigateToPermissions: () -> Unit,
     onNavigateToData: () -> Unit,
     onNavigateToSessionSettings: () -> Unit = {},
+    onNavigateToSchedules: () -> Unit = {},
 ) {
     val colors = LockTheme.colors
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
@@ -204,6 +206,45 @@ fun SettingsScreen(
                     defaultName = heroProfile?.name.orEmpty(),
                     onClick = onNavigateToProfiles,
                 )
+                val schedules by viewModel.schedules.collectAsStateWithLifecycle()
+                val activeScheduleCount = schedules.count { it.enabled }
+                SettingsCard {
+                    SettingsRow(
+                        icon = Icons.Outlined.CalendarMonth,
+                        title = stringResource(R.string.schedule_settings_entry),
+                        subtitle = stringResource(R.string.schedule_settings_subtitle),
+                        onClick = onNavigateToSchedules,
+                        trailing = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                if (activeScheduleCount > 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(colors.primary.copy(alpha = 0.12f))
+                                            .padding(horizontal = 8.dp, vertical = 3.dp),
+                                    ) {
+                                        Text(
+                                            text = activeScheduleCount.toString(),
+                                            fontFamily = SatoshiFamily,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 12.sp,
+                                            color = colors.primaryDark,
+                                        )
+                                    }
+                                }
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = colors.onSurfaceVariant.copy(alpha = 0.5f),
+                                    modifier = Modifier.size(20.dp),
+                                )
+                            }
+                        },
+                    )
+                }
 
                 // --- 2x2 Action Cards Grid ---
                 // Row 1: Tags NFC + Session

@@ -24,6 +24,8 @@ import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
+import com.nathanb.lock.data.model.Schedule
+import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import com.nathanb.lock.data.repository.LockRepository
 import com.nathanb.lock.nfc.NfcManager
@@ -726,6 +728,46 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     fun assignTagToProfile(uid: String, profileId: Long) {
         viewModelScope.launch { repository.setTagProfile(uid, profileId) }
+    }
+
+    // --- Schedules (recurring auto-lock windows) ---
+
+    val schedules: StateFlow<List<Schedule>> = repository.schedules
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val scheduleLinks: StateFlow<List<ScheduleProfileLink>> = repository.scheduleLinks
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private suspend fun rearmSchedules() {
+        getApplication<LockApplication>().scheduleManager.evaluateAndRearm()
+    }
+
+    fun createSchedule(daysOfWeek: Int, startMinuteOfDay: Int, endMinuteOfDay: Int, profileIds: List<Long>) {
+        viewModelScope.launch {
+            repository.createSchedule(daysOfWeek, startMinuteOfDay, endMinuteOfDay, profileIds)
+            rearmSchedules()
+        }
+    }
+
+    fun updateSchedule(schedule: Schedule, profileIds: List<Long>) {
+        viewModelScope.launch {
+            repository.updateSchedule(schedule, profileIds)
+            rearmSchedules()
+        }
+    }
+
+    fun setScheduleEnabled(scheduleId: Long, enabled: Boolean) {
+        viewModelScope.launch {
+            repository.setScheduleEnabled(scheduleId, enabled)
+            rearmSchedules()
+        }
+    }
+
+    fun deleteSchedule(scheduleId: Long) {
+        viewModelScope.launch {
+            repository.deleteSchedule(scheduleId)
+            rearmSchedules()
+        }
     }
 
     override fun onCleared() {

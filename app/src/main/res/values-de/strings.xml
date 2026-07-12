@@ -5,6 +5,7 @@
 
     <!-- Common -->
     <string name="action_cancel">Abbrechen</string>
+    <string name="action_done">Fertig</string>
     <string name="action_confirm">Bestätigen</string>
     <string name="action_continue">Weiter</string>
     <string name="action_back">Zurück</string>
@@ -461,4 +462,43 @@
     <string name="inapp_changelog_2_body">Ein Profil mit Timer, das sich nicht per NFC-Tag deaktivieren lässt.</string>
     <string name="inapp_changelog_3_title">Deutsche Übersetzung</string>
     <string name="inapp_changelog_3_body">Deutsch gesellt sich zu Englisch und Französisch in der App!</string>
+
+    <!-- Zeitpläne -->
+    <string name="schedule_settings_entry">Zeitpläne</string>
+    <string name="schedule_settings_subtitle">Sperren Sie Ihre Profile zu festen Zeiten</string>
+    <string name="schedules_title">Zeitpläne</string>
+    <string name="schedules_subtitle">Automatische Sperrung</string>
+    <string name="schedules_empty_title">Kein Zeitplan</string>
+    <string name="schedules_empty_body">Erstellen Sie einen Zeitplan, um Ihre Profile automatisch zu festen Zeiten zu sperren, ohne Ihren Tag zu scannen.</string>
+    <string name="schedules_new">Neuer Zeitplan</string>
+    <string name="schedule_edit_title_new">Neuer Zeitplan</string>
+    <string name="schedule_edit_title_edit">Zeitplan bearbeiten</string>
+    <string name="schedule_days_label">Tage</string>
+    <string name="schedule_hours_label">Uhrzeiten</string>
+    <string name="schedule_start_label">Beginn</string>
+    <string name="schedule_end_label">Ende</string>
+    <string name="schedule_time_range">%1$s – %2$s</string>
+    <string name="schedule_time_range_overnight">%1$s – %2$s (+1)</string>
+    <string name="schedule_every_day">Jeden Tag</string>
+    <string name="schedule_overnight_hint">Dieses Zeitfenster geht über Mitternacht: Die Sperrung endet am nächsten Tag um %1$s.</string>
+    <string name="schedule_days_required">Wählen Sie mindestens einen Tag</string>
+    <string name="schedule_same_time_error">Start- und Endzeit müssen sich unterscheiden</string>
+    <string name="schedule_profiles_label">Zu sperrende Profile</string>
+    <string name="schedule_profiles_hint">Die Apps der gewählten Profile werden während des Zeitfensters gesperrt.</string>
+    <string name="schedule_add_profile">Profil hinzufügen</string>
+    <string name="schedule_no_profile">Kein Profil</string>
+    <string name="schedule_profile_apps">%1$d Apps</string>
+    <string name="schedule_picker_title">Zu sperrende Profile</string>
+    <string name="schedule_picker_empty">Kein klassisches Profil verfügbar.</string>
+    <string name="schedule_save">Speichern</string>
+    <string name="schedule_delete">Zeitplan löschen</string>
+    <string name="schedule_delete_confirm_title">Diesen Zeitplan löschen?</string>
+    <string name="schedule_delete_confirm_body">Seine Sperrfenster werden nicht mehr ausgelöst.</string>
+    <string name="schedule_delete_confirm_cta">Löschen</string>
+    <string name="schedule_alarm_perm_title">Wecker und Erinnerungen erlauben</string>
+    <string name="schedule_alarm_perm_body">Lock benötigt diese Berechtigung, um Ihre geplanten Sperrungen pünktlich zu starten und zu beenden.</string>
+    <string name="schedule_alarm_perm_later">Später</string>
+    <string-array name="schedule_day_initials">
+        <item>M</item><item>D</item><item>M</item><item>D</item><item>F</item><item>S</item><item>S</item>
+    </string-array>
 </resources>

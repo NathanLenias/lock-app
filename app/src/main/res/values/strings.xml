@@ -5,6 +5,7 @@
 
     <!-- Common -->
     <string name="action_cancel">Cancel</string>
+    <string name="action_done">Done</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_continue">Continue</string>
     <string name="action_back">Back</string>
@@ -461,4 +462,43 @@
     <string name="inapp_changelog_2_body">A timed profile that can\'t be turned off with an NFC tag.</string>
     <string name="inapp_changelog_3_title">German translation</string>
     <string name="inapp_changelog_3_body">German joins English and French in the app!</string>
+
+    <!-- Schedules -->
+    <string name="schedule_settings_entry">Schedules</string>
+    <string name="schedule_settings_subtitle">Block your profiles at set times</string>
+    <string name="schedules_title">Schedules</string>
+    <string name="schedules_subtitle">Automatic blocking</string>
+    <string name="schedules_empty_title">No schedule</string>
+    <string name="schedules_empty_body">Create a schedule to block your profiles automatically at set times, without scanning your tag.</string>
+    <string name="schedules_new">New schedule</string>
+    <string name="schedule_edit_title_new">New schedule</string>
+    <string name="schedule_edit_title_edit">Edit schedule</string>
+    <string name="schedule_days_label">Days</string>
+    <string name="schedule_hours_label">Hours</string>
+    <string name="schedule_start_label">Start</string>
+    <string name="schedule_end_label">End</string>
+    <string name="schedule_time_range">%1$s – %2$s</string>
+    <string name="schedule_time_range_overnight">%1$s – %2$s (+1)</string>
+    <string name="schedule_every_day">Every day</string>
+    <string name="schedule_overnight_hint">This window crosses midnight: blocking ends the next day at %1$s.</string>
+    <string name="schedule_days_required">Select at least one day</string>
+    <string name="schedule_same_time_error">Start and end times must differ</string>
+    <string name="schedule_profiles_label">Profiles to block</string>
+    <string name="schedule_profiles_hint">The apps of the selected profiles are blocked during the window.</string>
+    <string name="schedule_add_profile">Add a profile</string>
+    <string name="schedule_no_profile">No profile</string>
+    <string name="schedule_profile_apps">%1$d apps</string>
+    <string name="schedule_picker_title">Profiles to block</string>
+    <string name="schedule_picker_empty">No standard profile available.</string>
+    <string name="schedule_save">Save</string>
+    <string name="schedule_delete">Delete schedule</string>
+    <string name="schedule_delete_confirm_title">Delete this schedule?</string>
+    <string name="schedule_delete_confirm_body">Its blocking windows will no longer trigger.</string>
+    <string name="schedule_delete_confirm_cta">Delete</string>
+    <string name="schedule_alarm_perm_title">Allow alarms and reminders</string>
+    <string name="schedule_alarm_perm_body">Lock needs this permission to start and end your scheduled blocks exactly on time.</string>
+    <string name="schedule_alarm_perm_later">Later</string>
+    <string-array name="schedule_day_initials">
+        <item>M</item><item>T</item><item>W</item><item>T</item><item>F</item><item>S</item><item>S</item>
+    </string-array>
 </resources>
