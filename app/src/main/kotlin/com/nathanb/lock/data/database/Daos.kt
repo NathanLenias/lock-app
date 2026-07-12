@@ -8,6 +8,8 @@ import androidx.room.Query
 import androidx.room.Update
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
+import com.nathanb.lock.data.model.Schedule
+import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import kotlinx.coroutines.flow.Flow
 
@@ -65,6 +67,57 @@ interface SessionDao {
     suspend fun insertAll(sessions: List<Session>)
 
     @Query("DELETE FROM sessions")
+    suspend fun deleteAll()
+}
+
+@Dao
+interface ScheduleDao {
+    @Query("SELECT * FROM schedules ORDER BY createdAt ASC")
+    fun getAll(): Flow<List<Schedule>>
+
+    @Query("SELECT * FROM schedules WHERE id = :id")
+    suspend fun getById(id: Long): Schedule?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(schedule: Schedule): Long
+
+    @Update
+    suspend fun update(schedule: Schedule)
+
+    @Query("UPDATE schedules SET enabled = :enabled WHERE id = :id")
+    suspend fun setEnabled(id: Long, enabled: Boolean)
+
+    @Query("DELETE FROM schedules WHERE id = :id")
+    suspend fun delete(id: Long)
+
+    @Query("SELECT * FROM schedules ORDER BY createdAt ASC")
+    suspend fun getAllOnce(): List<Schedule>
+
+    @Query("DELETE FROM schedules")
+    suspend fun deleteAll()
+}
+
+@Dao
+interface ScheduleProfileDao {
+    @Query("SELECT * FROM schedule_profiles")
+    fun getAll(): Flow<List<ScheduleProfileLink>>
+
+    @Query("SELECT * FROM schedule_profiles WHERE scheduleId = :scheduleId")
+    suspend fun getByScheduleOnce(scheduleId: Long): List<ScheduleProfileLink>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(links: List<ScheduleProfileLink>)
+
+    @Query("DELETE FROM schedule_profiles WHERE scheduleId = :scheduleId")
+    suspend fun deleteBySchedule(scheduleId: Long)
+
+    @Query("DELETE FROM schedule_profiles WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
+
+    @Query("SELECT * FROM schedule_profiles")
+    suspend fun getAllOnce(): List<ScheduleProfileLink>
+
+    @Query("DELETE FROM schedule_profiles")
     suspend fun deleteAll()
 }
 

@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
+import com.nathanb.lock.data.model.Schedule
+import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,11 +19,13 @@ data class BackupData(
     val profiles: List<Profile>,
     val nfcTags: List<NfcTag>,
     val sessions: List<Session>,
+    val schedules: List<Schedule> = emptyList(),
+    val scheduleLinks: List<ScheduleProfileLink> = emptyList(),
 )
 
 object BackupManager {
 
-    private const val BACKUP_VERSION = 2
+    private const val BACKUP_VERSION = 3
     private val FILE_NAME_FORMAT = DateTimeFormatter.ofPattern("ddMMyyyyHHmm")
 
     fun suggestFileName(): String {
@@ -35,6 +39,8 @@ object BackupManager {
         profiles: List<Profile>,
         nfcTags: List<NfcTag>,
         sessions: List<Session>,
+        schedules: List<Schedule> = emptyList(),
+        scheduleLinks: List<ScheduleProfileLink> = emptyList(),
     ): Unit = withContext(Dispatchers.IO) {
         val json = JSONObject().apply {
             put("version", BACKUP_VERSION)
@@ -42,6 +48,8 @@ object BackupManager {
             put("profiles", serializeProfiles(profiles))
             put("nfcTags", serializeNfcTags(nfcTags))
             put("sessions", serializeSessions(sessions))
+            put("schedules", serializeSchedules(schedules))
+            put("scheduleLinks", serializeScheduleLinks(scheduleLinks))
         }
 
         context.contentResolver.openOutputStream(uri)?.use { stream ->
@@ -62,6 +70,9 @@ object BackupManager {
             profiles = parseProfiles(json.getJSONArray("profiles")),
             nfcTags = parseNfcTags(json.getJSONArray("nfcTags")),
             sessions = parseSessions(json.optJSONArray("sessions") ?: JSONArray()),
+            // Absent from v1/v2 backups — default to empty
+            schedules = parseSchedules(json.optJSONArray("schedules") ?: JSONArray()),
+            scheduleLinks = parseScheduleLinks(json.optJSONArray("scheduleLinks") ?: JSONArray()),
         )
     }
 
@@ -108,6 +119,32 @@ object BackupManager {
         }
     }
 
+    private fun serializeSchedules(schedules: List<Schedule>): JSONArray {
+        return JSONArray().apply {
+            schedules.forEach { schedule ->
+                put(JSONObject().apply {
+                    put("id", schedule.id)
+                    put("daysOfWeek", schedule.daysOfWeek)
+                    put("startMinuteOfDay", schedule.startMinuteOfDay)
+                    put("endMinuteOfDay", schedule.endMinuteOfDay)
+                    put("enabled", schedule.enabled)
+                    put("createdAt", schedule.createdAt)
+                })
+            }
+        }
+    }
+
+    private fun serializeScheduleLinks(links: List<ScheduleProfileLink>): JSONArray {
+        return JSONArray().apply {
+            links.forEach { link ->
+                put(JSONObject().apply {
+                    put("scheduleId", link.scheduleId)
+                    put("profileId", link.profileId)
+                })
+            }
+        }
+    }
+
     // --- Parsing ---
 
     private fun parseProfiles(array: JSONArray): List<Profile> {
@@ -145,6 +182,30 @@ object BackupManager {
                 startTime = obj.getLong("startTime"),
                 endTime = if (obj.has("endTime")) obj.getLong("endTime") else null,
                 endReason = if (obj.has("endReason")) obj.getString("endReason") else null,
+            )
+        }
+    }
+
+    private fun parseSchedules(array: JSONArray): List<Schedule> {
+        return (0 until array.length()).map { i ->
+            val obj = array.getJSONObject(i)
+            Schedule(
+                id = obj.optLong("id", 0L),
+                daysOfWeek = obj.getInt("daysOfWeek"),
+                startMinuteOfDay = obj.getInt("startMinuteOfDay"),
+                endMinuteOfDay = obj.getInt("endMinuteOfDay"),
+                enabled = obj.optBoolean("enabled", true),
+                createdAt = obj.optLong("createdAt", System.currentTimeMillis()),
+            )
+        }
+    }
+
+    private fun parseScheduleLinks(array: JSONArray): List<ScheduleProfileLink> {
+        return (0 until array.length()).map { i ->
+            val obj = array.getJSONObject(i)
+            ScheduleProfileLink(
+                scheduleId = obj.getLong("scheduleId"),
+                profileId = obj.getLong("profileId"),
             )
         }
     }

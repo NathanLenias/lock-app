@@ -42,6 +42,33 @@ data class NfcTag(
     val profileId: Long? = null,
 )
 
+/**
+ * A recurring auto-lock window. Days are a bitmask (bit 0 = Monday … bit 6 = Sunday,
+ * i.e. `1 shl (DayOfWeek.value - 1)`). An occurrence belongs to the day its START falls
+ * on; endMinuteOfDay <= startMinuteOfDay means the window ends the next day (overnight).
+ * Blocked apps come from the attached profiles (schedule_profiles join table); a schedule
+ * with no attached profile is inert.
+ */
+@Entity(tableName = "schedules")
+data class Schedule(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val daysOfWeek: Int,
+    val startMinuteOfDay: Int,
+    val endMinuteOfDay: Int,
+    @ColumnInfo(defaultValue = "1") val enabled: Boolean = true,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+@Entity(
+    tableName = "schedule_profiles",
+    primaryKeys = ["scheduleId", "profileId"],
+    indices = [Index("profileId")],
+)
+data class ScheduleProfileLink(
+    val scheduleId: Long,
+    val profileId: Long,
+)
+
 data class LockState(
     val isLocked: Boolean = false,
     val sessionStartTime: Long? = null,
@@ -51,6 +78,7 @@ data class LockState(
     val isManualMode: Boolean = false,
     val lockDurationMs: Long? = null,
     val isNoEscape: Boolean = false,
+    val isScheduleOrigin: Boolean = false,
 )
 
 data class SetupStatus(
@@ -75,4 +103,6 @@ enum class EndReason(val value: String) {
     DURATION("duration"),
     CANCELLED("cancelled"),
     UNINSTALL("uninstall"),
+    /** A scheduled window reached its end time. */
+    SCHEDULE("schedule"),
 }

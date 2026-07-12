@@ -2,9 +2,13 @@ package com.nathanb.lock.fake
 
 import com.nathanb.lock.data.database.NfcTagDao
 import com.nathanb.lock.data.database.ProfileDao
+import com.nathanb.lock.data.database.ScheduleDao
+import com.nathanb.lock.data.database.ScheduleProfileDao
 import com.nathanb.lock.data.database.SessionDao
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
+import com.nathanb.lock.data.model.Schedule
+import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,6 +86,67 @@ class FakeSessionDao : SessionDao {
 
     override suspend fun deleteAll() {
         sessions.value = emptyList()
+    }
+}
+
+class FakeScheduleDao : ScheduleDao {
+    private val schedules = MutableStateFlow<List<Schedule>>(emptyList())
+    private var nextId = 1L
+
+    override fun getAll(): Flow<List<Schedule>> = schedules.map { it.sortedBy { s -> s.createdAt } }
+
+    override suspend fun getById(id: Long): Schedule? = schedules.value.find { it.id == id }
+
+    override suspend fun insert(schedule: Schedule): Long {
+        val id = if (schedule.id == 0L) nextId++ else schedule.id
+        val newSchedule = schedule.copy(id = id)
+        schedules.update { list -> list.filter { it.id != id } + newSchedule }
+        return id
+    }
+
+    override suspend fun update(schedule: Schedule) {
+        schedules.update { list -> list.map { if (it.id == schedule.id) schedule else it } }
+    }
+
+    override suspend fun setEnabled(id: Long, enabled: Boolean) {
+        schedules.update { list -> list.map { if (it.id == id) it.copy(enabled = enabled) else it } }
+    }
+
+    override suspend fun delete(id: Long) {
+        schedules.update { list -> list.filter { it.id != id } }
+    }
+
+    override suspend fun getAllOnce(): List<Schedule> = schedules.value
+
+    override suspend fun deleteAll() {
+        schedules.value = emptyList()
+    }
+}
+
+class FakeScheduleProfileDao : ScheduleProfileDao {
+    private val links = MutableStateFlow<List<ScheduleProfileLink>>(emptyList())
+
+    override fun getAll(): Flow<List<ScheduleProfileLink>> = links
+
+    override suspend fun getByScheduleOnce(scheduleId: Long): List<ScheduleProfileLink> =
+        links.value.filter { it.scheduleId == scheduleId }
+
+    override suspend fun insertAll(links: List<ScheduleProfileLink>) {
+        this.links.update { list -> (list.filter { existing -> links.none { it == existing } } + links) }
+    }
+
+    override suspend fun deleteBySchedule(scheduleId: Long) {
+        links.update { list -> list.filter { it.scheduleId != scheduleId } }
+    }
+
+    override suspend fun deleteByProfile(profileId: Long) {
+        links.update { list -> list.filter { it.profileId != profileId } }
+    }
+
+    override suspend fun getAllOnce(): List<ScheduleProfileLink> = links.value
+
+    override suspend fun deleteAll() {
+        links.value = emptyList()
     }
 }
 

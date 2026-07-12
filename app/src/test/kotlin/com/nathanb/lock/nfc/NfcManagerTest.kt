@@ -38,6 +38,8 @@ class NfcManagerTest {
             profileDao = FakeProfileDao(),
             sessionDao = FakeSessionDao(),
             nfcTagDao = FakeNfcTagDao(),
+            scheduleDao = com.nathanb.lock.fake.FakeScheduleDao(),
+            scheduleProfileDao = com.nathanb.lock.fake.FakeScheduleProfileDao(),
             dataStore = dataStore,
         )
         nfc = NfcManager(repository)

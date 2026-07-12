@@ -8,6 +8,8 @@ import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.fake.FakeNfcTagDao
 import com.nathanb.lock.fake.FakeProfileDao
+import com.nathanb.lock.fake.FakeScheduleDao
+import com.nathanb.lock.fake.FakeScheduleProfileDao
 import com.nathanb.lock.fake.FakeSessionDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -37,6 +39,8 @@ class LockRepositoryTest {
     private lateinit var profileDao: FakeProfileDao
     private lateinit var sessionDao: FakeSessionDao
     private lateinit var nfcTagDao: FakeNfcTagDao
+    private lateinit var scheduleDao: FakeScheduleDao
+    private lateinit var scheduleProfileDao: FakeScheduleProfileDao
     private lateinit var testDataStore: androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>
     private lateinit var repository: LockRepository
 
@@ -45,6 +49,8 @@ class LockRepositoryTest {
         profileDao = FakeProfileDao()
         sessionDao = FakeSessionDao()
         nfcTagDao = FakeNfcTagDao()
+        scheduleDao = FakeScheduleDao()
+        scheduleProfileDao = FakeScheduleProfileDao()
 
         testDataStore = PreferenceDataStoreFactory.create(
             scope = testScope,
@@ -55,6 +61,8 @@ class LockRepositoryTest {
             profileDao = profileDao,
             sessionDao = sessionDao,
             nfcTagDao = nfcTagDao,
+            scheduleDao = scheduleDao,
+            scheduleProfileDao = scheduleProfileDao,
             dataStore = testDataStore,
             ioDispatcher = testDispatcher,
         )
@@ -463,6 +471,113 @@ class LockRepositoryTest {
 
         val def = repository.getDefaultProfile()!!
         assertEquals(def.id, repository.findNfcTag("U1")!!.profileId)
+    }
+
+    // --- Schedules ---
+
+    @Test
+    fun `createSchedule links only standard profiles`() = testScope.runTest {
+        val stdId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "Std", blockedPackages = listOf("com.a"))
+        )
+        val neId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(
+                name = "SE", blockedPackages = listOf("com.b"),
+                type = "no_escape", durationMs = 600_000L,
+            )
+        )
+
+        val scheduleId = repository.createSchedule(
+            daysOfWeek = 0b0011111, startMinuteOfDay = 540, endMinuteOfDay = 1020,
+            profileIds = listOf(stdId, neId, 999L),
+        )
+
+        val links = scheduleProfileDao.getByScheduleOnce(scheduleId)
+        assertEquals(listOf(stdId), links.map { it.profileId })
+        assertTrue(scheduleDao.getById(scheduleId)!!.enabled)
+    }
+
+    @Test
+    fun `updateSchedule replaces links`() = testScope.runTest {
+        val p1 = profileDao.insert(com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = emptyList()))
+        val p2 = profileDao.insert(com.nathanb.lock.data.model.Profile(name = "B", blockedPackages = emptyList()))
+        val id = repository.createSchedule(1, 0, 60, listOf(p1))
+
+        repository.updateSchedule(scheduleDao.getById(id)!!.copy(startMinuteOfDay = 30), listOf(p2))
+
+        assertEquals(30, scheduleDao.getById(id)!!.startMinuteOfDay)
+        assertEquals(listOf(p2), scheduleProfileDao.getByScheduleOnce(id).map { it.profileId })
+    }
+
+    @Test
+    fun `deleteSchedule removes schedule and its links`() = testScope.runTest {
+        val p1 = profileDao.insert(com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = emptyList()))
+        val id = repository.createSchedule(1, 0, 60, listOf(p1))
+
+        repository.deleteSchedule(id)
+
+        assertNull(scheduleDao.getById(id))
+        assertTrue(scheduleProfileDao.getAllOnce().isEmpty())
+    }
+
+    @Test
+    fun `deleteProfile removes its schedule links but keeps the schedule`() = testScope.runTest {
+        val def = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "Def", blockedPackages = emptyList(), isDefault = true)
+        )
+        val other = profileDao.insert(com.nathanb.lock.data.model.Profile(name = "Other", blockedPackages = emptyList()))
+        val id = repository.createSchedule(1, 0, 60, listOf(other, def))
+
+        val result = repository.deleteProfile(profileDao.getById(other)!!)
+
+        assertEquals(LockRepository.DeleteProfileResult.Success, result)
+        assertNotNull(scheduleDao.getById(id))
+        assertEquals(listOf(def), scheduleProfileDao.getByScheduleOnce(id).map { it.profileId })
+    }
+
+    @Test
+    fun `restoreBackupData remaps schedule links and drops orphans`() = testScope.runTest {
+        val data = com.nathanb.lock.data.backup.BackupData(
+            profiles = listOf(
+                com.nathanb.lock.data.model.Profile(id = 7, name = "Std", blockedPackages = listOf("com.a"), isDefault = true),
+            ),
+            nfcTags = emptyList(),
+            sessions = emptyList(),
+            schedules = listOf(
+                com.nathanb.lock.data.model.Schedule(
+                    id = 3, daysOfWeek = 0b1111111, startMinuteOfDay = 1320, endMinuteOfDay = 360,
+                ),
+            ),
+            scheduleLinks = listOf(
+                com.nathanb.lock.data.model.ScheduleProfileLink(scheduleId = 3, profileId = 7),
+                com.nathanb.lock.data.model.ScheduleProfileLink(scheduleId = 3, profileId = 42), // orphan
+            ),
+        )
+
+        repository.restoreBackupData(data)
+
+        val schedule = scheduleDao.getAllOnce().single()
+        assertEquals(1320, schedule.startMinuteOfDay)
+        val newProfileId = profileDao.getAllOnce().single().id
+        assertEquals(
+            listOf(newProfileId),
+            scheduleProfileDao.getByScheduleOnce(schedule.id).map { it.profileId },
+        )
+    }
+
+    @Test
+    fun `restoreBackupData from pre-schedule backup leaves schedules empty`() = testScope.runTest {
+        repository.createSchedule(1, 0, 60, emptyList())
+
+        val data = com.nathanb.lock.data.backup.BackupData(
+            profiles = listOf(com.nathanb.lock.data.model.Profile(id = 1, name = "A", blockedPackages = emptyList())),
+            nfcTags = emptyList(),
+            sessions = emptyList(),
+        )
+        repository.restoreBackupData(data)
+
+        assertTrue(scheduleDao.getAllOnce().isEmpty())
+        assertTrue(scheduleProfileDao.getAllOnce().isEmpty())
     }
 
     // --- Setup ---

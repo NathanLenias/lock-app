@@ -15,11 +15,15 @@ import com.nathanb.lock.data.backup.BackupManager
 import com.nathanb.lock.data.database.LockDatabase
 import com.nathanb.lock.data.database.NfcTagDao
 import com.nathanb.lock.data.database.ProfileDao
+import com.nathanb.lock.data.database.ScheduleDao
+import com.nathanb.lock.data.database.ScheduleProfileDao
 import com.nathanb.lock.data.database.SessionDao
 import com.nathanb.lock.data.model.LockState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
+import com.nathanb.lock.data.model.Schedule
+import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.util.Constants
@@ -44,6 +48,8 @@ class LockRepository(
     private val profileDao: ProfileDao,
     private val sessionDao: SessionDao,
     private val nfcTagDao: NfcTagDao,
+    private val scheduleDao: ScheduleDao,
+    private val scheduleProfileDao: ScheduleProfileDao,
     private val database: LockDatabase? = null,
     private val dataStore: DataStore<Preferences> = context!!.dataStore,
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -309,8 +315,59 @@ class LockRepository(
         if (default != null && default.id != profile.id) {
             nfcTagDao.reassignProfile(profile.id, default.id)
         }
+        // Schedules keep existing without this profile; a schedule with zero profiles is inert.
+        scheduleProfileDao.deleteByProfile(profile.id)
         profileDao.delete(profile)
         return DeleteProfileResult.Success
+    }
+
+    // Schedules (recurring auto-lock windows)
+    val schedules: Flow<List<Schedule>> = scheduleDao.getAll()
+    val scheduleLinks: Flow<List<ScheduleProfileLink>> = scheduleProfileDao.getAll()
+
+    /** Only STANDARD profiles can be attached to a schedule (no-escape are excluded by design). */
+    private suspend fun standardProfileIds(profileIds: List<Long>): List<Long> {
+        val standard = profileDao.getAllOnce()
+            .filter { ProfileType.fromValue(it.type) == ProfileType.STANDARD }
+            .map { it.id }
+            .toSet()
+        return profileIds.filter { it in standard }.distinct()
+    }
+
+    suspend fun createSchedule(
+        daysOfWeek: Int,
+        startMinuteOfDay: Int,
+        endMinuteOfDay: Int,
+        profileIds: List<Long>,
+    ): Long {
+        val id = scheduleDao.insert(
+            Schedule(
+                daysOfWeek = daysOfWeek,
+                startMinuteOfDay = startMinuteOfDay,
+                endMinuteOfDay = endMinuteOfDay,
+            )
+        )
+        scheduleProfileDao.insertAll(
+            standardProfileIds(profileIds).map { ScheduleProfileLink(id, it) }
+        )
+        return id
+    }
+
+    suspend fun updateSchedule(schedule: Schedule, profileIds: List<Long>) {
+        scheduleDao.update(schedule)
+        scheduleProfileDao.deleteBySchedule(schedule.id)
+        scheduleProfileDao.insertAll(
+            standardProfileIds(profileIds).map { ScheduleProfileLink(schedule.id, it) }
+        )
+    }
+
+    suspend fun setScheduleEnabled(scheduleId: Long, enabled: Boolean) {
+        scheduleDao.setEnabled(scheduleId, enabled)
+    }
+
+    suspend fun deleteSchedule(scheduleId: Long) {
+        scheduleProfileDao.deleteBySchedule(scheduleId)
+        scheduleDao.delete(scheduleId)
     }
 
     suspend fun setTagProfile(uid: String, profileId: Long?) {
@@ -333,7 +390,9 @@ class LockRepository(
         val profiles = profileDao.getAllOnce()
         val nfcTags = nfcTagDao.getAllOnce()
         val sessions = sessionDao.getAllOnce()
-        BackupManager.export(context!!, uri, profiles, nfcTags, sessions)
+        val schedules = scheduleDao.getAllOnce()
+        val scheduleLinks = scheduleProfileDao.getAllOnce()
+        BackupManager.export(context!!, uri, profiles, nfcTags, sessions, schedules, scheduleLinks)
     }
 
     // Theme preference
@@ -408,6 +467,8 @@ class LockRepository(
 
     /** Wipe-and-restore with id remapping. Extracted (no transaction) for unit testing. */
     internal suspend fun restoreBackupData(data: com.nathanb.lock.data.backup.BackupData) {
+        scheduleProfileDao.deleteAll()
+        scheduleDao.deleteAll()
         sessionDao.deleteAll()
         nfcTagDao.deleteAll()
         profileDao.deleteAll()
@@ -434,6 +495,20 @@ class LockRepository(
                 data.sessions.map { s -> s.copy(id = 0, profileId = idMap[s.profileId] ?: s.profileId) }
             )
         }
+
+        // Schedules: fresh ids, then links remapped through both maps.
+        // Links whose profile didn't survive the restore are dropped (inert schedule is fine).
+        val scheduleIdMap = HashMap<Long, Long>()
+        data.schedules.forEach { s ->
+            val newId = scheduleDao.insert(s.copy(id = 0))
+            scheduleIdMap[s.id] = newId
+        }
+        val remappedLinks = data.scheduleLinks.mapNotNull { link ->
+            val scheduleId = scheduleIdMap[link.scheduleId] ?: return@mapNotNull null
+            val profileId = idMap[link.profileId] ?: return@mapNotNull null
+            ScheduleProfileLink(scheduleId, profileId)
+        }
+        if (remappedLinks.isNotEmpty()) scheduleProfileDao.insertAll(remappedLinks)
     }
 
     private suspend fun ensureSingleDefault() {
