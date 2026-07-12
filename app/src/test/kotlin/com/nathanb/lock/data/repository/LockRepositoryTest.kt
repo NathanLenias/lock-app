@@ -580,6 +580,98 @@ class LockRepositoryTest {
         assertTrue(scheduleProfileDao.getAllOnce().isEmpty())
     }
 
+    // --- Scheduled sessions ---
+
+    @Test
+    fun `startScheduledSession sets schedule origin and blocks the union`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+
+        repository.startScheduledSession(profileId, setOf("com.a", "com.b"))
+
+        val state = repository.getLockState()
+        assertTrue(state.isLocked)
+        assertTrue(state.isScheduleOrigin)
+        assertFalse(state.isNoEscape)
+        assertNull(state.lockDurationMs)
+        assertEquals(setOf("com.a", "com.b"), repository.blockedPackages.value)
+    }
+
+    @Test
+    fun `updateScheduledPackages refreshes the blocked union`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        repository.startScheduledSession(profileId, setOf("com.a"))
+
+        repository.updateScheduledPackages(setOf("com.a", "com.c"))
+
+        assertEquals(setOf("com.a", "com.c"), repository.blockedPackages.value)
+    }
+
+    @Test
+    fun `user-initiated end consumes covering windows`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        // All-days 00:00 -> 00:00 defensive 24h window: always covering.
+        val scheduleId = repository.createSchedule(0b1111111, 0, 0, listOf(profileId))
+        repository.startScheduledSession(profileId, setOf("com.a"))
+
+        repository.endLockSession(EndReason.NFC.value)
+
+        val state = repository.getLockState()
+        assertFalse(state.isLocked)
+        assertFalse(state.isScheduleOrigin)
+        assertTrue(repository.blockedPackages.value.isEmpty())
+        val consumed = repository.getConsumedWindowKeys()
+        assertEquals(1, consumed.size)
+        assertTrue(consumed.single().startsWith("$scheduleId:"))
+    }
+
+    @Test
+    fun `system end does not consume windows`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        repository.createSchedule(0b1111111, 0, 0, listOf(profileId))
+        repository.startScheduledSession(profileId, setOf("com.a"))
+
+        repository.endLockSession(EndReason.SCHEDULE.value)
+
+        assertTrue(repository.getConsumedWindowKeys().isEmpty())
+    }
+
+    @Test
+    fun `onSessionEnded hook fires on every end`() = testScope.runTest {
+        var invoked = 0
+        repository.onSessionEnded = { invoked++ }
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        repository.startLockSession(profileId)
+
+        repository.endLockSession(EndReason.TIMEOUT.value)
+
+        assertEquals(1, invoked)
+    }
+
+    @Test
+    fun `consumed keys can be pruned via setConsumedWindowKeys`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        repository.createSchedule(0b1111111, 0, 0, listOf(profileId))
+        repository.startScheduledSession(profileId, setOf("com.a"))
+        repository.endLockSession(EndReason.MANUAL.value)
+        assertEquals(1, repository.getConsumedWindowKeys().size)
+
+        repository.setConsumedWindowKeys(emptySet())
+
+        assertTrue(repository.getConsumedWindowKeys().isEmpty())
+    }
+
     // --- Setup ---
 
     @Test

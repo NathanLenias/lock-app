@@ -260,9 +260,18 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     // Self-heal: a timed (no-escape) session must auto-end even if the foreground service was
     // killed (app update, OOM, reboot). Independent of LockForegroundService.timeoutJob.
     private var autoEndJob: kotlinx.coroutines.Job? = null
+    private var wasLocked = false
     init {
         viewModelScope.launch {
             lockState.collect { state ->
+                // Sessions can end outside the ViewModel (FGS timeout, schedule window end):
+                // clear grace/emergency UI state so it doesn't leak into the next session.
+                if (wasLocked && !state.isLocked) {
+                    cancelGracePeriod()
+                    cancelEmergency()
+                }
+                wasLocked = state.isLocked
+
                 autoEndJob?.cancel()
                 val duration = state.lockDurationMs
                 val start = state.sessionStartTime

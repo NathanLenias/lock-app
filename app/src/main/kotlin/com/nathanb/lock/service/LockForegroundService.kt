@@ -94,12 +94,10 @@ class LockForegroundService : Service() {
         notificationUpdateJob = scope.launch {
             val state = repository.getLockState()
             val startTime = state.sessionStartTime
-            val profileId = state.activeProfileId
-            val appCount = if (profileId != null) {
-                repository.getProfile(profileId)?.blockedPackages?.size ?: 0
-            } else {
-                0
-            }
+            // Blocked-set snapshot covers union sessions (scheduled windows), not just the profile.
+            val appCount = repository.blockedPackages.value.size.takeIf { it > 0 }
+                ?: state.activeProfileId?.let { repository.getProfile(it)?.blockedPackages?.size }
+                ?: 0
             if (startTime != null) {
                 val updated = buildTimerNotification(startTime, appCount)
                 getSystemService(NotificationManager::class.java)
@@ -108,9 +106,12 @@ class LockForegroundService : Service() {
         }
 
         // Auto-unlock: per-session duration (no-escape) or global timeout (standard); 0 = unlimited.
+        // Schedule-origin sessions are exempt: their bound is the window-end alarm, and a 9h-17h
+        // window must not be cut (then instantly re-locked) by the 5h safety timeout.
         timeoutJob?.cancel()
         timeoutJob = scope.launch {
             val state = repository.getLockState()
+            if (state.isScheduleOrigin && state.lockDurationMs == null) return@launch
             val durationMs = state.lockDurationMs ?: repository.timeoutDurationMs.first()
             if (durationMs <= 0L) return@launch // unlimited
             val startTime = state.sessionStartTime ?: System.currentTimeMillis()

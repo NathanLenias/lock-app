@@ -2,6 +2,7 @@ package com.nathanb.lock.util
 
 import android.Manifest
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.AlarmManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -53,6 +54,20 @@ object PermissionHelper {
             context,
             Manifest.permission.POST_NOTIFICATIONS,
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun canScheduleExactAlarms(context: Context): Boolean {
+        val am = context.getSystemService(AlarmManager::class.java)
+        return am.canScheduleExactAlarms()
+    }
+
+    fun openExactAlarmSettings(context: Context) {
+        context.startActivity(
+            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                data = Uri.parse("package:${context.packageName}")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
     }
 
     fun isBatteryOptimizationIgnored(context: Context): Boolean {

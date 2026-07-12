@@ -31,6 +31,9 @@ class BootReceiver : BroadcastReceiver() {
                     if (BuildConfig.DEBUG) Log.d(TAG, "Was locked before reboot, restarting foreground service")
                     LockForegroundService.start(context)
                 }
+
+                // Alarms don't survive a reboot: re-evaluate windows and re-arm the next boundary.
+                app.scheduleManager.evaluateAndRearm()
             } finally {
                 pendingResult.finish()
             }

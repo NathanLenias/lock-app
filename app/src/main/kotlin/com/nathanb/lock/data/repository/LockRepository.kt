@@ -22,9 +22,12 @@ import com.nathanb.lock.data.model.LockState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
+import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.Schedule
 import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
+import com.nathanb.lock.schedule.ScheduleWindowCalculator
+import java.time.ZonedDateTime
 import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.util.Constants
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -77,6 +81,25 @@ class LockRepository(
         val SUPPORT_PROMPT_STAGE = intPreferencesKey("support_prompt_stage")
         val LAST_SEEN_VERSION = intPreferencesKey("last_seen_version_code")
         val IS_NO_ESCAPE = booleanPreferencesKey("is_no_escape")
+        // Schedules (recurring auto-lock windows)
+        val SCHEDULED_PACKAGES = stringPreferencesKey("scheduled_packages")
+        val IS_SCHEDULE_ORIGIN = booleanPreferencesKey("is_schedule_origin")
+        val CONSUMED_WINDOWS = stringPreferencesKey("consumed_windows")
+    }
+
+    /** Reasons that mean the USER ended the session: covering windows get consumed for the day. */
+    private val consumingEndReasons = setOf(
+        EndReason.NFC.value, EndReason.MANUAL.value, EndReason.CANCELLED.value,
+    )
+
+    // Newline-joined encoding (not org.json: that's a stub on the unit-test JVM).
+    // Safe: package names and consumption keys never contain newlines.
+    private fun encodeStringSet(values: Set<String>): String =
+        values.joinToString("\n")
+
+    private fun decodeStringSet(encoded: String?): Set<String> {
+        if (encoded.isNullOrEmpty()) return emptySet()
+        return encoded.split('\n').filter { it.isNotEmpty() }.toSet()
     }
 
     // Blocked packages — observed by the Accessibility Service
@@ -102,8 +125,14 @@ class LockRepository(
             isManualMode = prefs[Keys.IS_MANUAL_MODE] ?: false,
             lockDurationMs = prefs[Keys.LOCK_DURATION_MS],
             isNoEscape = prefs[Keys.IS_NO_ESCAPE] ?: false,
+            isScheduleOrigin = prefs[Keys.IS_SCHEDULE_ORIGIN] ?: false,
         )
     }
+
+    /** Union of packages blocked by the currently covering scheduled windows (empty when none). */
+    private val scheduledPackagesFlow: Flow<Set<String>> = dataStore.data
+        .map { prefs -> decodeStringSet(prefs[Keys.SCHEDULED_PACKAGES]) }
+        .distinctUntilChanged()
 
     val isSetupCompleted: Flow<Boolean> = dataStore.data.map { prefs ->
         prefs[Keys.SETUP_COMPLETED] ?: false
@@ -116,14 +145,20 @@ class LockRepository(
     val profiles: Flow<List<Profile>> = profileDao.getAll()
 
     init {
-        // Keep blocked packages in sync with current state
+        // Keep blocked packages in sync with current state:
+        // active profile's packages ∪ scheduled-window packages (both empty when unlocked).
         scope.launch {
-            lockStateFlow.collect { state ->
-                if (state.isLocked && state.activeProfileId != null) {
-                    val profile = profileDao.getById(state.activeProfileId)
-                    _blockedPackages.value = profile?.blockedPackages?.toSet() ?: emptySet()
+            combine(lockStateFlow, scheduledPackagesFlow) { state, scheduled ->
+                state to scheduled
+            }.collect { (state, scheduled) ->
+                _blockedPackages.value = if (state.isLocked) {
+                    val profilePackages = state.activeProfileId
+                        ?.let { profileDao.getById(it)?.blockedPackages }
+                        ?.toSet()
+                        .orEmpty()
+                    profilePackages + scheduled
                 } else {
-                    _blockedPackages.value = emptySet()
+                    emptySet()
                 }
             }
         }
@@ -166,12 +201,29 @@ class LockRepository(
         }
     }
 
+    /**
+     * Invoked after every session end (any reason). LockApplication wires it to the
+     * ScheduleManager so windows are re-evaluated immediately (e.g. a window takes over
+     * right after a no-escape session expires). Nullable: unit tests leave it unset.
+     */
+    var onSessionEnded: (suspend () -> Unit)? = null
+
     suspend fun endLockSession(reason: String) {
         val now = System.currentTimeMillis()
         val prefs = dataStore.data.first()
         val sessionId = prefs[Keys.ACTIVE_SESSION_ID]
         if (sessionId != null) {
             sessionDao.endSession(sessionId, now, reason)
+        }
+        // User-initiated end: consume the currently covering windows for the day, so the
+        // re-evaluation below (and later alarms) won't re-lock until the next occurrence.
+        val consumedToAdd = if (reason in consumingEndReasons) {
+            ScheduleWindowCalculator.coveringOccurrences(
+                scheduleDao.getAllOnce(),
+                ZonedDateTime.now(),
+            ).map { it.consumptionKey }
+        } else {
+            emptyList()
         }
         dataStore.edit { it ->
             it[Keys.IS_LOCKED] = false
@@ -180,6 +232,58 @@ class LockRepository(
             it.remove(Keys.ACTIVE_SESSION_ID)
             it.remove(Keys.IS_NO_ESCAPE)
             it.remove(Keys.LOCK_DURATION_MS)
+            it.remove(Keys.SCHEDULED_PACKAGES)
+            it.remove(Keys.IS_SCHEDULE_ORIGIN)
+            if (consumedToAdd.isNotEmpty()) {
+                val current = decodeStringSet(it[Keys.CONSUMED_WINDOWS])
+                it[Keys.CONSUMED_WINDOWS] = encodeStringSet(current + consumedToAdd)
+            }
+        }
+        onSessionEnded?.invoke()
+    }
+
+    // --- Scheduled sessions (started by ScheduleManager, never from the UI) ---
+
+    /**
+     * Starts a session for a scheduled window. [profileId] is the first attached profile
+     * (stats attribution); [packages] is the union of all covering windows' packages.
+     * Never sets LOCK_DURATION_MS: the window-end alarm is the natural bound, and the
+     * foreground service exempts schedule-origin sessions from the global timeout.
+     */
+    suspend fun startScheduledSession(profileId: Long, packages: Set<String>) {
+        val now = System.currentTimeMillis()
+        val sessionId = sessionDao.insert(
+            Session(profileId = profileId, startTime = now)
+        )
+        dataStore.edit { prefs ->
+            prefs[Keys.IS_LOCKED] = true
+            prefs[Keys.SESSION_START_TIME] = now
+            prefs[Keys.ACTIVE_PROFILE_ID] = profileId
+            prefs[Keys.ACTIVE_SESSION_ID] = sessionId
+            prefs[Keys.IS_NO_ESCAPE] = false
+            prefs[Keys.IS_SCHEDULE_ORIGIN] = true
+            prefs[Keys.SCHEDULED_PACKAGES] = encodeStringSet(packages)
+            prefs.remove(Keys.LOCK_DURATION_MS)
+            prefs[Keys.EMERGENCY_UNLOCKS] =
+                prefs[Keys.MAX_EMERGENCY_UNLOCKS_SETTING] ?: Constants.DEFAULT_MAX_EMERGENCY_UNLOCKS
+        }
+    }
+
+    /** Refreshes the blocked union of an active schedule-origin session (overlap changes). */
+    suspend fun updateScheduledPackages(packages: Set<String>) {
+        dataStore.edit { prefs ->
+            prefs[Keys.SCHEDULED_PACKAGES] = encodeStringSet(packages)
+        }
+    }
+
+    suspend fun getConsumedWindowKeys(): Set<String> =
+        decodeStringSet(dataStore.data.first()[Keys.CONSUMED_WINDOWS])
+
+    /** Rewrites the consumed set (used to prune stale keys). */
+    suspend fun setConsumedWindowKeys(keys: Set<String>) {
+        dataStore.edit { prefs ->
+            if (keys.isEmpty()) prefs.remove(Keys.CONSUMED_WINDOWS)
+            else prefs[Keys.CONSUMED_WINDOWS] = encodeStringSet(keys)
         }
     }
 
