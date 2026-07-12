@@ -456,12 +456,12 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">Multiple profiles</string>
-    <string name="inapp_changelog_1_body">Create profiles tailored to your needs: Work, social, sleep…</string>
-    <string name="inapp_changelog_2_title">Temporary profiles</string>
-    <string name="inapp_changelog_2_body">A timed profile that can\'t be turned off with an NFC tag.</string>
-    <string name="inapp_changelog_3_title">German translation</string>
-    <string name="inapp_changelog_3_body">German joins English and French in the app!</string>
+    <string name="inapp_changelog_1_title">Schedules</string>
+    <string name="inapp_changelog_1_body">Block your profiles automatically, on the days and times you choose.</string>
+    <string name="inapp_changelog_2_title">Several profiles per window</string>
+    <string name="inapp_changelog_2_body">A single schedule can combine the apps of several profiles.</string>
+    <string name="inapp_changelog_3_title">Support via Ko-fi</string>
+    <string name="inapp_changelog_3_body">You can now support the project with PayPal or card.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
