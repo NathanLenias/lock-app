@@ -50,6 +50,7 @@ class NfcManager(
         private const val MIME_TYPE = "application/vnd.lock.toggle"
         private const val APP_PACKAGE = "com.nathanb.lock"
         private const val PAIRING_GRACE_MS = 3_000L
+        const val MAX_WRITE_RETRIES = 5
     }
 
     private var isPairingMode = false
@@ -62,12 +63,29 @@ class NfcManager(
     private var justPairedUid: String? = null
     private var justPairedAt: Long = 0L
 
+    /**
+     * Consecutive interrupted writes on the current pairing attempt. After
+     * [MAX_WRITE_RETRIES] the UI offers to pair anyway (a genuinely defective tag would
+     * otherwise block pairing forever, even though it works fine in the foreground).
+     */
+    private var writeFailureCount = 0
+
+    fun consecutiveWriteFailures(): Int = writeFailureCount
+
     fun enablePairingMode() {
         isPairingMode = true
+        writeFailureCount = 0
     }
 
     fun disablePairingMode() {
         isPairingMode = false
+        writeFailureCount = 0
+    }
+
+    /** User accepted a tag we can't write to: pair it, foreground-only. */
+    fun forcePairWithoutWrite() {
+        isPairingMode = false
+        writeFailureCount = 0
     }
 
     /**
@@ -150,12 +168,15 @@ class NfcManager(
         // the mode on, so simply recontacting the tag retries the write.
         if (isPairingMode) {
             val writeResult = write()
-            if (writeResult != NdefWriteResult.TRANSIENT_FAILURE) {
+            if (writeResult == NdefWriteResult.TRANSIENT_FAILURE) {
+                writeFailureCount++
+            } else {
+                writeFailureCount = 0
                 isPairingMode = false
                 justPairedUid = uid
                 justPairedAt = clock()
             }
-            if (BuildConfig.DEBUG) Log.d(TAG, "Tag paired: $uid ($writeResult)")
+            if (BuildConfig.DEBUG) Log.d(TAG, "Tag paired: $uid ($writeResult, fails=$writeFailureCount)")
             return NfcResult.TagPaired(uid, writeResult)
         }
 

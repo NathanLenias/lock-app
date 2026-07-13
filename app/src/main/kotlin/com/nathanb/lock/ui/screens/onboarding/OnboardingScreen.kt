@@ -46,6 +46,7 @@ fun OnboardingScreen(
 
     val pendingUid by viewModel.pendingPairingUid.collectAsStateWithLifecycle()
     val pairingWriteResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
+    val pairingWriteExhaustedUid by viewModel.pairingWriteExhaustedUid.collectAsStateWithLifecycle()
     val nfcTags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     val lockState by viewModel.lockState.collectAsStateWithLifecycle()
@@ -125,6 +126,8 @@ fun OnboardingScreen(
                     isSuccess = nfcPairingSuccess,
                     // Write interrupted: the page keeps waiting, recontacting the tag retries.
                     writeInterrupted = pairingWriteResult == NdefWriteResult.TRANSIENT_FAILURE,
+                    writeExhausted = pairingWriteExhaustedUid != null,
+                    onPairAnyway = { viewModel.pairAnywayWithoutWrite() },
                     onSkip = ::goNext,
                     onSuccessAnimationEnd = ::goNext,
                 )

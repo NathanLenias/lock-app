@@ -105,6 +105,7 @@ fun NfcTagsScreen(
     var rewritingTag by remember { mutableStateOf<NfcTag?>(null) }
     var showWriteProtectedSheet by remember { mutableStateOf(false) }
     val writeResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
+    val writeExhaustedUid by viewModel.pairingWriteExhaustedUid.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.nfcEvents.collect { result ->
@@ -217,11 +218,19 @@ fun NfcTagsScreen(
                             else -> stringResource(R.string.nfc_tags_waiting_subtitle)
                         },
                         isSuccess = isPairingSuccess,
-                        warning = if (writeResult == NdefWriteResult.TRANSIENT_FAILURE) {
-                            stringResource(R.string.nfc_write_interrupted)
+                        warning = when {
+                            writeExhaustedUid != null -> stringResource(R.string.nfc_write_failed_body)
+                            writeResult == NdefWriteResult.TRANSIENT_FAILURE ->
+                                stringResource(R.string.nfc_write_interrupted)
+                            else -> null
+                        },
+                        // After repeated failures, let the user pair the tag without the write.
+                        secondaryLabel = if (writeExhaustedUid != null && rewriting == null) {
+                            stringResource(R.string.nfc_write_failed_cta)
                         } else {
                             null
                         },
+                        onSecondaryClick = { viewModel.pairAnywayWithoutWrite() },
                         ctaLabel = if (!isPairingSuccess) stringResource(R.string.action_cancel) else null,
                         onCtaClick = {
                             isScanning = false

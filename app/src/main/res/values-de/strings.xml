@@ -508,4 +508,9 @@
     <string name="nfc_tag_rewrite_done">Tag neu beschrieben</string>
     <string name="nfc_tag_rewrite_done_subtitle">Es funktioniert jetzt auch bei geschlossener App.</string>
     <string name="nfc_tag_rewrite_hint">Tag funktioniert bei geschlossener App nicht? Neu beschreiben.</string>
+
+    <string name="nfc_write_failed_title">Tag kann nicht beschrieben werden</string>
+    <string name="nfc_write_failed_body">Das Beschreiben schlägt wiederholt fehl. Sie können es trotzdem verknüpfen: Es funktioniert bei geöffneter App, aber nicht bei geschlossener App.</string>
+    <string name="nfc_write_failed_cta">Trotzdem verknüpfen</string>
+    <string name="nfc_write_failed_retry">Erneut versuchen</string>
 </resources>

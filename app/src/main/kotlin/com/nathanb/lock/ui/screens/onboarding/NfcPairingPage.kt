@@ -41,6 +41,8 @@ import com.nathanb.lock.ui.theme.LockTheme
 internal fun NfcPairingPage(
     isSuccess: Boolean = false,
     writeInterrupted: Boolean = false,
+    writeExhausted: Boolean = false,
+    onPairAnyway: () -> Unit = {},
     onSkip: () -> Unit,
     onSuccessAnimationEnd: (() -> Unit)? = null,
 ) {
@@ -174,7 +176,13 @@ internal fun NfcPairingPage(
             title = if (isSuccess) stringResource(R.string.nfc_tags_paired_success) else stringResource(R.string.onboarding_nfc_waiting),
             subtitle = if (isSuccess) stringResource(R.string.nfc_tags_paired_success_subtitle) else stringResource(R.string.onboarding_nfc_hint),
             isSuccess = isSuccess,
-            warning = if (writeInterrupted) stringResource(R.string.nfc_write_interrupted) else null,
+            warning = when {
+                writeExhausted -> stringResource(R.string.nfc_write_failed_body)
+                writeInterrupted -> stringResource(R.string.nfc_write_interrupted)
+                else -> null
+            },
+            secondaryLabel = if (writeExhausted) stringResource(R.string.nfc_write_failed_cta) else null,
+            onSecondaryClick = onPairAnyway,
             onSuccessAnimationEnd = onSuccessAnimationEnd,
         )
 

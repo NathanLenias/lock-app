@@ -179,6 +179,35 @@ class NfcManagerTest {
         assertFalse(repository.getLockState().isLocked) // rewriting never locks
     }
 
+    @Test
+    fun `write failures accumulate then reset on success`() = testScope.runTest {
+        repository.createProfile("Std", listOf("com.a"))
+        nfc.enablePairingMode()
+
+        repeat(NfcManager.MAX_WRITE_RETRIES) {
+            nfc.handleScan("U1") { NdefWriteResult.TRANSIENT_FAILURE }
+        }
+        // The UI can now offer "pair anyway".
+        assertEquals(NfcManager.MAX_WRITE_RETRIES, nfc.consecutiveWriteFailures())
+
+        // Pairing mode is still on: the tag can still be written on a later contact.
+        nfc.handleScan("U1") { NdefWriteResult.SUCCESS }
+        assertEquals(0, nfc.consecutiveWriteFailures())
+    }
+
+    @Test
+    fun `forcePairWithoutWrite ends pairing mode`() = testScope.runTest {
+        val p = repository.createProfile("Std", listOf("com.a"))
+        nfc.enablePairingMode()
+        nfc.handleScan("U1") { NdefWriteResult.TRANSIENT_FAILURE }
+
+        nfc.forcePairWithoutWrite()
+        repository.addNfcTag("U1", "Tag", p)
+
+        // Pairing consumed: the tag toggles normally again (no grace period was armed).
+        assertTrue(nfc.handleScan("U1") { NdefWriteResult.SUCCESS } is NfcResult.Started)
+    }
+
     private companion object {
         const val PAIRING_GRACE_TEST_MS = 3_000L
     }

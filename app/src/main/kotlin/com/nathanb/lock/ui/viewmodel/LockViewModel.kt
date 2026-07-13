@@ -333,8 +333,25 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     private val _pairingWriteResult = MutableStateFlow<NdefWriteResult?>(null)
     val pairingWriteResult: StateFlow<NdefWriteResult?> = _pairingWriteResult.asStateFlow()
 
+    /**
+     * UID of the tag whose write keeps failing, and whether we've given up on writing it
+     * ([NfcManager.MAX_WRITE_RETRIES] failures in a row) — the UI then offers to pair anyway.
+     */
+    private val _pairingWriteExhaustedUid = MutableStateFlow<String?>(null)
+    val pairingWriteExhaustedUid: StateFlow<String?> = _pairingWriteExhaustedUid.asStateFlow()
+
     fun clearPairingWriteResult() {
         _pairingWriteResult.value = null
+        _pairingWriteExhaustedUid.value = null
+    }
+
+    /** User accepted an unwritable tag: pair it anyway (works only while the app is open). */
+    fun pairAnywayWithoutWrite() {
+        val uid = _pairingWriteExhaustedUid.value ?: return
+        nfcManager.forcePairWithoutWrite()
+        _pairingWriteExhaustedUid.value = null
+        _pairingWriteResult.value = NdefWriteResult.WRITE_PROTECTED
+        _pendingPairingUid.value = uid
     }
 
     private val _nfcEvents = MutableSharedFlow<NfcResult>()
@@ -409,8 +426,13 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                 is NfcResult.TagPaired -> {
                     _pairingWriteResult.value = result.writeResult
                     // A transient failure keeps the pairing screen waiting for a retry:
-                    // don't hand the tag over for naming/confirmation yet.
-                    if (result.writeResult != NdefWriteResult.TRANSIENT_FAILURE) {
+                    // don't hand the tag over for naming/confirmation yet. After too many
+                    // failures in a row, let the UI offer pairing without the write.
+                    if (result.writeResult == NdefWriteResult.TRANSIENT_FAILURE) {
+                        _pairingWriteExhaustedUid.value = result.uid
+                            .takeIf { nfcManager.consecutiveWriteFailures() >= NfcManager.MAX_WRITE_RETRIES }
+                    } else {
+                        _pairingWriteExhaustedUid.value = null
                         _pendingPairingUid.value = result.uid
                     }
                 }
@@ -612,19 +634,19 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     val inAppCardShownThisLaunch: StateFlow<Boolean> = _inAppCardShownThisLaunch.asStateFlow()
 
     fun enableNfcPairing() {
-        _pairingWriteResult.value = null
+        clearPairingWriteResult()
         nfcManager.enablePairingMode()
     }
 
     /** Repair path: rewrite the routing data on an already-paired tag. */
     fun startTagRewrite(uid: String) {
-        _pairingWriteResult.value = null
+        clearPairingWriteResult()
         nfcManager.enableRewriteMode(uid)
     }
 
     fun cancelTagRewrite() {
         nfcManager.disableRewriteMode()
-        _pairingWriteResult.value = null
+        clearPairingWriteResult()
     }
 
     fun confirmPairing(name: String) {

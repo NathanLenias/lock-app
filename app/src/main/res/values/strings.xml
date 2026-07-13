@@ -508,4 +508,9 @@
     <string name="nfc_tag_rewrite_done">Tag rewritten</string>
     <string name="nfc_tag_rewrite_done_subtitle">It now works even when Lock is closed.</string>
     <string name="nfc_tag_rewrite_hint">Tag not working when the app is closed? Rewrite it.</string>
+
+    <string name="nfc_write_failed_title">Can\'t write to this tag</string>
+    <string name="nfc_write_failed_body">Writing keeps failing. You can pair it anyway: it will work while Lock is open, but not when the app is closed.</string>
+    <string name="nfc_write_failed_cta">Pair anyway</string>
+    <string name="nfc_write_failed_retry">Try again</string>
 </resources>

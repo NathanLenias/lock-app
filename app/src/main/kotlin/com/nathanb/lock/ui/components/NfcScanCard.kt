@@ -63,6 +63,8 @@ fun NfcScanCard(
     modifier: Modifier = Modifier,
     isSuccess: Boolean = false,
     warning: String? = null,
+    secondaryLabel: String? = null,
+    onSecondaryClick: (() -> Unit)? = null,
     ctaLabel: String? = null,
     onCtaClick: (() -> Unit)? = null,
     onSuccessAnimationEnd: (() -> Unit)? = null,
@@ -238,6 +240,21 @@ fun NfcScanCard(
                         textAlign = TextAlign.Center,
                         lineHeight = 18.sp,
                         modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+
+            // Escape hatch after repeated write failures ("pair anyway").
+            if (secondaryLabel != null && !isSuccess) {
+                androidx.compose.material3.TextButton(
+                    onClick = { onSecondaryClick?.invoke() },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = secondaryLabel,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.primaryDark,
                     )
                 }
             }
