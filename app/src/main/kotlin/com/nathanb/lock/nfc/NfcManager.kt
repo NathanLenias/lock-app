@@ -15,8 +15,25 @@ import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.data.repository.LockRepository
 
+/** Outcome of trying to write our routing data to a tag during pairing. */
+enum class NdefWriteResult {
+    /** Data written: the tag works everywhere, including when the app is closed. */
+    SUCCESS,
+
+    /** Contact lost mid-write (tag moved too soon). Recontact retries automatically. */
+    TRANSIENT_FAILURE,
+
+    /** Tag is write-protected or not NDEF-capable: writing will never succeed. */
+    WRITE_PROTECTED,
+}
+
 sealed interface NfcResult {
-    data class TagPaired(val uid: String, val ndefWritten: Boolean) : NfcResult
+    /**
+     * A tag was presented in pairing mode. [writeResult] tells whether the routing data
+     * could be written. On TRANSIENT_FAILURE the pairing screen keeps waiting so the next
+     * contact retries; SUCCESS / WRITE_PROTECTED are terminal for this tag.
+     */
+    data class TagPaired(val uid: String, val writeResult: NdefWriteResult) : NfcResult
     data class Started(val profileId: Long, val tagName: String?, val isNoEscape: Boolean) : NfcResult
     data class Stopped(val tagName: String?) : NfcResult
     data object IgnoredNoEscapeActive : NfcResult
@@ -26,14 +43,24 @@ sealed interface NfcResult {
 
 class NfcManager(
     private val repository: LockRepository,
+    private val clock: () -> Long = { System.currentTimeMillis() },
 ) {
     companion object {
         private const val TAG = "NfcManager"
         private const val MIME_TYPE = "application/vnd.lock.toggle"
         private const val APP_PACKAGE = "com.nathanb.lock"
+        private const val PAIRING_GRACE_MS = 3_000L
     }
 
     private var isPairingMode = false
+
+    /**
+     * Set when a tag pairs successfully. Within [PAIRING_GRACE_MS], that tag can't toggle a
+     * session: leaving the pairing screen with the tag still near the phone used to fire a
+     * lock session on the rebound.
+     */
+    private var justPairedUid: String? = null
+    private var justPairedAt: Long = 0L
 
     fun enablePairingMode() {
         isPairingMode = true
@@ -41,6 +68,20 @@ class NfcManager(
 
     fun disablePairingMode() {
         isPairingMode = false
+    }
+
+    /**
+     * Rewrite the routing data on an already-paired tag (repair path for tags whose write
+     * failed, that were erased by another app, or that were paired before we wrote NDEF).
+     */
+    private var rewriteUid: String? = null
+
+    fun enableRewriteMode(uid: String) {
+        rewriteUid = uid
+    }
+
+    fun disableRewriteMode() {
+        rewriteUid = null
     }
 
     /**
@@ -85,16 +126,47 @@ class NfcManager(
     /**
      * Process a Tag directly (used by Reader Mode in foreground).
      */
-    suspend fun handleTag(tag: Tag): NfcResult? {
-        val uid = tag.id.toHexString()
+    suspend fun handleTag(tag: Tag): NfcResult? =
+        handleScan(tag.id.toHexString()) { writeNdefToTag(tag) }
+
+    /**
+     * Scan decision tree, independent of the Android [Tag] object so it can be unit-tested.
+     * [write] performs the actual NDEF write and is only invoked when we intend to write.
+     */
+    internal suspend fun handleScan(uid: String, write: () -> NdefWriteResult): NfcResult? {
         if (BuildConfig.DEBUG) Log.d(TAG, "Tag scanned: $uid")
 
-        // Pairing mode — add this tag and write NDEF data
+        // Rewrite mode (repair): only the targeted tag is written, nothing else happens.
+        rewriteUid?.let { target ->
+            if (uid != target) return null
+            val writeResult = write()
+            if (writeResult != NdefWriteResult.TRANSIENT_FAILURE) rewriteUid = null
+            if (BuildConfig.DEBUG) Log.d(TAG, "Tag rewritten: $uid ($writeResult)")
+            return NfcResult.TagPaired(uid, writeResult)
+        }
+
+        // Pairing mode is STICKY: while the pairing screen is up, every contact is a pairing
+        // attempt, never a session toggle. A transient write failure (tag moved too soon) keeps
+        // the mode on, so simply recontacting the tag retries the write.
         if (isPairingMode) {
-            isPairingMode = false
-            val ndefWritten = writeNdefToTag(tag)
-            if (BuildConfig.DEBUG) Log.d(TAG, "Tag paired: $uid (NDEF written: $ndefWritten)")
-            return NfcResult.TagPaired(uid, ndefWritten)
+            val writeResult = write()
+            if (writeResult != NdefWriteResult.TRANSIENT_FAILURE) {
+                isPairingMode = false
+                justPairedUid = uid
+                justPairedAt = clock()
+            }
+            if (BuildConfig.DEBUG) Log.d(TAG, "Tag paired: $uid ($writeResult)")
+            return NfcResult.TagPaired(uid, writeResult)
+        }
+
+        // Grace period: ignore the tag that was just paired (rebound while leaving the screen).
+        val paired = justPairedUid
+        if (paired != null) {
+            if (uid == paired && clock() - justPairedAt < PAIRING_GRACE_MS) {
+                if (BuildConfig.DEBUG) Log.d(TAG, "Tap ignored — pairing grace period")
+                return null
+            }
+            justPairedUid = null
         }
 
         return processKnownTag(uid)
@@ -162,7 +234,7 @@ class NfcManager(
      * 1. A custom MIME record (application/vnd.lock.toggle) — used by Android for intent routing
      * 2. An Android Application Record (AAR) — forces Android to launch Lock specifically
      */
-    private fun writeNdefToTag(tag: Tag): Boolean {
+    private fun writeNdefToTag(tag: Tag): NdefWriteResult {
         val mimeRecord = NdefRecord.createMime(MIME_TYPE, "lock".toByteArray())
         val aarRecord = NdefRecord.createApplicationRecord(APP_PACKAGE)
         val ndefMessage = NdefMessage(arrayOf(mimeRecord, aarRecord))
@@ -171,33 +243,36 @@ class NfcManager(
             val ndef = Ndef.get(tag)
             if (ndef != null) {
                 ndef.connect()
-                if (ndef.isWritable) {
-                    ndef.writeNdefMessage(ndefMessage)
-                    ndef.close()
-                    if (BuildConfig.DEBUG) Log.d(TAG, "NDEF written to formatted tag")
-                    true
-                } else {
+                if (!ndef.isWritable) {
                     ndef.close()
                     if (BuildConfig.DEBUG) Log.w(TAG, "Tag is read-only")
-                    false
+                    return NdefWriteResult.WRITE_PROTECTED
                 }
+                ndef.writeNdefMessage(ndefMessage)
+                ndef.close()
+                if (BuildConfig.DEBUG) Log.d(TAG, "NDEF written to formatted tag")
+                NdefWriteResult.SUCCESS
             } else {
                 // Tag not NDEF-formatted — format it first
                 val formatable = NdefFormatable.get(tag)
-                if (formatable != null) {
-                    formatable.connect()
-                    formatable.format(ndefMessage)
-                    formatable.close()
-                    if (BuildConfig.DEBUG) Log.d(TAG, "NDEF written to newly formatted tag")
-                    true
-                } else {
-                    if (BuildConfig.DEBUG) Log.w(TAG, "Tag does not support NDEF")
-                    false
-                }
+                    ?: run {
+                        if (BuildConfig.DEBUG) Log.w(TAG, "Tag does not support NDEF")
+                        return NdefWriteResult.WRITE_PROTECTED
+                    }
+                formatable.connect()
+                formatable.format(ndefMessage)
+                formatable.close()
+                if (BuildConfig.DEBUG) Log.d(TAG, "NDEF written to newly formatted tag")
+                NdefWriteResult.SUCCESS
             }
+        } catch (e: android.nfc.FormatException) {
+            // The tag rejected the message itself (bad format, too small): retrying won't help.
+            if (BuildConfig.DEBUG) Log.e(TAG, "NDEF format rejected: ${e.message}", e)
+            NdefWriteResult.WRITE_PROTECTED
         } catch (e: Exception) {
-            if (BuildConfig.DEBUG) Log.e(TAG, "Failed to write NDEF: ${e.message}", e)
-            false
+            // IOException & co: contact was lost mid-write. Recontacting the tag retries.
+            if (BuildConfig.DEBUG) Log.e(TAG, "NDEF write interrupted: ${e.message}", e)
+            NdefWriteResult.TRANSIENT_FAILURE
         }
     }
 

@@ -52,6 +52,9 @@ import kotlinx.coroutines.delay
  *
  * Supports a success animation: circle draws → fills green → checkmark appears.
  * Set [isSuccess] to true to trigger it; [onSuccessAnimationEnd] fires when done.
+ *
+ * [warning] shows an amber banner under the texts (used when a tag write was interrupted:
+ * the card keeps waiting, and recontacting the tag retries the write).
  */
 @Composable
 fun NfcScanCard(
@@ -59,6 +62,7 @@ fun NfcScanCard(
     subtitle: String,
     modifier: Modifier = Modifier,
     isSuccess: Boolean = false,
+    warning: String? = null,
     ctaLabel: String? = null,
     onCtaClick: (() -> Unit)? = null,
     onSuccessAnimationEnd: (() -> Unit)? = null,
@@ -217,6 +221,26 @@ fun NfcScanCard(
                 textAlign = TextAlign.Center,
                 lineHeight = 20.sp,
             )
+
+            // Write interrupted: tell the user to hold still — the next contact retries.
+            if (warning != null && !isSuccess) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFFFF1E6), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                ) {
+                    Text(
+                        text = warning,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFFEF6C00),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 18.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
 
             // Optional CTA (hidden during success)
             if (ctaLabel != null && !isSuccess) {

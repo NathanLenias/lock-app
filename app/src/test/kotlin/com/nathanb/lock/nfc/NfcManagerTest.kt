@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +28,7 @@ class NfcManagerTest {
 
     private lateinit var repository: LockRepository
     private lateinit var nfc: NfcManager
+    private var now = 1_000_000L
 
     @Before
     fun setup() {
@@ -42,7 +44,7 @@ class NfcManagerTest {
             scheduleProfileDao = com.nathanb.lock.fake.FakeScheduleProfileDao(),
             dataStore = dataStore,
         )
-        nfc = NfcManager(repository)
+        nfc = NfcManager(repository, clock = { now })
     }
 
     @After fun teardown() = repository.close()
@@ -112,5 +114,72 @@ class NfcManagerTest {
     @Test
     fun `no tags at all returns Error`() = testScope.runTest {
         assertTrue(nfc.processKnownTag("U1") is NfcResult.Error)
+    }
+
+    // --- Sticky pairing mode + write outcomes ---
+
+    @Test
+    fun `transient write failure keeps pairing mode on for a retry`() = testScope.runTest {
+        repository.createProfile("Std", listOf("com.a"))
+        nfc.enablePairingMode()
+
+        val first = nfc.handleScan("U1") { NdefWriteResult.TRANSIENT_FAILURE }
+        assertEquals(NfcResult.TagPaired("U1", NdefWriteResult.TRANSIENT_FAILURE), first)
+
+        // Recontacting the tag retries the write instead of toggling a session.
+        val retry = nfc.handleScan("U1") { NdefWriteResult.SUCCESS }
+        assertEquals(NfcResult.TagPaired("U1", NdefWriteResult.SUCCESS), retry)
+    }
+
+    @Test
+    fun `write-protected tag still pairs and ends pairing mode`() = testScope.runTest {
+        repository.createProfile("Std", listOf("com.a"))
+        nfc.enablePairingMode()
+
+        val result = nfc.handleScan("U1") { NdefWriteResult.WRITE_PROTECTED }
+
+        assertEquals(NfcResult.TagPaired("U1", NdefWriteResult.WRITE_PROTECTED), result)
+        // Pairing mode consumed: a later scan (past grace) is a normal toggle.
+        repository.addNfcTag("U1", "Tag")
+        now += 5_000L
+        assertTrue(nfc.handleScan("U1") { NdefWriteResult.SUCCESS } is NfcResult.Started)
+    }
+
+    @Test
+    fun `tag bouncing right after pairing does not start a session`() = testScope.runTest {
+        val p = repository.createProfile("Std", listOf("com.a"))
+        nfc.enablePairingMode()
+        nfc.handleScan("U1") { NdefWriteResult.SUCCESS }
+        repository.addNfcTag("U1", "Tag", p)
+
+        // Rebound within the grace period: ignored.
+        now += 500L
+        assertNull(nfc.handleScan("U1") { NdefWriteResult.SUCCESS })
+        assertFalse(repository.getLockState().isLocked)
+
+        // Past the grace period, the tag behaves normally again.
+        now += PAIRING_GRACE_TEST_MS
+        assertTrue(nfc.handleScan("U1") { NdefWriteResult.SUCCESS } is NfcResult.Started)
+        assertTrue(repository.getLockState().isLocked)
+    }
+
+    @Test
+    fun `rewrite mode only writes the targeted tag and never toggles`() = testScope.runTest {
+        val p = repository.createProfile("Std", listOf("com.a"))
+        repository.addNfcTag("U1", "Tag", p)
+        repository.addNfcTag("U2", "Other", p)
+
+        nfc.enableRewriteMode("U1")
+        // A different tag is ignored entirely (no session started).
+        assertNull(nfc.handleScan("U2") { NdefWriteResult.SUCCESS })
+        assertFalse(repository.getLockState().isLocked)
+
+        val result = nfc.handleScan("U1") { NdefWriteResult.SUCCESS }
+        assertEquals(NfcResult.TagPaired("U1", NdefWriteResult.SUCCESS), result)
+        assertFalse(repository.getLockState().isLocked) // rewriting never locks
+    }
+
+    private companion object {
+        const val PAIRING_GRACE_TEST_MS = 3_000L
     }
 }

@@ -70,7 +70,9 @@ import com.nathanb.lock.R
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.ProfileType
+import com.nathanb.lock.nfc.NdefWriteResult
 import com.nathanb.lock.nfc.NfcResult
+import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.components.NfcScanCard
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
@@ -100,23 +102,40 @@ fun NfcTagsScreen(
     var isRenaming by remember { mutableStateOf(false) }
     var showHelp by remember { mutableStateOf(false) }
     var pickerForTag by remember { mutableStateOf<NfcTag?>(null) }
+    var rewritingTag by remember { mutableStateOf<NfcTag?>(null) }
+    var showWriteProtectedSheet by remember { mutableStateOf(false) }
+    val writeResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.nfcEvents.collect { result ->
-            if (result is NfcResult.TagPaired) {
-                val existing = tags.find { it.uid == result.uid }
-                if (existing != null) {
-                    isScanning = false
-                    Toast.makeText(context, context.getString(R.string.nfc_tags_already_exists, existing.name.take(50)), Toast.LENGTH_SHORT).show()
+            if (result !is NfcResult.TagPaired) return@collect
+            // Write interrupted: stay on the card, the next contact retries (NfcScanCard
+            // shows the warning via writeResult).
+            if (result.writeResult == NdefWriteResult.TRANSIENT_FAILURE) return@collect
+
+            if (result.writeResult == NdefWriteResult.WRITE_PROTECTED) {
+                showWriteProtectedSheet = true
+            }
+
+            // Repair flow: the tag already exists, we only rewrote its routing data.
+            if (rewritingTag != null) {
+                rewritingTag = null
+                isPairingSuccess = true
+                return@collect
+            }
+
+            val existing = tags.find { it.uid == result.uid }
+            if (existing != null) {
+                isScanning = false
+                Toast.makeText(context, context.getString(R.string.nfc_tags_already_exists, existing.name.take(50)), Toast.LENGTH_SHORT).show()
+            } else {
+                val defaultName = if (tags.isEmpty()) context.getString(R.string.nfc_tags_default_name) else context.getString(R.string.nfc_tags_default_name_n, tags.size + 1)
+                if (preselectProfileId != null) {
+                    viewModel.confirmPairingWithProfile(result.uid, defaultName, preselectProfileId)
                 } else {
-                    val defaultName = if (tags.isEmpty()) context.getString(R.string.nfc_tags_default_name) else context.getString(R.string.nfc_tags_default_name_n, tags.size + 1)
-                    if (preselectProfileId != null) {
-                        viewModel.confirmPairingWithProfile(result.uid, defaultName, preselectProfileId)
-                    } else {
-                        viewModel.confirmPairingWithName(result.uid, defaultName)
-                    }
-                    isPairingSuccess = true
+                    viewModel.confirmPairingWithName(result.uid, defaultName)
                 }
+                isPairingSuccess = true
             }
         }
     }
@@ -181,15 +200,40 @@ fun NfcTagsScreen(
         ) {
             item { Spacer(Modifier.height(4.dp)) }
 
-            if (isScanning || isPairingSuccess) {
+            val rewriting = rewritingTag
+            if (isScanning || isPairingSuccess || rewriting != null) {
                 item {
                     NfcScanCard(
-                        title = if (isPairingSuccess) stringResource(R.string.nfc_tags_paired) else stringResource(R.string.nfc_tags_waiting),
-                        subtitle = if (isPairingSuccess) stringResource(R.string.nfc_tags_paired_subtitle) else stringResource(R.string.nfc_tags_waiting_subtitle),
+                        title = when {
+                            isPairingSuccess && rewriting != null -> stringResource(R.string.nfc_tag_rewrite_done)
+                            isPairingSuccess -> stringResource(R.string.nfc_tags_paired)
+                            rewriting != null -> stringResource(R.string.nfc_tag_rewrite_waiting)
+                            else -> stringResource(R.string.nfc_tags_waiting)
+                        },
+                        subtitle = when {
+                            isPairingSuccess && rewriting != null -> stringResource(R.string.nfc_tag_rewrite_done_subtitle)
+                            isPairingSuccess -> stringResource(R.string.nfc_tags_paired_subtitle)
+                            rewriting != null -> stringResource(R.string.nfc_tag_rewrite_subtitle, rewriting.name)
+                            else -> stringResource(R.string.nfc_tags_waiting_subtitle)
+                        },
                         isSuccess = isPairingSuccess,
+                        warning = if (writeResult == NdefWriteResult.TRANSIENT_FAILURE) {
+                            stringResource(R.string.nfc_write_interrupted)
+                        } else {
+                            null
+                        },
                         ctaLabel = if (!isPairingSuccess) stringResource(R.string.action_cancel) else null,
-                        onCtaClick = { isScanning = false; viewModel.nfcManager.disablePairingMode() },
-                        onSuccessAnimationEnd = { isPairingSuccess = false; isScanning = false },
+                        onCtaClick = {
+                            isScanning = false
+                            rewritingTag = null
+                            viewModel.nfcManager.disablePairingMode()
+                            viewModel.cancelTagRewrite()
+                        },
+                        onSuccessAnimationEnd = {
+                            isPairingSuccess = false
+                            isScanning = false
+                            viewModel.clearPairingWriteResult()
+                        },
                     )
                 }
             }
@@ -208,11 +252,24 @@ fun NfcTagsScreen(
                         isRenaming = true
                         showNameDialog = true
                     },
+                    onRewrite = {
+                        rewritingTag = tag
+                        viewModel.startTagRewrite(tag.uid)
+                    },
                     onDelete = { viewModel.removeNfcTag(tag.uid) },
                 )
             }
 
             if (tags.isNotEmpty()) {
+                item {
+                    Text(
+                        text = stringResource(R.string.nfc_tag_rewrite_hint),
+                        fontFamily = SatoshiFamily,
+                        fontSize = 12.sp,
+                        color = colors.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                    )
+                }
                 item {
                     Row(
                         modifier = Modifier
@@ -293,6 +350,15 @@ fun NfcTagsScreen(
         TagHelpSheet(onDismiss = { showHelp = false })
     }
 
+    if (showWriteProtectedSheet) {
+        LockBottomSheet(
+            onDismiss = { showWriteProtectedSheet = false },
+            title = stringResource(R.string.nfc_write_protected_title),
+            body = stringResource(R.string.nfc_write_protected_body),
+            icon = Icons.Outlined.Lock,
+        )
+    }
+
     pickerForTag?.let { tag ->
         TagProfilePickerSheet(
             tag = tag,
@@ -311,6 +377,7 @@ private fun TagCard(
     profileIsNoEscape: Boolean,
     onProfileClick: () -> Unit,
     onRename: () -> Unit,
+    onRewrite: () -> Unit,
     onDelete: () -> Unit,
 ) {
     val colors = LockTheme.colors
@@ -348,6 +415,10 @@ private fun TagCard(
         }
         IconButton(onClick = onRename) {
             Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.nfc_tags_rename_cd), tint = colors.onSurfaceVariant, modifier = Modifier.size(20.dp))
+        }
+        // Repair: rewrite the routing data (tag erased by another app, write once failed…).
+        IconButton(onClick = onRewrite) {
+            Icon(Icons.Outlined.Sync, contentDescription = stringResource(R.string.nfc_tag_rewrite), tint = colors.onSurfaceVariant, modifier = Modifier.size(20.dp))
         }
         IconButton(onClick = onDelete) {
             Icon(Icons.Outlined.DeleteOutline, contentDescription = stringResource(R.string.nfc_tags_delete_cd), tint = colors.lockedPrimary, modifier = Modifier.size(20.dp))

@@ -106,7 +106,7 @@
     <string name="nfc_tags_paired">Tag associé !</string>
     <string name="nfc_tags_paired_subtitle">Votre tag NFC a été ajouté avec succès.</string>
     <string name="nfc_tags_waiting">En attente du tag NFC…</string>
-    <string name="nfc_tags_waiting_subtitle">Approchez votre tag NFC à l\'arrière du téléphone.</string>
+    <string name="nfc_tags_waiting_subtitle">Maintenez votre tag NFC à l\'arrière du téléphone jusqu\'à la confirmation.</string>
     <string name="nfc_tags_rename_title">Renommer le tag</string>
     <string name="nfc_tags_name_title">Nommer ce tag</string>
     <string name="nfc_tags_name_label">Nom</string>
@@ -495,4 +495,15 @@
     <string-array name="schedule_day_initials">
         <item>L</item><item>M</item><item>M</item><item>J</item><item>V</item><item>S</item><item>D</item>
     </string-array>
+
+    <!-- Écriture des tags NFC -->
+    <string name="nfc_write_interrupted">L\'écriture a été interrompue. Maintenez le tag sans bouger pour réessayer.</string>
+    <string name="nfc_write_protected_title">Tag protégé en écriture</string>
+    <string name="nfc_write_protected_body">Ce tag ne peut pas stocker les données de Lock : il fonctionnera uniquement quand l\'app est ouverte. Il a tout de même été associé.</string>
+    <string name="nfc_tag_rewrite">Réécrire le tag</string>
+    <string name="nfc_tag_rewrite_waiting">Réécriture du tag…</string>
+    <string name="nfc_tag_rewrite_subtitle">Maintenez %1$s à l\'arrière du téléphone jusqu\'à la confirmation.</string>
+    <string name="nfc_tag_rewrite_done">Tag réécrit</string>
+    <string name="nfc_tag_rewrite_done_subtitle">Il fonctionne désormais même quand Lock est fermée.</string>
+    <string name="nfc_tag_rewrite_hint">Le tag ne marche pas app fermée ? Réécrivez-le.</string>
 </resources>

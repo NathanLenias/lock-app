@@ -28,6 +28,7 @@ import com.nathanb.lock.data.model.Schedule
 import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
 import com.nathanb.lock.data.repository.LockRepository
+import com.nathanb.lock.nfc.NdefWriteResult
 import com.nathanb.lock.nfc.NfcManager
 import com.nathanb.lock.nfc.NfcResult
 import com.nathanb.lock.service.LockForegroundService
@@ -325,6 +326,17 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     private val _pendingPairingUid = MutableStateFlow<String?>(null)
     val pendingPairingUid: StateFlow<String?> = _pendingPairingUid.asStateFlow()
 
+    /**
+     * Write outcome of the last pairing attempt. TRANSIENT_FAILURE means the pairing screen
+     * must stay up ("hold the tag still") — the next contact retries automatically.
+     */
+    private val _pairingWriteResult = MutableStateFlow<NdefWriteResult?>(null)
+    val pairingWriteResult: StateFlow<NdefWriteResult?> = _pairingWriteResult.asStateFlow()
+
+    fun clearPairingWriteResult() {
+        _pairingWriteResult.value = null
+    }
+
     private val _nfcEvents = MutableSharedFlow<NfcResult>()
     val nfcEvents = _nfcEvents.asSharedFlow()
 
@@ -395,7 +407,12 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                     LockForegroundService.stop(getApplication())
                 }
                 is NfcResult.TagPaired -> {
-                    _pendingPairingUid.value = result.uid
+                    _pairingWriteResult.value = result.writeResult
+                    // A transient failure keeps the pairing screen waiting for a retry:
+                    // don't hand the tag over for naming/confirmation yet.
+                    if (result.writeResult != NdefWriteResult.TRANSIENT_FAILURE) {
+                        _pendingPairingUid.value = result.uid
+                    }
                 }
                 else -> {} // IgnoredNoEscapeActive / UnknownTag / Error -> no state change
             }
@@ -595,7 +612,19 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     val inAppCardShownThisLaunch: StateFlow<Boolean> = _inAppCardShownThisLaunch.asStateFlow()
 
     fun enableNfcPairing() {
+        _pairingWriteResult.value = null
         nfcManager.enablePairingMode()
+    }
+
+    /** Repair path: rewrite the routing data on an already-paired tag. */
+    fun startTagRewrite(uid: String) {
+        _pairingWriteResult.value = null
+        nfcManager.enableRewriteMode(uid)
+    }
+
+    fun cancelTagRewrite() {
+        nfcManager.disableRewriteMode()
+        _pairingWriteResult.value = null
     }
 
     fun confirmPairing(name: String) {

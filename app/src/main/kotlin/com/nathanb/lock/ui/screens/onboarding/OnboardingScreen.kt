@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.SetupStatus
+import com.nathanb.lock.nfc.NdefWriteResult
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import com.nathanb.lock.util.PermissionHelper
@@ -44,6 +45,7 @@ fun OnboardingScreen(
     val scope = rememberCoroutineScope()
 
     val pendingUid by viewModel.pendingPairingUid.collectAsStateWithLifecycle()
+    val pairingWriteResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
     val nfcTags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val profiles by viewModel.profiles.collectAsStateWithLifecycle()
     val lockState by viewModel.lockState.collectAsStateWithLifecycle()
@@ -121,6 +123,8 @@ fun OnboardingScreen(
                 )
                 5 -> NfcPairingPage(
                     isSuccess = nfcPairingSuccess,
+                    // Write interrupted: the page keeps waiting, recontacting the tag retries.
+                    writeInterrupted = pairingWriteResult == NdefWriteResult.TRANSIENT_FAILURE,
                     onSkip = ::goNext,
                     onSuccessAnimationEnd = ::goNext,
                 )
