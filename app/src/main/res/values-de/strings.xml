@@ -457,11 +457,7 @@
     <string name="inapp_changelog_title">Neu in Lock</string>
     <string name="inapp_changelog_cta">Entdecken</string>
     <string name="inapp_changelog_1_title">Zeitpläne</string>
-    <string name="inapp_changelog_1_body">Sperren Sie Ihre Profile automatisch, an den Tagen und Uhrzeiten Ihrer Wahl.</string>
-    <string name="inapp_changelog_2_title">Mehrere Profile pro Zeitfenster</string>
-    <string name="inapp_changelog_2_body">Ein Zeitplan kann die Apps mehrerer Profile kombinieren.</string>
-    <string name="inapp_changelog_3_title">Unterstützung über Ko-fi</string>
-    <string name="inapp_changelog_3_body">Sie können das Projekt jetzt per PayPal oder Karte unterstützen.</string>
+    <string name="inapp_changelog_1_body">Starten Sie Ihre Lock-Sitzungen automatisch, wann immer Sie möchten.</string>
 
     <!-- Zeitpläne -->
     <string name="schedule_settings_entry">Zeitpläne</string>
