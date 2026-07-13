@@ -8,6 +8,7 @@ import com.nathanb.lock.data.database.MIGRATION_2_3
 import com.nathanb.lock.data.database.MIGRATION_3_4
 import com.nathanb.lock.data.database.MIGRATION_4_5
 import com.nathanb.lock.data.repository.LockRepository
+import com.nathanb.lock.schedule.AndroidScheduleEffects
 import com.nathanb.lock.schedule.ScheduleManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +49,7 @@ class LockApplication : Application() {
             database = database,
         )
 
-        scheduleManager = ScheduleManager(this, repository)
+        scheduleManager = ScheduleManager(repository, AndroidScheduleEffects(this))
         // Any session end (NFC, manual, timeout, FGS...) re-evaluates the windows.
         repository.onSessionEnded = { scheduleManager.evaluateAndRearm() }
         // Startup safety net: covers missed inexact alarms and process death.

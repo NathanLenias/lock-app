@@ -7,6 +7,7 @@ import com.nathanb.lock.LockApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Wakes the schedule engine on window boundaries (explicit alarm PendingIntent) and on
@@ -31,7 +32,11 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         val app = context.applicationContext as LockApplication
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                app.scheduleManager.evaluateAndRearm()
+                // Hard ceiling: whatever happens inside, hand control back to Android
+                // well before the broadcast ANR limit.
+                withTimeoutOrNull(RECEIVER_TIMEOUT_MS) {
+                    app.scheduleManager.evaluateAndRearm()
+                }
             } finally {
                 pendingResult.finish()
             }
@@ -40,5 +45,6 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
 
     companion object {
         const val ACTION_WINDOW_BOUNDARY = "com.nathanb.lock.action.SCHEDULE_WINDOW_BOUNDARY"
+        private const val RECEIVER_TIMEOUT_MS = 8_000L
     }
 }

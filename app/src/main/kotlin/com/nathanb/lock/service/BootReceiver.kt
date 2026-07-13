@@ -33,7 +33,10 @@ class BootReceiver : BroadcastReceiver() {
                 }
 
                 // Alarms don't survive a reboot: re-evaluate windows and re-arm the next boundary.
-                app.scheduleManager.evaluateAndRearm()
+                // Timeout ceiling: never hold the broadcast past the ANR limit.
+                kotlinx.coroutines.withTimeoutOrNull(8_000L) {
+                    app.scheduleManager.evaluateAndRearm()
+                }
             } finally {
                 pendingResult.finish()
             }

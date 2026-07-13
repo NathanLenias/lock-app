@@ -202,13 +202,18 @@ class LockRepository(
     }
 
     /**
-     * Invoked after every session end (any reason). LockApplication wires it to the
-     * ScheduleManager so windows are re-evaluated immediately (e.g. a window takes over
-     * right after a no-escape session expires). Nullable: unit tests leave it unset.
+     * Invoked after a session ends. LockApplication wires it to the ScheduleManager so
+     * windows are re-evaluated immediately (e.g. a window takes over right after a
+     * no-escape session expires). Nullable: unit tests leave it unset.
      */
     var onSessionEnded: (suspend () -> Unit)? = null
 
-    suspend fun endLockSession(reason: String) {
+    /**
+     * [reevaluate] MUST be false when the caller IS the schedule engine: it is already
+     * mid-evaluation and will arm the next boundary itself. Re-invoking it through the
+     * hook from inside would deadlock its run guard (the "frozen engine" ANR).
+     */
+    suspend fun endLockSession(reason: String, reevaluate: Boolean = true) {
         val now = System.currentTimeMillis()
         val prefs = dataStore.data.first()
         val sessionId = prefs[Keys.ACTIVE_SESSION_ID]
@@ -239,7 +244,7 @@ class LockRepository(
                 it[Keys.CONSUMED_WINDOWS] = encodeStringSet(current + consumedToAdd)
             }
         }
-        onSessionEnded?.invoke()
+        if (reevaluate) onSessionEnded?.invoke()
     }
 
     // --- Scheduled sessions (started by ScheduleManager, never from the UI) ---
