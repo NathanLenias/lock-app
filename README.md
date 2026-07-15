@@ -66,7 +66,7 @@ NFC features need a physical device with NFC hardware (min SDK 33 / Android 13).
 
 ## Support
 
-Lock is free, without ads or tracking. If it helps you focus, you can [buy me a coffee](https://buymeacoffee.com/nathanpmlen) ☕
+Lock is free, without ads or tracking. If it helps you focus, you can [buy me a coffee](https://buymeacoffee.com/nathanpmlen) ☕ or offer a [ko-fi](https://ko-fi.com/nathanpmdev)
 
 ## Related projects
 
