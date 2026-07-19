@@ -456,8 +456,8 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">Schedules</string>
-    <string name="inapp_changelog_1_body">Start your Lock sessions automatically, whenever you want.</string>
+    <string name="inapp_changelog_1_title">Minor bug fixes</string>
+    <string name="inapp_changelog_1_body">This version improves stability and fixes several small display issues.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
