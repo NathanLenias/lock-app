@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -95,98 +97,112 @@ internal fun NfcPairingPage(
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.weight(1f))
-
-        // Large NFC visual (160dp concentric circles)
+        // Scrollable content, centered when it fits — the skip link below stays
+        // pinned and reachable even at large font scales.
         Box(
-            modifier = Modifier.size(160.dp),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            // Outer ring — filled + stroke
-            Box(
-                modifier = Modifier
-                    .size(160.dp)
-                    .scale(outerScale)
-                    .alpha(outerAlpha)
-                    .background(colors.primary.copy(alpha = 0.06f), CircleShape)
-                    .drawBehind {
-                        drawCircle(
-                            color = colors.primary.copy(alpha = 0.12f),
-                            radius = size.minDimension / 2,
-                            style = Stroke(width = 1.dp.toPx()),
-                        )
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
+
+                // Large NFC visual (160dp concentric circles)
+                Box(
+                    modifier = Modifier.size(160.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    // Outer ring — filled + stroke
+                    Box(
+                        modifier = Modifier
+                            .size(160.dp)
+                            .scale(outerScale)
+                            .alpha(outerAlpha)
+                            .background(colors.primary.copy(alpha = 0.06f), CircleShape)
+                            .drawBehind {
+                                drawCircle(
+                                    color = colors.primary.copy(alpha = 0.12f),
+                                    radius = size.minDimension / 2,
+                                    style = Stroke(width = 1.dp.toPx()),
+                                )
+                            },
+                    )
+                    // Middle ring — filled + stroke
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .scale(midScale)
+                            .alpha(midAlpha)
+                            .background(colors.primary.copy(alpha = 0.08f), CircleShape)
+                            .drawBehind {
+                                drawCircle(
+                                    color = colors.primary.copy(alpha = 0.19f),
+                                    radius = size.minDimension / 2,
+                                    style = Stroke(width = 1.dp.toPx()),
+                                )
+                            },
+                    )
+                    // Inner circle — filled
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .background(colors.primary.copy(alpha = 0.10f), CircleShape),
+                    )
+                    // NFC icon
+                    Icon(
+                        painter = painterResource(R.drawable.ic_contactless),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                        tint = colors.primary,
+                    )
+                }
+
+                Spacer(Modifier.height(32.dp))
+
+                // Title
+                Text(
+                    text = stringResource(R.string.onboarding_nfc_title),
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+
+                // Description
+                Text(
+                    text = stringResource(R.string.onboarding_nfc_desc),
+                    fontSize = 14.sp,
+                    color = colors.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(Modifier.height(40.dp))
+
+                // NFC scan card
+                NfcScanCard(
+                    title = if (isSuccess) stringResource(R.string.nfc_tags_paired_success) else stringResource(R.string.onboarding_nfc_waiting),
+                    subtitle = if (isSuccess) stringResource(R.string.nfc_tags_paired_success_subtitle) else stringResource(R.string.onboarding_nfc_hint),
+                    isSuccess = isSuccess,
+                    warning = when {
+                        writeExhausted -> stringResource(R.string.nfc_write_failed_body)
+                        writeInterrupted -> stringResource(R.string.nfc_write_interrupted)
+                        else -> null
                     },
-            )
-            // Middle ring — filled + stroke
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .scale(midScale)
-                    .alpha(midAlpha)
-                    .background(colors.primary.copy(alpha = 0.08f), CircleShape)
-                    .drawBehind {
-                        drawCircle(
-                            color = colors.primary.copy(alpha = 0.19f),
-                            radius = size.minDimension / 2,
-                            style = Stroke(width = 1.dp.toPx()),
-                        )
-                    },
-            )
-            // Inner circle — filled
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .background(colors.primary.copy(alpha = 0.10f), CircleShape),
-            )
-            // NFC icon
-            Icon(
-                painter = painterResource(R.drawable.ic_contactless),
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = colors.primary,
-            )
+                    secondaryLabel = if (writeExhausted) stringResource(R.string.nfc_write_failed_cta) else null,
+                    onSecondaryClick = onPairAnyway,
+                    onSuccessAnimationEnd = onSuccessAnimationEnd,
+                )
+
+                Spacer(Modifier.height(24.dp))
+            }
         }
-
-        Spacer(Modifier.height(32.dp))
-
-        // Title
-        Text(
-            text = stringResource(R.string.onboarding_nfc_title),
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = colors.onSurface,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(12.dp))
-
-        // Description
-        Text(
-            text = stringResource(R.string.onboarding_nfc_desc),
-            fontSize = 14.sp,
-            color = colors.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            lineHeight = 22.sp,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(Modifier.height(40.dp))
-
-        // NFC scan card
-        NfcScanCard(
-            title = if (isSuccess) stringResource(R.string.nfc_tags_paired_success) else stringResource(R.string.onboarding_nfc_waiting),
-            subtitle = if (isSuccess) stringResource(R.string.nfc_tags_paired_success_subtitle) else stringResource(R.string.onboarding_nfc_hint),
-            isSuccess = isSuccess,
-            warning = when {
-                writeExhausted -> stringResource(R.string.nfc_write_failed_body)
-                writeInterrupted -> stringResource(R.string.nfc_write_interrupted)
-                else -> null
-            },
-            secondaryLabel = if (writeExhausted) stringResource(R.string.nfc_write_failed_cta) else null,
-            onSecondaryClick = onPairAnyway,
-            onSuccessAnimationEnd = onSuccessAnimationEnd,
-        )
-
-        Spacer(Modifier.weight(1f))
 
         // Skip
         Text(

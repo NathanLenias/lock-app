@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Nfc
 import androidx.compose.material.icons.rounded.Shield
@@ -43,44 +45,58 @@ internal fun HowItWorksPage(
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.weight(1f))
+        // Scrollable content, centered when it fits — the CTA below stays pinned
+        // and reachable even at large font scales.
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
 
-        Text(
-            text = stringResource(R.string.onboarding_how_title),
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = colors.onSurface,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.onboarding_how_subtitle),
-            fontSize = 14.sp,
-            color = colors.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
+                Text(
+                    text = stringResource(R.string.onboarding_how_title),
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.onboarding_how_subtitle),
+                    fontSize = 14.sp,
+                    color = colors.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
 
-        Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
 
-        StepCard(
-            icon = Icons.Rounded.Nfc,
-            title = stringResource(R.string.onboarding_how_step1_title),
-            description = stringResource(R.string.onboarding_how_step1_desc),
-        )
-        Spacer(Modifier.height(16.dp))
-        StepCard(
-            icon = Icons.Rounded.Shield,
-            title = stringResource(R.string.onboarding_how_step2_title),
-            description = stringResource(R.string.onboarding_how_step2_desc),
-        )
-        Spacer(Modifier.height(16.dp))
-        StepCard(
-            icon = Icons.Rounded.Nfc,
-            title = stringResource(R.string.onboarding_how_step3_title),
-            description = stringResource(R.string.onboarding_how_step3_desc),
-        )
+                StepCard(
+                    icon = Icons.Rounded.Nfc,
+                    title = stringResource(R.string.onboarding_how_step1_title),
+                    description = stringResource(R.string.onboarding_how_step1_desc),
+                )
+                Spacer(Modifier.height(16.dp))
+                StepCard(
+                    icon = Icons.Rounded.Shield,
+                    title = stringResource(R.string.onboarding_how_step2_title),
+                    description = stringResource(R.string.onboarding_how_step2_desc),
+                )
+                Spacer(Modifier.height(16.dp))
+                StepCard(
+                    icon = Icons.Rounded.Nfc,
+                    title = stringResource(R.string.onboarding_how_step3_title),
+                    description = stringResource(R.string.onboarding_how_step3_desc),
+                )
 
-        Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(24.dp))
+            }
+        }
 
         OnboardingButton(
             text = stringResource(R.string.onboarding_continue),

@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Button
@@ -68,59 +70,73 @@ internal fun CompletionPage(
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(Modifier.weight(1f))
-
-            // Success circle with check icon
+            // Scrollable content, centered when it fits — the CTA below stays
+            // pinned and reachable even at large font scales.
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(colors.primary, CircleShape),
+                    .weight(1f)
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = Color.White,
-                )
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(Modifier.height(24.dp))
+
+                    // Success circle with check icon
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(colors.primary, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = Color.White,
+                        )
+                    }
+
+                    Spacer(Modifier.height(32.dp))
+
+                    // Title
+                    Text(
+                        text = stringResource(
+                            if (setupStatus.isComplete) R.string.onboarding_done_title
+                            else R.string.onboarding_incomplete_title,
+                        ),
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.onSurface,
+                        textAlign = TextAlign.Center,
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+                    // Subtitle
+                    Text(
+                        text = stringResource(
+                            if (setupStatus.isComplete) R.string.onboarding_done_subtitle
+                            else R.string.onboarding_incomplete_subtitle,
+                        ),
+                        fontSize = 15.sp,
+                        color = colors.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 22.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    // Recap card (incomplete only)
+                    if (!setupStatus.isComplete) {
+                        Spacer(Modifier.height(32.dp))
+                        RecapCard(setupStatus)
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
             }
-
-            Spacer(Modifier.height(32.dp))
-
-            // Title
-            Text(
-                text = stringResource(
-                    if (setupStatus.isComplete) R.string.onboarding_done_title
-                    else R.string.onboarding_incomplete_title,
-                ),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = colors.onSurface,
-                textAlign = TextAlign.Center,
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            // Subtitle
-            Text(
-                text = stringResource(
-                    if (setupStatus.isComplete) R.string.onboarding_done_subtitle
-                    else R.string.onboarding_incomplete_subtitle,
-                ),
-                fontSize = 15.sp,
-                color = colors.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                lineHeight = 22.sp,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            // Recap card (incomplete only)
-            if (!setupStatus.isComplete) {
-                Spacer(Modifier.height(32.dp))
-                RecapCard(setupStatus)
-            }
-
-            Spacer(Modifier.weight(1f))
 
             // CTA button
             Button(

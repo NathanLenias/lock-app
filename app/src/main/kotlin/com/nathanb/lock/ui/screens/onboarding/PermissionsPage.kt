@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Accessibility
 import androidx.compose.material.icons.rounded.BatteryChargingFull
@@ -110,80 +112,90 @@ internal fun PermissionsPage(
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.height(80.dp))
-
-        Box(
+        // Scrollable content — the CTA below stays pinned and reachable even
+        // when large font scales or verbose locales make this overflow.
+        Column(
             modifier = Modifier
-                .size(60.dp)
-                .background(colors.primary, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                Icons.Rounded.Shield,
-                contentDescription = null,
-                modifier = Modifier.size(28.dp),
-                tint = Color.White,
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            text = stringResource(R.string.onboarding_perm_title),
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = colors.onSurface,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.onboarding_perm_subtitle),
-            fontSize = 14.sp,
-            color = colors.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(Modifier.height(28.dp))
-
-        permissions.forEach { perm ->
-            PermissionCard(
-                icon = perm.icon,
-                title = stringResource(perm.titleRes),
-                description = stringResource(perm.descRes),
-                isGranted = perm.isGranted(),
-                onCardClick = {
-                    if (!perm.isGranted()) perm.openSettings(context)
-                },
-                onInfoClick = { sheetPermission = perm },
-            )
-            Spacer(Modifier.height(12.dp))
-        }
-
-        Row(
-            modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
-                .background(
-                    colors.primary.copy(alpha = 0.05f),
-                    RoundedCornerShape(12.dp),
-                )
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                Icons.Rounded.Info,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = colors.primary.copy(alpha = 0.6f),
-            )
-            Spacer(Modifier.width(10.dp))
-            Text(
-                text = stringResource(R.string.onboarding_perm_info),
-                fontSize = 12.sp,
-                color = colors.onSurfaceVariant.copy(alpha = 0.6f),
-                lineHeight = 17.sp,
-            )
-        }
+            Spacer(Modifier.height(80.dp))
 
-        Spacer(Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .background(colors.primary, CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Rounded.Shield,
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp),
+                    tint = Color.White,
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_perm_title),
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.onboarding_perm_subtitle),
+                fontSize = 14.sp,
+                color = colors.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+
+            Spacer(Modifier.height(28.dp))
+
+            permissions.forEach { perm ->
+                PermissionCard(
+                    icon = perm.icon,
+                    title = stringResource(perm.titleRes),
+                    description = stringResource(perm.descRes),
+                    isGranted = perm.isGranted(),
+                    onCardClick = {
+                        if (!perm.isGranted()) perm.openSettings(context)
+                    },
+                    onInfoClick = { sheetPermission = perm },
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        colors.primary.copy(alpha = 0.05f),
+                        RoundedCornerShape(12.dp),
+                    )
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+            ) {
+                Icon(
+                    Icons.Rounded.Info,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = colors.primary.copy(alpha = 0.6f),
+                )
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    text = stringResource(R.string.onboarding_perm_info),
+                    fontSize = 12.sp,
+                    color = colors.onSurfaceVariant.copy(alpha = 0.6f),
+                    lineHeight = 17.sp,
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+        }
 
         val allGranted = accessibilityOk && overlayOk && batteryOk
         OnboardingButton(

@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.DirectionsWalk
 import androidx.compose.material.icons.rounded.Psychology
@@ -44,61 +46,75 @@ internal fun WhyPhysicalPage(
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.weight(1f))
-
+        // Scrollable content, centered when it fits — the CTA below stays pinned
+        // and reachable even at large font scales.
         Box(
             modifier = Modifier
-                .size(96.dp)
-                .background(colors.primary.copy(alpha = 0.1f), CircleShape),
+                .weight(1f)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                Icons.AutoMirrored.Rounded.DirectionsWalk,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = colors.primary,
-            )
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .background(colors.primary.copy(alpha = 0.1f), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Rounded.DirectionsWalk,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = colors.primary,
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = stringResource(R.string.onboarding_why_title),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colors.onSurface,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.onboarding_why_accent),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.primary,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(Modifier.height(40.dp))
+
+                ArgumentRow(
+                    icon = Icons.AutoMirrored.Rounded.DirectionsWalk,
+                    title = stringResource(R.string.onboarding_why_arg1_title),
+                    description = stringResource(R.string.onboarding_why_arg1_desc),
+                )
+                Spacer(Modifier.height(20.dp))
+                ArgumentRow(
+                    icon = Icons.Rounded.Shield,
+                    title = stringResource(R.string.onboarding_why_arg2_title),
+                    description = stringResource(R.string.onboarding_why_arg2_desc),
+                )
+                Spacer(Modifier.height(20.dp))
+                ArgumentRow(
+                    icon = Icons.Rounded.Psychology,
+                    title = stringResource(R.string.onboarding_why_arg3_title),
+                    description = stringResource(R.string.onboarding_why_arg3_desc),
+                )
+
+                Spacer(Modifier.height(24.dp))
+            }
         }
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.onboarding_why_title),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = colors.onSurface,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.onboarding_why_accent),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colors.primary,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(Modifier.height(40.dp))
-
-        ArgumentRow(
-            icon = Icons.AutoMirrored.Rounded.DirectionsWalk,
-            title = stringResource(R.string.onboarding_why_arg1_title),
-            description = stringResource(R.string.onboarding_why_arg1_desc),
-        )
-        Spacer(Modifier.height(20.dp))
-        ArgumentRow(
-            icon = Icons.Rounded.Shield,
-            title = stringResource(R.string.onboarding_why_arg2_title),
-            description = stringResource(R.string.onboarding_why_arg2_desc),
-        )
-        Spacer(Modifier.height(20.dp))
-        ArgumentRow(
-            icon = Icons.Rounded.Psychology,
-            title = stringResource(R.string.onboarding_why_arg3_title),
-            description = stringResource(R.string.onboarding_why_arg3_desc),
-        )
-
-        Spacer(Modifier.weight(1f))
 
         OnboardingButton(
             text = stringResource(R.string.onboarding_continue),

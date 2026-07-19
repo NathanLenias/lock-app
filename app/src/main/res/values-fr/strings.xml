@@ -259,7 +259,7 @@
 
     <!-- Onboarding: Permissions (Page 3) -->
     <string name="onboarding_perm_title">Autorisations</string>
-    <string name="onboarding_perm_subtitle">Lock a besoin de 3 autorisations pour fonctionner</string>
+    <string name="onboarding_perm_subtitle">Lock a besoin de ces 3 autorisations pour fonctionner correctement. Appuyez sur chaque carte pour les activer.</string>
     <string name="onboarding_perm_accessibility_title">Service d\'accessibilité</string>
     <string name="onboarding_perm_accessibility_desc">Détecte l\'ouverture des apps bloquées</string>
     <string name="onboarding_perm_accessibility_detail">Ce service permet à Lock de détecter quand vous ouvrez une app bloquée. Sans cette permission, le blocage ne peut pas fonctionner.\n\nC\'est le cœur du fonctionnement de Lock.</string>

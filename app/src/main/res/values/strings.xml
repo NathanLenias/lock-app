@@ -241,7 +241,7 @@
 
     <!-- Onboarding: Permissions (Page 3) -->
     <string name="onboarding_perm_title">Permissions</string>
-    <string name="onboarding_perm_subtitle">Lock needs 3 permissions to work</string>
+    <string name="onboarding_perm_subtitle">Lock needs these 3 permissions to work properly. Tap each card to enable them.</string>
     <string name="onboarding_perm_accessibility_title">Accessibility service</string>
     <string name="onboarding_perm_accessibility_desc">Detects when blocked apps are opened</string>
     <string name="onboarding_perm_accessibility_detail">This service allows Lock to detect when you open a blocked app. Without this permission, blocking cannot work.\n\nThis is the core of how Lock works.</string>
