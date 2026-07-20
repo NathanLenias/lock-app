@@ -88,6 +88,9 @@ class ScheduleManagerTest {
                 produceFile = { tmpFolder.newFile("mgr_prefs.preferences_pb") },
             ),
             ioDispatcher = testDispatcher,
+            // Same pinned clock as the manager: consumption keys must be computed
+            // on the test date, not the wall-clock date the suite happens to run on.
+            zonedNow = { clock },
         )
         effects = FakeEffects()
         manager = ScheduleManager(repository, effects, now = { clock })

@@ -57,6 +57,8 @@ class LockRepository(
     private val database: LockDatabase? = null,
     private val dataStore: DataStore<Preferences> = context!!.dataStore,
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    /** Injectable clock for schedule-window math, so tests can pin the date. */
+    private val zonedNow: () -> ZonedDateTime = { ZonedDateTime.now() },
 ) {
     private val scope = CoroutineScope(SupervisorJob() + ioDispatcher)
 
@@ -225,7 +227,7 @@ class LockRepository(
         val consumedToAdd = if (reason in consumingEndReasons) {
             ScheduleWindowCalculator.coveringOccurrences(
                 scheduleDao.getAllOnce(),
-                ZonedDateTime.now(),
+                zonedNow(),
             ).map { it.consumptionKey }
         } else {
             emptyList()
@@ -470,7 +472,7 @@ class LockRepository(
         )
         // Rescheduling a window cancelled today to a FUTURE start reactivates it for the day.
         // A past start stays consumed: clearing it would start a session the moment of the save.
-        val now = ZonedDateTime.now()
+        val now = zonedNow()
         val todayKey = ScheduleWindowCalculator.consumptionKey(schedule.id, now.toLocalDate())
         val consumed = getConsumedWindowKeys()
         if (todayKey in consumed && ScheduleWindowCalculator.startsLaterToday(schedule, now)) {
