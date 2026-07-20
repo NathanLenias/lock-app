@@ -117,10 +117,17 @@ fun OnboardingScreen(
                     onNext = { selectedPackages ->
                         if (selectedPackages.isNotEmpty()) {
                             viewModel.createDefaultProfile(selectedPackages)
+                        } else {
+                            viewModel.ensureDefaultProfile()
                         }
                         goNext()
                     },
-                    onSkip = ::goNext,
+                    // Skipping must still create the (empty) default profile: later flows
+                    // (home checklist app picker, NFC fallback) need a real profile id.
+                    onSkip = {
+                        viewModel.ensureDefaultProfile()
+                        goNext()
+                    },
                 )
                 5 -> NfcPairingPage(
                     isSuccess = nfcPairingSuccess,

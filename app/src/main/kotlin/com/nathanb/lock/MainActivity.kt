@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this, getString(R.string.toast_unknown_tag), Toast.LENGTH_SHORT).show()
             }
             is NfcResult.Error -> {
-                Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(result.messageRes), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -10,7 +10,9 @@ import android.nfc.tech.NdefFormatable
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import com.nathanb.lock.BuildConfig
+import com.nathanb.lock.R
 import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.data.repository.LockRepository
@@ -38,7 +40,7 @@ sealed interface NfcResult {
     data class Stopped(val tagName: String?) : NfcResult
     data object IgnoredNoEscapeActive : NfcResult
     data object UnknownTag : NfcResult
-    data class Error(val message: String) : NfcResult
+    data class Error(@StringRes val messageRes: Int) : NfcResult
 }
 
 class NfcManager(
@@ -217,7 +219,7 @@ class NfcManager(
         val knownTag = repository.findNfcTag(uid)
         if (knownTag == null) {
             if (!repository.hasAnyNfcTag()) {
-                return NfcResult.Error("Aucun tag associé")
+                return NfcResult.Error(R.string.toast_error_no_tag)
             }
             if (BuildConfig.DEBUG) Log.d(TAG, "Unknown tag: $uid")
             return NfcResult.UnknownTag
@@ -235,14 +237,18 @@ class NfcManager(
             }
         } else {
             val profileId = knownTag.profileId ?: repository.getDefaultProfile()?.id
-            if (profileId == null) {
-                NfcResult.Error("Aucun profil configuré")
-            } else {
-                repository.startLockSession(profileId)
-                val isNoEscape = repository.getProfile(profileId)
-                    ?.let { ProfileType.fromValue(it.type) == ProfileType.NO_ESCAPE } ?: false
-                if (BuildConfig.DEBUG) Log.d(TAG, "Started via NFC (profile=$profileId, SE=$isNoEscape)")
-                NfcResult.Started(profileId, knownTag.name, isNoEscape)
+            val profile = profileId?.let { repository.getProfile(it) }
+            when {
+                profile == null -> NfcResult.Error(R.string.toast_error_no_profile)
+                // Profile exists but has no apps yet (onboarding app picker skipped):
+                // starting a session would lock nothing and confuse the user.
+                profile.blockedPackages.isEmpty() -> NfcResult.Error(R.string.toast_error_no_apps)
+                else -> {
+                    repository.startLockSession(profile.id)
+                    val isNoEscape = ProfileType.fromValue(profile.type) == ProfileType.NO_ESCAPE
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Started via NFC (profile=${profile.id}, SE=$isNoEscape)")
+                    NfcResult.Started(profile.id, knownTag.name, isNoEscape)
+                }
             }
         }
     }

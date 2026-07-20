@@ -12,6 +12,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import android.net.Uri
+import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import com.nathanb.lock.R
 import androidx.compose.ui.graphics.asImageBitmap
@@ -697,10 +698,33 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Guarantees a default profile exists without touching an existing one.
+     * Called when the onboarding app picker is skipped, so later flows (home checklist,
+     * NFC fallback) always have a real profile id to work with.
+     */
+    fun ensureDefaultProfile() {
+        viewModelScope.launch {
+            if (profiles.value.isEmpty()) {
+                repository.createProfile(getApplication<Application>().getString(R.string.default_profile_name), emptyList())
+            }
+        }
+    }
+
     fun updateProfileApps(profileId: Long, blockedPackages: List<String>) {
         viewModelScope.launch {
-            val profile = repository.getProfile(profileId) ?: return@launch
-            repository.updateProfile(profile.copy(blockedPackages = blockedPackages))
+            val profile = repository.getProfile(profileId)
+            when {
+                profile != null -> repository.updateProfile(profile.copy(blockedPackages = blockedPackages))
+                // Installs that skipped the onboarding app picker before 1.2.3 have no
+                // profile at all; the home checklist then routes here with a sentinel id.
+                // Create the default profile instead of dropping the selection.
+                profiles.value.isEmpty() -> repository.createProfile(
+                    getApplication<Application>().getString(R.string.default_profile_name),
+                    blockedPackages,
+                )
+                else -> Log.w("LockViewModel", "updateProfileApps: unknown profile $profileId, selection dropped")
+            }
         }
     }
 

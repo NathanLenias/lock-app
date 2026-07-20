@@ -361,6 +361,9 @@
     <string name="toast_blocking_on">Blockierung aktiviert%s</string>
     <string name="toast_blocking_off">Blockierung deaktiviert%s</string>
     <string name="toast_unknown_tag">Unbekanntes Tag</string>
+    <string name="toast_error_no_tag">Kein Tag gekoppelt</string>
+    <string name="toast_error_no_profile">Kein Profil eingerichtet</string>
+    <string name="toast_error_no_apps">Wählen Sie zuerst die zu blockierenden Apps aus</string>
     <string name="toast_no_escape_active">Sitzung läuft, Entsperren nicht möglich.</string>
 
     <!-- Profiles -->
@@ -456,8 +459,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Neu in Lock</string>
     <string name="inapp_changelog_cta">Entdecken</string>
-    <string name="inapp_changelog_1_title">Kleinere Fehlerbehebungen</string>
-    <string name="inapp_changelog_1_body">Diese Version verbessert die Stabilität und behebt mehrere kleine Anzeigefehler.</string>
+    <string name="inapp_changelog_1_title">App-Auswahl</string>
+    <string name="inapp_changelog_1_body">Korrektur: Wenn bei der Einrichtung keine Apps ausgewählt wurden, funktioniert die App-Auswahl über den Startbildschirm jetzt richtig.</string>
+    <string name="inapp_changelog_2_title">NFC-Tag</string>
+    <string name="inapp_changelog_2_body">Korrektur: Das Hinzufügen und Scannen Ihres Tags über den Startbildschirm ist zuverlässiger, wenn die Einrichtung nicht abgeschlossen war.</string>
 
     <!-- Zeitpläne -->
     <string name="schedule_settings_entry">Zeitpläne</string>

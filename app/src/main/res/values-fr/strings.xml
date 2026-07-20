@@ -359,6 +359,9 @@
     <string name="toast_blocking_on">Blocage activé%s</string>
     <string name="toast_blocking_off">Blocage désactivé%s</string>
     <string name="toast_unknown_tag">Tag non reconnu</string>
+    <string name="toast_error_no_tag">Aucun tag associé</string>
+    <string name="toast_error_no_profile">Aucun profil configuré</string>
+    <string name="toast_error_no_apps">Choisissez d\'abord vos applications à bloquer</string>
     <string name="toast_no_escape_active">Session en cours, impossible de débloquer.</string>
 
     <!-- Profils -->
@@ -454,8 +457,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Du nouveau dans Lock</string>
     <string name="inapp_changelog_cta">Découvrir</string>
-    <string name="inapp_changelog_1_title">Correction de bugs mineurs</string>
-    <string name="inapp_changelog_1_body">Cette version améliore la stabilité et corrige plusieurs petits défauts d\'affichage.</string>
+    <string name="inapp_changelog_1_title">Choix des applications</string>
+    <string name="inapp_changelog_1_body">Correction : si aucune application n\'a été sélectionnée durant la configuration, le choix des applications depuis l\'accueil fonctionne maintenant correctement.</string>
+    <string name="inapp_changelog_2_title">Tag NFC</string>
+    <string name="inapp_changelog_2_body">Correction : l\'ajout et le scan de votre tag depuis l\'accueil sont plus fiables si la configuration n\'était pas terminée.</string>
 
     <!-- Plannings -->
     <string name="schedule_settings_entry">Plannings</string>

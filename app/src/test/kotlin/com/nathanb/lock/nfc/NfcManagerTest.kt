@@ -64,8 +64,8 @@ class NfcManagerTest {
 
     @Test
     fun `idle plus no-escape tag starts with isNoEscape true`() = testScope.runTest {
-        repository.createProfile("Std", emptyList()) // default
-        val se = repository.createProfile("SE", emptyList(), ProfileType.NO_ESCAPE, 600_000L)
+        repository.createProfile("Std", listOf("com.a")) // default
+        val se = repository.createProfile("SE", listOf("com.b"), ProfileType.NO_ESCAPE, 600_000L)
         repository.addNfcTag("U2", "SE tag", se)
 
         val result = nfc.processKnownTag("U2")
@@ -114,6 +114,25 @@ class NfcManagerTest {
     @Test
     fun `no tags at all returns Error`() = testScope.runTest {
         assertTrue(nfc.processKnownTag("U1") is NfcResult.Error)
+    }
+
+    @Test
+    fun `tag resolving to a profile with no apps returns Error and does not lock`() = testScope.runTest {
+        // Onboarding skip case: the default profile exists but has no blocked apps yet.
+        val p = repository.createProfile("Std", emptyList())
+        repository.addNfcTag("U1", "Tag", p)
+
+        assertTrue(nfc.processKnownTag("U1") is NfcResult.Error)
+        assertFalse(repository.getLockState().isLocked)
+    }
+
+    @Test
+    fun `master tag falling back to an empty default profile returns Error and does not lock`() = testScope.runTest {
+        repository.createProfile("Std", emptyList())
+        repository.addNfcTag("U1", "Tag") // no profile bound (onboarding master switch)
+
+        assertTrue(nfc.processKnownTag("U1") is NfcResult.Error)
+        assertFalse(repository.getLockState().isLocked)
     }
 
     // --- Sticky pairing mode + write outcomes ---

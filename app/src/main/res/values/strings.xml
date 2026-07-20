@@ -361,6 +361,9 @@
     <string name="toast_blocking_on">Blocking activated%s</string>
     <string name="toast_blocking_off">Blocking deactivated%s</string>
     <string name="toast_unknown_tag">Unknown tag</string>
+    <string name="toast_error_no_tag">No tag paired</string>
+    <string name="toast_error_no_profile">No profile configured</string>
+    <string name="toast_error_no_apps">Choose the apps to block first</string>
     <string name="toast_no_escape_active">Session in progress, can\'t unlock.</string>
 
     <!-- Profiles -->
@@ -456,8 +459,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">Minor bug fixes</string>
-    <string name="inapp_changelog_1_body">This version improves stability and fixes several small display issues.</string>
+    <string name="inapp_changelog_1_title">App selection</string>
+    <string name="inapp_changelog_1_body">Fix: if no apps were selected during setup, choosing your apps from the home screen now works correctly.</string>
+    <string name="inapp_changelog_2_title">NFC tag</string>
+    <string name="inapp_changelog_2_body">Fix: adding and scanning your tag from the home screen is more reliable when setup wasn\'t finished.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
