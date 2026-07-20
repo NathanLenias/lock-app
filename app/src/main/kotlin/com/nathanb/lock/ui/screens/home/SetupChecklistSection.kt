@@ -54,6 +54,9 @@ fun SetupChecklistSection(
     setupStatus: SetupStatus,
     appCount: Int,
     nfcPairingSuccess: Boolean,
+    writeInterrupted: Boolean,
+    writeExhausted: Boolean,
+    onPairAnyway: () -> Unit,
     onNavigateToApps: () -> Unit,
     onNavigateToPermissions: () -> Unit,
     onStartNfcScan: () -> Unit,
@@ -161,6 +164,13 @@ fun SetupChecklistSection(
                         subtitle = if (nfcPairingSuccess) stringResource(R.string.nfc_tags_paired_success_subtitle)
                         else stringResource(R.string.nfc_tags_waiting_subtitle),
                         isSuccess = nfcPairingSuccess,
+                        warning = when {
+                            writeExhausted -> stringResource(R.string.nfc_write_failed_body)
+                            writeInterrupted -> stringResource(R.string.nfc_write_interrupted)
+                            else -> null
+                        },
+                        secondaryLabel = if (writeExhausted) stringResource(R.string.nfc_write_failed_cta) else null,
+                        onSecondaryClick = onPairAnyway,
                         ctaLabel = if (!nfcPairingSuccess) stringResource(R.string.action_cancel) else null,
                         onCtaClick = {
                             nfcScanExpanded = false

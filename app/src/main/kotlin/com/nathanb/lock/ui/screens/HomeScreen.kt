@@ -59,6 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.SetupStatus
+import com.nathanb.lock.nfc.NdefWriteResult
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
@@ -113,6 +114,8 @@ fun HomeScreen(
     val supportPromptStage by viewModel.supportPromptStage.collectAsStateWithLifecycle()
     val lastSeenVersionCode by viewModel.lastSeenVersionCode.collectAsStateWithLifecycle()
     val pendingUid by viewModel.pendingPairingUid.collectAsStateWithLifecycle()
+    val pairingWriteResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
+    val pairingWriteExhaustedUid by viewModel.pairingWriteExhaustedUid.collectAsStateWithLifecycle()
     var nfcPairingSuccess by remember { mutableStateOf(false) }
     var nfcScanActive by remember { mutableStateOf(false) }
     var showEmergencyDialog by remember { mutableStateOf(false) }
@@ -259,6 +262,9 @@ fun HomeScreen(
                     setupStatus = setupStatus,
                     appCount = appCount,
                     nfcPairingSuccess = nfcPairingSuccess,
+                    writeInterrupted = pairingWriteResult == NdefWriteResult.TRANSIENT_FAILURE,
+                    writeExhausted = pairingWriteExhaustedUid != null,
+                    onPairAnyway = { viewModel.pairAnywayWithoutWrite() },
                     onNavigateToApps = onNavigateToApps,
                     onNavigateToPermissions = onNavigateToPermissions,
                     onStartNfcScan = {
@@ -267,9 +273,12 @@ fun HomeScreen(
                     },
                     onCancelNfcScan = {
                         nfcScanActive = false
+                        viewModel.nfcManager.disablePairingMode()
+                        viewModel.clearPairingWriteResult()
                     },
                     onNfcScanSuccess = {
                         nfcPairingSuccess = false
+                        viewModel.clearPairingWriteResult()
                     },
                     onActivateManualMode = { viewModel.enableManualMode() },
                 )
@@ -318,12 +327,22 @@ fun HomeScreen(
                 // NFC scan card (expandable)
                 ManualModeNfcNudge(
                     nfcPairingSuccess = nfcPairingSuccess,
+                    writeInterrupted = pairingWriteResult == NdefWriteResult.TRANSIENT_FAILURE,
+                    writeExhausted = pairingWriteExhaustedUid != null,
+                    onPairAnyway = { viewModel.pairAnywayWithoutWrite() },
                     onStartNfcScan = {
                         nfcScanActive = true
                         viewModel.enableNfcPairing()
                     },
-                    onCancelNfcScan = { nfcScanActive = false },
-                    onNfcScanSuccess = { nfcPairingSuccess = false },
+                    onCancelNfcScan = {
+                        nfcScanActive = false
+                        viewModel.nfcManager.disablePairingMode()
+                        viewModel.clearPairingWriteResult()
+                    },
+                    onNfcScanSuccess = {
+                        nfcPairingSuccess = false
+                        viewModel.clearPairingWriteResult()
+                    },
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -519,6 +538,9 @@ fun HomeScreen(
 @Composable
 private fun ManualModeNfcNudge(
     nfcPairingSuccess: Boolean,
+    writeInterrupted: Boolean,
+    writeExhausted: Boolean,
+    onPairAnyway: () -> Unit,
     onStartNfcScan: () -> Unit,
     onCancelNfcScan: () -> Unit,
     onNfcScanSuccess: () -> Unit,
@@ -618,6 +640,13 @@ private fun ManualModeNfcNudge(
                 subtitle = if (nfcPairingSuccess) stringResource(R.string.nfc_tags_paired_success_subtitle)
                 else stringResource(R.string.nfc_tags_waiting_subtitle),
                 isSuccess = nfcPairingSuccess,
+                warning = when {
+                    writeExhausted -> stringResource(R.string.nfc_write_failed_body)
+                    writeInterrupted -> stringResource(R.string.nfc_write_interrupted)
+                    else -> null
+                },
+                secondaryLabel = if (writeExhausted) stringResource(R.string.nfc_write_failed_cta) else null,
+                onSecondaryClick = onPairAnyway,
                 ctaLabel = if (!nfcPairingSuccess) stringResource(R.string.action_cancel) else null,
                 onCtaClick = {
                     expanded = false
