@@ -17,12 +17,12 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "com.nathanb.lock"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nathanb.lock"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 11
         versionName = "1.2.3"
     }
