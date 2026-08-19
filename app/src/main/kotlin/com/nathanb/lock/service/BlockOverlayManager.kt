@@ -21,7 +21,11 @@ import com.nathanb.lock.R
  * Uses the standard Android View system (not Compose) because overlays run
  * from the Accessibility Service context which has no ComponentActivity.
  */
-class BlockOverlayManager(private val context: Context) {
+class BlockOverlayManager(
+    private val context: Context,
+    /** Invoked when the user taps OK, before the overlay is removed. */
+    private val onOkClick: () -> Unit = {},
+) {
 
     private val localizedContext: Context = resolveLocalizedContext(context)
     private val windowManager = context.getSystemService(WindowManager::class.java)
@@ -112,6 +116,9 @@ class BlockOverlayManager(private val context: Context) {
             background = bg
 
             setOnClickListener {
+                // Re-request HOME: if the first one was dropped by the system,
+                // the blocked app is still behind this overlay.
+                onOkClick()
                 dismiss()
             }
         }

@@ -1,16 +1,20 @@
 package com.nathanb.lock.util
 
 object Constants {
+    /** Launchers we know about; the device's default launcher is resolved at runtime on top of these */
+    val KNOWN_LAUNCHER_PACKAGES = setOf(
+        "com.google.android.apps.nexuslauncher",
+        "com.google.android.launcher",
+        "com.android.launcher3",
+    )
+
     /** Packages that must never be blocked */
     val WHITELISTED_PACKAGES = setOf(
         "com.android.settings",
         "com.google.android.dialer",
         "com.android.phone",
         "com.nathanb.lock",
-        "com.google.android.apps.nexuslauncher",
-        "com.google.android.launcher",
-        "com.android.launcher3",
-    )
+    ) + KNOWN_LAUNCHER_PACKAGES
 
     // Default session settings (used as fallbacks when no user preference is saved)
     const val DEFAULT_TIMEOUT_DURATION_MS = 5 * 60 * 60 * 1000L // 5 hours
