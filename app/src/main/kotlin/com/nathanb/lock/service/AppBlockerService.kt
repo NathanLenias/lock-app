@@ -1,6 +1,7 @@
 package com.nathanb.lock.service
 
 import android.accessibilityservice.AccessibilityService
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
@@ -40,7 +41,7 @@ class AppBlockerService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service connected")
-        overlayManager = BlockOverlayManager(this, onOkClick = ::goHome)
+        overlayManager = BlockOverlayManager(this)
         homeTracker = HomeConfirmationTracker(
             launcherPackages = resolveLauncherPackages(),
             ownPackage = packageName,
@@ -84,45 +85,71 @@ class AppBlockerService : AccessibilityService() {
         if (packageName in Constants.WHITELISTED_PACKAGES) return
 
         if (packageName in blockedPackages) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Blocking: $packageName")
+            // Only react to real screens. Blocked apps also emit window events for popups,
+            // menus and banners, sometimes while already in the background (Gmail shows
+            // one ~1 s after launch), and those must not re-trigger the overlay.
+            if (!isActivity(packageName, event.className)) {
+                if (BuildConfig.DEBUG) Log.d(TAG, "Ignoring non-activity window: $packageName/${event.className}")
+                return
+            }
+            if (BuildConfig.DEBUG) Log.d(TAG, "Blocking: $packageName/${event.className}")
             // HOME first (the real block), then overlay (visual feedback)
-            goHome()
+            pressHome()
             overlayManager.show(packageName, isNoEscapeSession)
             scheduleHomeRetry()
         }
     }
 
     /**
-     * Requests the home screen. The accessibility framework only acknowledges the
-     * request; on some devices the system drops it while a launch transition or the
-     * notification shade animation is running, so callers pair this with
-     * [scheduleHomeRetry] or the overlay's OK button.
+     * Simulates a HOME press. The accessibility framework only acknowledges the request;
+     * on some devices the system drops it while a launch transition or the notification
+     * shade animation is running, so callers pair this with [scheduleHomeRetry].
+     * Falls back to [launchHome] when the press is rejected outright.
      */
-    private fun goHome() {
-        val accepted = performGlobalAction(GLOBAL_ACTION_HOME)
-        if (!accepted) {
+    private fun pressHome() {
+        if (!performGlobalAction(GLOBAL_ACTION_HOME)) {
             if (BuildConfig.DEBUG) Log.w(TAG, "GLOBAL_ACTION_HOME rejected, launching home intent")
-            runCatching {
-                startActivity(
-                    Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                )
-            }
+            launchHome()
         }
     }
 
-    /** Retries HOME once if the launcher has not come to the front in time. */
+    /**
+     * Brings the launcher to the front by starting it, without simulating a button press.
+     * Used for the retry so a second HOME never reads as a double tap on the home
+     * button, which OEM gestures (Samsung one-handed mode) react to.
+     */
+    private fun launchHome() {
+        runCatching {
+            startActivity(
+                Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+        }.onFailure { if (BuildConfig.DEBUG) Log.w(TAG, "Home intent failed", it) }
+    }
+
+    /** Launches the home screen if the launcher has not come to the front in time. */
     private fun scheduleHomeRetry() {
         homeTracker.onHomeRequested()
         homeRetryJob?.cancel()
         homeRetryJob = scope.launch {
             delay(HOME_CONFIRMATION_TIMEOUT_MS)
             if (homeTracker.shouldRetry() && !isEmergencyPaused && blockedPackages.isNotEmpty()) {
-                if (BuildConfig.DEBUG) Log.w(TAG, "Home not confirmed, retrying")
-                goHome()
+                if (BuildConfig.DEBUG) Log.w(TAG, "Home not confirmed, launching home")
+                launchHome()
             }
             homeTracker.reset()
+        }
+    }
+
+    /** True when [className] is an Activity declared by [packageName] (a real screen). */
+    private fun isActivity(packageName: String, className: CharSequence?): Boolean {
+        val name = className?.toString() ?: return false
+        return try {
+            packageManager.getActivityInfo(ComponentName(packageName, name), 0)
+            true
+        } catch (_: PackageManager.NameNotFoundException) {
+            false
         }
     }
 
