@@ -23,10 +23,11 @@ class HomeConfirmationTracker(
     }
 
     /**
-     * A window state change arrived. Returns true when this event confirms the
-     * launcher is in front, which clears the pending confirmation.
+     * A window state change arrived. Returns true when this event confirms a
+     * pending HOME request (launcher in front while we were waiting for it).
      */
     fun onWindowEvent(packageName: String): Boolean {
+        if (!awaitingConfirmation) return false
         if (packageName == ownPackage) return false // our overlay, not informative
         if (packageName in launcherPackages) {
             awaitingConfirmation = false

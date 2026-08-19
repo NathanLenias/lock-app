@@ -41,7 +41,7 @@ class HomeConfirmationTrackerTest {
     @Test
     fun `no retry when nothing was requested`() {
         assertFalse(tracker.shouldRetry())
-        tracker.onWindowEvent("com.sec.android.app.launcher")
+        assertFalse(tracker.onWindowEvent("com.sec.android.app.launcher"))
         assertFalse(tracker.shouldRetry())
     }
 }
