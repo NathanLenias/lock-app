@@ -459,10 +459,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">App selection</string>
-    <string name="inapp_changelog_1_body">Fix: if no apps were selected during setup, choosing your apps from the home screen now works correctly.</string>
-    <string name="inapp_changelog_2_title">NFC tag</string>
-    <string name="inapp_changelog_2_body">Fix: adding and scanning your tag from the home screen is more reliable when setup wasn\'t finished.</string>
+    <string name="inapp_changelog_1_title">App detection</string>
+    <string name="inapp_changelog_1_body">Improvement: returning to the home screen is more reliable when a blocked app opens, especially from a notification.</string>
+    <string name="inapp_changelog_2_title">Android 16</string>
+    <string name="inapp_changelog_2_body">Lock is up to date for Android 16, following the latest system rules.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
