@@ -52,6 +52,15 @@ class NfcManager(
         private const val MIME_TYPE = "application/vnd.lock.toggle"
         private const val APP_PACKAGE = "com.nathanb.lock"
         private const val PAIRING_GRACE_MS = 3_000L
+
+        /**
+         * One physical tag presentation must produce exactly one toggle. The same scan can
+         * be delivered twice through two paths ~100-500 ms apart (NDEF intent, then Reader
+         * Mode re-reading the tag after the activity cycle re-enables it, seen when the
+         * Reader Mode registration was silently lost on wake from sleep). Ignore the same
+         * UID for this window after a successful toggle.
+         */
+        private const val TOGGLE_REFRACTORY_MS = 1_000L
         const val MAX_WRITE_RETRIES = 5
     }
 
@@ -64,6 +73,10 @@ class NfcManager(
      */
     private var justPairedUid: String? = null
     private var justPairedAt: Long = 0L
+
+    /** Last UID that toggled a session, for the [TOGGLE_REFRACTORY_MS] deduplication. */
+    private var lastToggleUid: String? = null
+    private var lastToggleAt: Long = 0L
 
     /**
      * Consecutive interrupted writes on the current pairing attempt. After
@@ -192,7 +205,18 @@ class NfcManager(
             justPairedUid = null
         }
 
-        return processKnownTag(uid)
+        // Refractory window: the same physical presentation delivered twice must not undo itself.
+        if (uid == lastToggleUid && clock() - lastToggleAt < TOGGLE_REFRACTORY_MS) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Tap ignored — toggle refractory window")
+            return null
+        }
+
+        val result = processKnownTag(uid)
+        if (result is NfcResult.Started || result is NfcResult.Stopped) {
+            lastToggleUid = uid
+            lastToggleAt = clock()
+        }
+        return result
     }
 
     /**
