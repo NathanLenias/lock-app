@@ -23,8 +23,8 @@ android {
         applicationId = "com.nathanb.lock"
         minSdk = 33
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.2.5"
+        versionCode = 14
+        versionName = "1.2.6"
     }
 
     signingConfigs {
