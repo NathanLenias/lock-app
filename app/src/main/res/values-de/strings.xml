@@ -459,10 +459,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Neu in Lock</string>
     <string name="inapp_changelog_cta">Entdecken</string>
-    <string name="inapp_changelog_1_title">App-Erkennung</string>
-    <string name="inapp_changelog_1_body">Verbesserung: Die Rückkehr zum Startbildschirm ist zuverlässiger, wenn eine blockierte App geöffnet wird, vor allem aus einer Benachrichtigung.</string>
-    <string name="inapp_changelog_2_title">Android 16</string>
-    <string name="inapp_changelog_2_body">Lock ist auf dem neuesten Stand für Android 16 und folgt den aktuellen Systemregeln.</string>
+    <string name="inapp_changelog_1_title">NFC-Scan</string>
+    <string name="inapp_changelog_1_body">Korrektur: Das Scannen Ihres Tags direkt nach dem Aufwecken des Telefons konnte sofort sperren und wieder entsperren. Ein Scan schaltet jetzt genau einmal um.</string>
+    <string name="inapp_changelog_2_title">App-Erkennung</string>
+    <string name="inapp_changelog_2_body">Verbesserung: Die Rückkehr zum Startbildschirm ist zuverlässiger, wenn eine blockierte App geöffnet wird, vor allem aus einer Benachrichtigung.</string>
 
     <!-- Zeitpläne -->
     <string name="schedule_settings_entry">Zeitpläne</string>

@@ -457,10 +457,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Du nouveau dans Lock</string>
     <string name="inapp_changelog_cta">Découvrir</string>
-    <string name="inapp_changelog_1_title">Détection des applications</string>
-    <string name="inapp_changelog_1_body">Amélioration : le retour à l\'accueil est plus fiable quand une application bloquée s\'ouvre, notamment depuis une notification.</string>
-    <string name="inapp_changelog_2_title">Android 16</string>
-    <string name="inapp_changelog_2_body">Lock est à jour pour Android 16, avec les dernières règles du système.</string>
+    <string name="inapp_changelog_1_title">Scan NFC</string>
+    <string name="inapp_changelog_1_body">Correction : scanner votre tag juste après la sortie de veille pouvait verrouiller puis déverrouiller aussitôt. Un scan ne bascule désormais qu\'une seule fois.</string>
+    <string name="inapp_changelog_2_title">Détection des applications</string>
+    <string name="inapp_changelog_2_body">Amélioration : le retour à l\'accueil est plus fiable quand une application bloquée s\'ouvre, notamment depuis une notification.</string>
 
     <!-- Plannings -->
     <string name="schedule_settings_entry">Plannings</string>
