@@ -457,10 +457,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Du nouveau dans Lock</string>
     <string name="inapp_changelog_cta">Découvrir</string>
-    <string name="inapp_changelog_1_title">Fin de session automatique</string>
-    <string name="inapp_changelog_1_body">Correction : la fin de session automatique pouvait arriver avec des heures de retard quand le téléphone était en veille. Les sessions se terminent désormais à l\'heure, téléphone en veille ou non.</string>
-    <string name="inapp_changelog_2_title">Scan NFC</string>
-    <string name="inapp_changelog_2_body">Correction : scanner votre tag juste après la sortie de veille pouvait verrouiller puis déverrouiller aussitôt. Un scan ne bascule désormais qu\'une seule fois.</string>
+    <string name="inapp_changelog_1_title">Plannings</string>
+    <string name="inapp_changelog_1_body">Nouveau : plannings sur toute la journée, et un choix du comportement au scan : débloquer, ou une pause qui se termine toute seule.</string>
+    <string name="inapp_changelog_2_title">Profils minutés</string>
+    <string name="inapp_changelog_2_body">Nouveau : durée personnalisée jusqu\'à 2 h, et la continuité de blocage : à la fin du minuteur, restez bloqué jusqu\'au scan.</string>
 
     <!-- Plannings -->
     <string name="schedule_settings_entry">Plannings</string>
@@ -536,4 +536,6 @@
     <string name="schedule_scan_pause_hint">Débloque un temps limité, puis le blocage reprend automatiquement.</string>
     <string name="schedule_pause_duration_label">Durée de la pause</string>
     <string name="duration_unit_hour">h</string>
+    <string name="inapp_changelog_3_title">Fiabilité</string>
+    <string name="inapp_changelog_3_body">Correction : la fin de session automatique pouvait arriver en retard quand le téléphone était en veille. Tout se déclenche désormais à l\'heure.</string>
 </resources>

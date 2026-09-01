@@ -18,7 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Nfc
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -216,9 +217,11 @@ fun ChangelogCard(
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-        ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
+        ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
         Spacer(Modifier.height(14.dp))
-        ChangelogRow(Icons.Outlined.Nfc, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
+        ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
+        Spacer(Modifier.height(14.dp))
+        ChangelogRow(Icons.Outlined.Shield, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = onDiscover,

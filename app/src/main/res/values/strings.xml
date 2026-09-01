@@ -459,10 +459,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">Session timeout</string>
-    <string name="inapp_changelog_1_body">Fix: the session timeout could run hours late while the phone was asleep. Sessions now end on time, whether the phone is awake or not.</string>
-    <string name="inapp_changelog_2_title">NFC scan</string>
-    <string name="inapp_changelog_2_body">Fix: scanning your tag right after waking the phone could lock then unlock immediately. One scan now toggles exactly once.</string>
+    <string name="inapp_changelog_1_title">Schedules</string>
+    <string name="inapp_changelog_1_body">New: all-day schedules, and a choice of what a scan does: unblock, or a pause that ends on its own.</string>
+    <string name="inapp_changelog_2_title">Timed profiles</string>
+    <string name="inapp_changelog_2_body">New: custom duration up to 2 h, and blocking continuity: when the timer ends, stay blocked until the next scan.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
@@ -538,4 +538,6 @@
     <string name="schedule_scan_pause_hint">Unblocks for a limited time, then blocking resumes automatically.</string>
     <string name="schedule_pause_duration_label">Pause duration</string>
     <string name="duration_unit_hour">h</string>
+    <string name="inapp_changelog_3_title">Reliability</string>
+    <string name="inapp_changelog_3_body">Fix: automatic session end could run late while the phone was asleep. Everything now fires on time.</string>
 </resources>
