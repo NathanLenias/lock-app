@@ -815,6 +815,11 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { repository.setTagProfile(uid, profileId) }
     }
 
+    /** Detach a tag from its profile: it falls back to activating the default profile. */
+    fun dissociateTag(uid: String) {
+        viewModelScope.launch { repository.setTagProfile(uid, null) }
+    }
+
     // --- Schedules (recurring auto-lock windows) ---
 
     /** The set actually enforced by the blocker (union of profile + scheduled windows). */

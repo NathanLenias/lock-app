@@ -69,7 +69,7 @@ import com.nathanb.lock.ui.screens.apppicker.AppCategory
 import com.nathanb.lock.ui.screens.apppicker.AppSearchBar
 import com.nathanb.lock.ui.screens.apppicker.CategoryPills
 import com.nathanb.lock.ui.screens.profile.DURATION_OPTIONS_MS
-import com.nathanb.lock.ui.screens.profile.DurationSelector
+import com.nathanb.lock.ui.screens.profile.DurationPicker
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
@@ -560,7 +560,7 @@ private fun StepDuration(durationMs: Long, onSelect: (Long) -> Unit) {
             )
         }
         WizLabel(stringResource(R.string.wizard_duration_label))
-        DurationSelector(selectedMs = durationMs, onSelect = onSelect)
+        DurationPicker(selectedMs = durationMs, onSelect = onSelect)
         Row(
             modifier = Modifier
                 .fillMaxWidth()

@@ -516,4 +516,13 @@
     <string name="nfc_write_failed_body">L\'écriture échoue à répétition. Vous pouvez l\'associer quand même : il fonctionnera quand Lock est ouverte, mais pas quand l\'app est fermée.</string>
     <string name="nfc_write_failed_cta">Associer quand même</string>
     <string name="nfc_write_failed_retry">Réessayer</string>
+    <string name="profile_duration_unit">min</string>
+    <string name="profile_duration_custom">Personnalisé</string>
+    <string name="profile_duration_decrease">Réduire la durée</string>
+    <string name="profile_duration_increase">Augmenter la durée</string>
+    <string name="profile_continuity_section">Continuité de blocage</string>
+    <string name="profile_continuity_title">Rester bloqué jusqu\'au scan</string>
+    <string name="profile_continuity_subtitle">À la fin du minuteur, conserve le blocage des applications du profil jusqu\'au prochain scan du tag NFC</string>
+    <string name="profile_continuity_disabled">Associez un tag NFC pour pouvoir activer la continuité.</string>
+    <string name="profile_dissociate_tag">Dissocier ce tag</string>
 </resources>

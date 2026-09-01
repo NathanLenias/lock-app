@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Nfc
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.AlertDialog
@@ -56,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,7 +73,7 @@ import com.nathanb.lock.util.PermissionHelper
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.screens.profile.DURATION_OPTIONS_MS
-import com.nathanb.lock.ui.screens.profile.DurationSelector
+import com.nathanb.lock.ui.screens.profile.DurationPicker
 import com.nathanb.lock.ui.screens.profile.TypeCard
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
@@ -291,10 +293,35 @@ fun ProfileDetailScreen(
             // Duration (no-escape only)
             if (isNoEscape) {
                 SectionLabel(stringResource(R.string.profile_duration_title))
-                DurationSelector(
+                DurationPicker(
                     selectedMs = durationMs,
                     onSelect = { viewModel.setProfileDuration(profileId, it) },
                 )
+                // No-escape warning
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(colors.lockedPrimary.copy(alpha = 0.08f))
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Icon(
+                        Icons.Outlined.Timer,
+                        contentDescription = null,
+                        tint = colors.lockedPrimary,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Text(
+                        text = stringResource(R.string.profile_se_confirm_body, durationMinutes),
+                        fontFamily = SatoshiFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = colors.lockedPrimary,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
             }
 
             // Default toggle (standard) or info (no-escape)
@@ -382,7 +409,12 @@ fun ProfileDetailScreen(
                     )
                 } else {
                     profileTags.forEach { tag ->
-                        AssociatedTagRow(name = tag.name)
+                        AssociatedTagRow(
+                            name = tag.name,
+                            // Implicit tags (profileId == null) follow the default profile;
+                            // there is nothing to dissociate on them.
+                            onRemove = tag.profileId?.let { { viewModel.dissociateTag(tag.uid) } },
+                        )
                     }
                 }
                 HorizontalDivider(color = colors.onSurfaceVariant.copy(alpha = 0.08f))
@@ -414,30 +446,65 @@ fun ProfileDetailScreen(
                 }
             }
 
-            // No-escape warning
+            // Blocking continuity (no-escape only): requires an associated tag to unlock.
             if (isNoEscape) {
+                SectionLabel(stringResource(R.string.profile_continuity_section))
+                val continuityAvailable = profileTags.isNotEmpty()
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(colors.lockedPrimary.copy(alpha = 0.08f))
+                        .background(colors.cardContainer)
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Icon(
-                        Icons.Outlined.Timer,
-                        contentDescription = null,
-                        tint = colors.lockedPrimary,
-                        modifier = Modifier.size(20.dp),
-                    )
-                    Text(
-                        text = stringResource(R.string.profile_se_confirm_body, durationMinutes),
-                        fontFamily = SatoshiFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 13.sp,
-                        color = colors.lockedPrimary,
-                        modifier = Modifier.weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(11.dp))
+                            .background(
+                                if (continuityAvailable) colors.primary.copy(alpha = 0.1f)
+                                else colors.onSurfaceVariant.copy(alpha = 0.08f),
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_contactless),
+                            contentDescription = null,
+                            tint = if (continuityAvailable) colors.primary else colors.onSurfaceVariant.copy(alpha = 0.5f),
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(
+                            text = stringResource(R.string.profile_continuity_title),
+                            fontFamily = SatoshiFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = if (continuityAvailable) colors.onSurface
+                            else colors.onSurfaceVariant.copy(alpha = 0.6f),
+                        )
+                        Text(
+                            text = stringResource(
+                                if (continuityAvailable) R.string.profile_continuity_subtitle
+                                else R.string.profile_continuity_disabled,
+                            ),
+                            fontFamily = SatoshiFamily,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 13.sp,
+                            color = colors.onSurfaceVariant.copy(alpha = if (continuityAvailable) 1f else 0.6f),
+                        )
+                    }
+                    Switch(
+                        checked = profile.continuity && continuityAvailable,
+                        onCheckedChange = { viewModel.setProfileContinuity(profileId, it) },
+                        enabled = continuityAvailable,
+                        modifier = Modifier.scale(0.8f),
+                        colors = SwitchDefaults.colors(
+                            checkedTrackColor = colors.primary,
+                            checkedThumbColor = colors.cardContainer,
+                        ),
                     )
                 }
             }
@@ -664,7 +731,7 @@ fun ProfileDetailScreen(
 }
 
 @Composable
-private fun AssociatedTagRow(name: String) {
+private fun AssociatedTagRow(name: String, onRemove: (() -> Unit)? = null) {
     val colors = LockTheme.colors
     Row(
         modifier = Modifier
@@ -701,6 +768,23 @@ private fun AssociatedTagRow(name: String) {
                     fontSize = 13.sp,
                     color = colors.onSurfaceVariant,
                     modifier = Modifier.padding(start = 6.dp),
+                )
+            }
+        }
+        if (onRemove != null) {
+            Box(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .background(colors.onSurfaceVariant.copy(alpha = 0.08f))
+                    .clickable(onClick = onRemove),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.profile_dissociate_tag),
+                    tint = colors.onSurfaceVariant,
+                    modifier = Modifier.size(15.dp),
                 )
             }
         }

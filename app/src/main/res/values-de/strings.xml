@@ -518,4 +518,13 @@
     <string name="nfc_write_failed_body">Das Beschreiben schlägt wiederholt fehl. Sie können es trotzdem verknüpfen: Es funktioniert bei geöffneter App, aber nicht bei geschlossener App.</string>
     <string name="nfc_write_failed_cta">Trotzdem verknüpfen</string>
     <string name="nfc_write_failed_retry">Erneut versuchen</string>
+    <string name="profile_duration_unit">Min.</string>
+    <string name="profile_duration_custom">Benutzerdefiniert</string>
+    <string name="profile_duration_decrease">Dauer verringern</string>
+    <string name="profile_duration_increase">Dauer erhöhen</string>
+    <string name="profile_continuity_section">Fortlaufende Blockierung</string>
+    <string name="profile_continuity_title">Blockiert bis zum Scan</string>
+    <string name="profile_continuity_subtitle">Nach Ablauf des Timers bleiben die Apps dieses Profils bis zum nächsten Tag-Scan blockiert</string>
+    <string name="profile_continuity_disabled">Verknüpfen Sie einen NFC-Tag, um die Kontinuität aktivieren zu können.</string>
+    <string name="profile_dissociate_tag">Tag trennen</string>
 </resources>

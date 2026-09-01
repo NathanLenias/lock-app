@@ -518,4 +518,13 @@
     <string name="nfc_write_failed_body">Writing keeps failing. You can pair it anyway: it will work while Lock is open, but not when the app is closed.</string>
     <string name="nfc_write_failed_cta">Pair anyway</string>
     <string name="nfc_write_failed_retry">Try again</string>
+    <string name="profile_duration_unit">min</string>
+    <string name="profile_duration_custom">Custom</string>
+    <string name="profile_duration_decrease">Decrease duration</string>
+    <string name="profile_duration_increase">Increase duration</string>
+    <string name="profile_continuity_section">Blocking continuity</string>
+    <string name="profile_continuity_title">Stay blocked until scan</string>
+    <string name="profile_continuity_subtitle">When the timer ends, keeps blocking this profile\'s apps until the next tag scan</string>
+    <string name="profile_continuity_disabled">Pair a tag with this profile to enable continuity.</string>
+    <string name="profile_dissociate_tag">Unpair this tag</string>
 </resources>
