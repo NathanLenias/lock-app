@@ -7,6 +7,7 @@ import android.content.Intent
 import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.repository.LockRepository
 import com.nathanb.lock.service.LockForegroundService
+import com.nathanb.lock.util.setWakeupAlarm
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import java.time.ZonedDateTime
@@ -38,14 +39,10 @@ class AndroidScheduleEffects(private val context: Context) : ScheduleEffects {
     }
 
     override fun armWindowBoundary(triggerAtEpochMillis: Long) {
+        // Exact when permitted, otherwise inexact but allowed while idle; either way the
+        // app-start and receiver re-evaluations remain the safety net.
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtEpochMillis, pendingIntent())
-        } else {
-            // Degraded mode without the exact-alarm permission: inexact delivery,
-            // backed by re-evaluation on app start and on the other receiver triggers.
-            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtEpochMillis, pendingIntent())
-        }
+        alarmManager.setWakeupAlarm(triggerAtEpochMillis, pendingIntent())
     }
 
     override fun cancelWindowBoundary() {

@@ -88,6 +88,11 @@
             </intent-filter>
         </receiver>
 
+        <!-- Session timeout: wall-clock alarm ending a session when its duration elapses -->
+        <receiver
+            android:name=".service.SessionTimeoutReceiver"
+            android:exported="false" />
+
         <!-- Schedule engine: window-boundary alarms + events that invalidate them -->
         <receiver
             android:name=".schedule.ScheduleAlarmReceiver"

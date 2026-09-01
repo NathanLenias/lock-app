@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
-import android.os.SystemClock
 import android.util.Log
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.LockApplication
@@ -22,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -47,15 +45,11 @@ class LockForegroundService : Service() {
             }
             context.startService(intent)
         }
-
-        /** Remaining ms for a positive-duration session, based on its start time. */
-        fun remainingMs(durationMs: Long, sessionStartTime: Long, now: Long): Long =
-            (durationMs - (now - sessionStartTime)).coerceAtLeast(0L)
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var notificationUpdateJob: Job? = null
-    private var timeoutJob: Job? = null
+    private var timeoutArmJob: Job? = null
 
     private val repository by lazy {
         (application as LockApplication).repository
@@ -108,26 +102,31 @@ class LockForegroundService : Service() {
         // Auto-unlock: per-session duration (no-escape) or global timeout (standard); 0 = unlimited.
         // Schedule-origin sessions are exempt: their bound is the window-end alarm, and a 9h-17h
         // window must not be cut (then instantly re-locked) by the 5h safety timeout.
-        timeoutJob?.cancel()
-        timeoutJob = scope.launch {
+        // Armed as a wall-clock alarm, never a coroutine delay: delay counts on the uptime
+        // clock, which stops in deep sleep, and a 5 h timeout used to run 6 h+ on an idle phone.
+        timeoutArmJob?.cancel()
+        timeoutArmJob = scope.launch {
             val state = repository.getLockState()
             if (state.isScheduleOrigin && state.lockDurationMs == null) return@launch
             val durationMs = state.lockDurationMs ?: repository.timeoutDurationMs.first()
             if (durationMs <= 0L) return@launch // unlimited
-            val startTime = state.sessionStartTime ?: System.currentTimeMillis()
-            val remaining = remainingMs(durationMs, startTime, System.currentTimeMillis())
-            delay(remaining)
+            val startTime = state.sessionStartTime
+            if (startTime == null) {
+                if (BuildConfig.DEBUG) Log.w(TAG, "Locked without a start time, timeout not armed")
+                return@launch
+            }
             val reason = if (state.lockDurationMs != null) EndReason.DURATION.value else EndReason.TIMEOUT.value
-            if (BuildConfig.DEBUG) Log.d(TAG, "Session auto-unlock ($reason)")
-            repository.endLockSession(reason)
-            stopSelf()
+            // A past trigger time (service restarted after the deadline) fires immediately.
+            SessionTimeoutReceiver.arm(this@LockForegroundService, startTime + durationMs, startTime, reason)
+            if (BuildConfig.DEBUG) Log.d(TAG, "Timeout alarm armed ($reason) at ${startTime + durationMs}")
         }
     }
 
     private fun stopSession() {
         if (BuildConfig.DEBUG) Log.d(TAG, "Stopping lock session")
         notificationUpdateJob?.cancel()
-        timeoutJob?.cancel()
+        timeoutArmJob?.cancel()
+        SessionTimeoutReceiver.cancel(this)
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
