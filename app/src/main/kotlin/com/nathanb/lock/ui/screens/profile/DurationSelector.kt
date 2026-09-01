@@ -62,32 +62,13 @@ fun DurationPicker(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             DURATION_OPTIONS_MS.forEach { ms ->
-                val selected = !isCustom && ms == selectedMs
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(66.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(if (selected) colors.primary else colors.cardContainer)
-                        .clickable { onSelect(ms) },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = "${ms / MINUTE_MS}",
-                        fontFamily = SatoshiFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = if (selected) Color.White else colors.onSurface,
-                    )
-                    Text(
-                        text = stringResource(R.string.profile_duration_unit),
-                        fontFamily = SatoshiFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        color = if (selected) Color.White.copy(alpha = 0.85f) else colors.onSurfaceVariant,
-                    )
-                }
+                DurationChip(
+                    value = "${ms / MINUTE_MS}",
+                    unit = stringResource(R.string.profile_duration_unit),
+                    selected = !isCustom && ms == selectedMs,
+                    onClick = { onSelect(ms) },
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
 
@@ -170,6 +151,42 @@ fun DurationPicker(
                 }
             }
         }
+    }
+}
+
+/** Preset duration chip: big number over its unit, shared by profile and schedule pickers. */
+@Composable
+fun DurationChip(
+    value: String,
+    unit: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LockTheme.colors
+    Column(
+        modifier = modifier
+            .height(66.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (selected) colors.primary else colors.cardContainer)
+            .clickable(onClick = onClick),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = value,
+            fontFamily = SatoshiFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp,
+            color = if (selected) Color.White else colors.onSurface,
+        )
+        Text(
+            text = unit,
+            fontFamily = SatoshiFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 11.sp,
+            color = if (selected) Color.White.copy(alpha = 0.85f) else colors.onSurfaceVariant,
+        )
     }
 }
 

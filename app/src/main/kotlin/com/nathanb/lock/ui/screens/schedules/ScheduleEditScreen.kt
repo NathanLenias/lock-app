@@ -61,6 +61,7 @@ import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.data.model.ScanBehavior
 import com.nathanb.lock.util.Constants
 import com.nathanb.lock.ui.components.LockBottomSheet
+import com.nathanb.lock.ui.screens.profile.DurationChip
 import androidx.compose.ui.platform.LocalContext
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
@@ -322,29 +323,21 @@ fun ScheduleEditScreen(
                 Spacer(Modifier.height(4.dp))
                 SectionLabel(stringResource(R.string.schedule_pause_duration_label))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    val minUnit = stringResource(R.string.profile_duration_unit)
+                    val hourUnit = stringResource(R.string.duration_unit_hour)
                     listOf(
-                        15 * 60_000L to stringResource(R.string.profile_duration_minutes, 15),
-                        30 * 60_000L to stringResource(R.string.profile_duration_minutes, 30),
-                        60 * 60_000L to stringResource(R.string.schedule_pause_one_hour),
-                    ).forEach { (ms, label) ->
-                        val selected = pauseMs == ms
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(if (selected) colors.primary else colors.cardContainer)
-                                .clickable { pauseMs = ms }
-                                .padding(vertical = 14.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = label,
-                                fontFamily = SatoshiFamily,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = if (selected) Color.White else colors.onSurface,
-                            )
-                        }
+                        Triple(5 * 60_000L, "5", minUnit),
+                        Triple(15 * 60_000L, "15", minUnit),
+                        Triple(30 * 60_000L, "30", minUnit),
+                        Triple(60 * 60_000L, "1", hourUnit),
+                    ).forEach { (ms, value, unit) ->
+                        DurationChip(
+                            value = value,
+                            unit = unit,
+                            selected = pauseMs == ms,
+                            onClick = { pauseMs = ms },
+                            modifier = Modifier.weight(1f),
+                        )
                     }
                 }
             }

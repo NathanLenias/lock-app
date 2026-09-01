@@ -537,5 +537,5 @@
     <string name="schedule_scan_unlock_hint">Unblocks until the schedule\'s next occurrence.</string>
     <string name="schedule_scan_pause_hint">Unblocks for a limited time, then blocking resumes automatically.</string>
     <string name="schedule_pause_duration_label">Pause duration</string>
-    <string name="schedule_pause_one_hour">1 h</string>
+    <string name="duration_unit_hour">h</string>
 </resources>

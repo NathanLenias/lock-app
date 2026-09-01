@@ -535,5 +535,5 @@
     <string name="schedule_scan_unlock_hint">Débloque jusqu\'à la prochaine occurrence du planning.</string>
     <string name="schedule_scan_pause_hint">Débloque un temps limité, puis le blocage reprend automatiquement.</string>
     <string name="schedule_pause_duration_label">Durée de la pause</string>
-    <string name="schedule_pause_one_hour">1 h</string>
+    <string name="duration_unit_hour">h</string>
 </resources>

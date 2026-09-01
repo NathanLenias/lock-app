@@ -537,5 +537,5 @@
     <string name="schedule_scan_unlock_hint">Entsperrt bis zum nächsten Auftreten des Zeitplans.</string>
     <string name="schedule_scan_pause_hint">Entsperrt für begrenzte Zeit, danach wird die Blockierung automatisch fortgesetzt.</string>
     <string name="schedule_pause_duration_label">Pausendauer</string>
-    <string name="schedule_pause_one_hour">1 Std.</string>
+    <string name="duration_unit_hour">Std.</string>
 </resources>
