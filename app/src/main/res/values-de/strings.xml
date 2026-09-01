@@ -528,4 +528,14 @@
     <string name="profile_continuity_disabled">Verknüpfen Sie einen NFC-Tag, um die Kontinuität aktivieren zu können.</string>
     <string name="profile_dissociate_tag">Tag trennen</string>
     <string name="toast_pause_resumes">Pause · Blockierung wird in %d Min. fortgesetzt</string>
+    <string name="schedule_window_label">Zeitfenster</string>
+    <string name="schedule_all_day">Ganztägig</string>
+    <string name="schedule_all_day_subtitle">Deckt rund um die Uhr ab, ohne ein Zeitfenster zu belegen</string>
+    <string name="schedule_scan_label">Beim NFC-Scan</string>
+    <string name="schedule_scan_unlock">Entsperren</string>
+    <string name="schedule_scan_pause">Pause</string>
+    <string name="schedule_scan_unlock_hint">Entsperrt bis zum nächsten Auftreten des Zeitplans.</string>
+    <string name="schedule_scan_pause_hint">Entsperrt für begrenzte Zeit, danach wird die Blockierung automatisch fortgesetzt.</string>
+    <string name="schedule_pause_duration_label">Pausendauer</string>
+    <string name="schedule_pause_one_hour">1 Std.</string>
 </resources>

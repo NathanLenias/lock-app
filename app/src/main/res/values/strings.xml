@@ -528,4 +528,14 @@
     <string name="profile_continuity_disabled">Pair a tag with this profile to enable continuity.</string>
     <string name="profile_dissociate_tag">Unpair this tag</string>
     <string name="toast_pause_resumes">Paused · blocking resumes in %d min</string>
+    <string name="schedule_window_label">Window</string>
+    <string name="schedule_all_day">All day</string>
+    <string name="schedule_all_day_subtitle">Covers 24 hours a day, without taking a time slot</string>
+    <string name="schedule_scan_label">On NFC scan</string>
+    <string name="schedule_scan_unlock">Unlock</string>
+    <string name="schedule_scan_pause">Pause</string>
+    <string name="schedule_scan_unlock_hint">Unblocks until the schedule\'s next occurrence.</string>
+    <string name="schedule_scan_pause_hint">Unblocks for a limited time, then blocking resumes automatically.</string>
+    <string name="schedule_pause_duration_label">Pause duration</string>
+    <string name="schedule_pause_one_hour">1 h</string>
 </resources>

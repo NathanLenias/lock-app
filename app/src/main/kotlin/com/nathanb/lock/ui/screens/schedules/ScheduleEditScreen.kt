@@ -33,6 +33,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -46,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +58,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.ProfileType
+import com.nathanb.lock.data.model.ScanBehavior
+import com.nathanb.lock.util.Constants
 import com.nathanb.lock.ui.components.LockBottomSheet
 import androidx.compose.ui.platform.LocalContext
 import com.nathanb.lock.ui.theme.LockTheme
@@ -81,12 +86,18 @@ fun ScheduleEditScreen(
     var startMin by rememberSaveable { mutableStateOf(9 * 60) }
     var endMin by rememberSaveable { mutableStateOf(17 * 60) }
     var selectedProfileIds by rememberSaveable { mutableStateOf(listOf<Long>()) }
+    var allDay by rememberSaveable { mutableStateOf(false) }
+    var scanPause by rememberSaveable { mutableStateOf(false) }
+    var pauseMs by rememberSaveable { mutableStateOf(Constants.DEFAULT_SCHEDULE_PAUSE_MS) }
     if (!seeded && (isNew || existing != null)) {
         if (existing != null) {
             days = existing.daysOfWeek
             startMin = existing.startMinuteOfDay
             endMin = existing.endMinuteOfDay
             selectedProfileIds = links.filter { it.scheduleId == scheduleId }.map { it.profileId }
+            allDay = existing.allDay
+            scanPause = ScanBehavior.fromValue(existing.scanBehavior) == ScanBehavior.PAUSE
+            pauseMs = existing.pauseDurationMs ?: Constants.DEFAULT_SCHEDULE_PAUSE_MS
         }
         seeded = true
     }
@@ -100,7 +111,7 @@ fun ScheduleEditScreen(
 
     val overnight = endMin <= startMin && startMin != endMin
     val sameTime = startMin == endMin
-    val canSave = days != 0 && !sameTime
+    val canSave = days != 0 && (allDay || !sameTime)
 
     Scaffold(
         containerColor = colors.surface,
@@ -146,11 +157,28 @@ fun ScheduleEditScreen(
         bottomBar = {
             Button(
                 onClick = {
+                    val behavior = if (scanPause) ScanBehavior.PAUSE.value else ScanBehavior.UNLOCK.value
+                    val pauseDuration = pauseMs.takeIf { scanPause }
                     if (isNew) {
-                        viewModel.createSchedule(days, startMin, endMin, selectedProfileIds)
+                        viewModel.createSchedule(
+                            daysOfWeek = days,
+                            startMinuteOfDay = startMin,
+                            endMinuteOfDay = endMin,
+                            profileIds = selectedProfileIds,
+                            allDay = allDay,
+                            scanBehavior = behavior,
+                            pauseDurationMs = pauseDuration,
+                        )
                     } else if (existing != null) {
                         viewModel.updateSchedule(
-                            existing.copy(daysOfWeek = days, startMinuteOfDay = startMin, endMinuteOfDay = endMin),
+                            existing.copy(
+                                daysOfWeek = days,
+                                startMinuteOfDay = startMin,
+                                endMinuteOfDay = endMin,
+                                allDay = allDay,
+                                scanBehavior = behavior,
+                                pauseDurationMs = pauseDuration,
+                            ),
                             selectedProfileIds,
                         )
                     }
@@ -203,25 +231,122 @@ fun ScheduleEditScreen(
             }
 
             Spacer(Modifier.height(4.dp))
-            SectionLabel(stringResource(R.string.schedule_hours_label))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TimeField(
-                    label = stringResource(R.string.schedule_start_label),
-                    minuteOfDay = startMin,
-                    onClick = { showStartPicker = true },
+            SectionLabel(stringResource(R.string.schedule_window_label))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.cardContainer)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                    Text(
+                        text = stringResource(R.string.schedule_all_day),
+                        fontFamily = SatoshiFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
+                        color = colors.onSurface,
+                    )
+                    Text(
+                        text = stringResource(R.string.schedule_all_day_subtitle),
+                        fontFamily = SatoshiFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = colors.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = allDay,
+                    onCheckedChange = { allDay = it },
+                    modifier = Modifier.scale(0.8f),
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = colors.primary,
+                        checkedThumbColor = colors.cardContainer,
+                    ),
+                )
+            }
+            if (!allDay) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    TimeField(
+                        label = stringResource(R.string.schedule_start_label),
+                        minuteOfDay = startMin,
+                        onClick = { showStartPicker = true },
+                        modifier = Modifier.weight(1f),
+                    )
+                    TimeField(
+                        label = stringResource(R.string.schedule_end_label),
+                        minuteOfDay = endMin,
+                        onClick = { showEndPicker = true },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                if (sameTime) {
+                    HintText(stringResource(R.string.schedule_same_time_error), colors.error)
+                } else if (overnight) {
+                    OvernightBanner(endText = formatMinute(endMin))
+                }
+            }
+
+            Spacer(Modifier.height(4.dp))
+            SectionLabel(stringResource(R.string.schedule_scan_label))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(50))
+                    .background(colors.surfaceContainer)
+                    .padding(4.dp),
+            ) {
+                SegmentButton(
+                    label = stringResource(R.string.schedule_scan_unlock),
+                    selected = !scanPause,
+                    onClick = { scanPause = false },
                     modifier = Modifier.weight(1f),
                 )
-                TimeField(
-                    label = stringResource(R.string.schedule_end_label),
-                    minuteOfDay = endMin,
-                    onClick = { showEndPicker = true },
+                SegmentButton(
+                    label = stringResource(R.string.schedule_scan_pause),
+                    selected = scanPause,
+                    onClick = { scanPause = true },
                     modifier = Modifier.weight(1f),
                 )
             }
-            if (sameTime) {
-                HintText(stringResource(R.string.schedule_same_time_error), colors.error)
-            } else if (overnight) {
-                OvernightBanner(endText = formatMinute(endMin))
+            HintText(
+                stringResource(
+                    if (scanPause) R.string.schedule_scan_pause_hint
+                    else R.string.schedule_scan_unlock_hint,
+                ),
+                colors.onSurfaceVariant,
+            )
+
+            if (scanPause) {
+                Spacer(Modifier.height(4.dp))
+                SectionLabel(stringResource(R.string.schedule_pause_duration_label))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    listOf(
+                        15 * 60_000L to stringResource(R.string.profile_duration_minutes, 15),
+                        30 * 60_000L to stringResource(R.string.profile_duration_minutes, 30),
+                        60 * 60_000L to stringResource(R.string.schedule_pause_one_hour),
+                    ).forEach { (ms, label) ->
+                        val selected = pauseMs == ms
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(if (selected) colors.primary else colors.cardContainer)
+                                .clickable { pauseMs = ms }
+                                .padding(vertical = 14.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = label,
+                                fontFamily = SatoshiFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp,
+                                color = if (selected) Color.White else colors.onSurface,
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(Modifier.height(4.dp))
@@ -332,6 +457,32 @@ fun ScheduleEditScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SegmentButton(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LockTheme.colors
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(50))
+            .background(if (selected) colors.primary else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            fontFamily = SatoshiFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            color = if (selected) Color.White else colors.onSurfaceVariant,
+        )
     }
 }
 

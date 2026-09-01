@@ -237,12 +237,16 @@ private fun ScheduleCard(
 ) {
     val colors = LockTheme.colors
     val initials = stringArrayResource(R.array.schedule_day_initials)
-    val overnight = schedule.endMinuteOfDay <= schedule.startMinuteOfDay
-    val timeText = stringResource(
-        if (overnight) R.string.schedule_time_range_overnight else R.string.schedule_time_range,
-        formatMinute(schedule.startMinuteOfDay),
-        formatMinute(schedule.endMinuteOfDay),
-    )
+    val overnight = !schedule.allDay && schedule.endMinuteOfDay <= schedule.startMinuteOfDay
+    val timeText = if (schedule.allDay) {
+        stringResource(R.string.schedule_all_day)
+    } else {
+        stringResource(
+            if (overnight) R.string.schedule_time_range_overnight else R.string.schedule_time_range,
+            formatMinute(schedule.startMinuteOfDay),
+            formatMinute(schedule.endMinuteOfDay),
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
