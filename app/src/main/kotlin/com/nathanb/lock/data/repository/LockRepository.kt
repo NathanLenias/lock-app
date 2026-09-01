@@ -293,6 +293,15 @@ class LockRepository(
         return newUntil
     }
 
+    /** Live pause deadline for the UI (epoch ms; 0 = none). */
+    val schedulePausedUntilFlow: Flow<Long> = dataStore.data.map { it[Keys.PAUSED_UNTIL] ?: 0L }
+
+    /** "Resume blocking" tapped during a schedule pause: clear it, windows re-lock now. */
+    suspend fun resumeSchedulePause() {
+        clearSchedulePause()
+        onSessionEnded?.invoke()
+    }
+
     // --- Scheduled sessions (started by ScheduleManager, never from the UI) ---
 
     /**

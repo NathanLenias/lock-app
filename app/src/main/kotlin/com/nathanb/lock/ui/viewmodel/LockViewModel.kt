@@ -829,6 +829,15 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     // --- Schedules (recurring auto-lock windows) ---
 
+    /** Deadline of the running schedule pause (epoch ms; 0 = none). */
+    val schedulePausedUntil: StateFlow<Long> = repository.schedulePausedUntilFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
+
+    /** "Resume blocking" during a schedule pause: end it now, covering windows re-lock. */
+    fun resumeScheduledBlocking() {
+        viewModelScope.launch { repository.resumeSchedulePause() }
+    }
+
     /** The set actually enforced by the blocker (union of profile + scheduled windows). */
     val liveBlockedPackages: StateFlow<Set<String>> = repository.blockedPackages
 

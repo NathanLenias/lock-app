@@ -177,6 +177,19 @@ fun HomeScreen(
     // No-escape sessions are always a hard lock.
     val isSoftLock = !lockState.isNoEscape && (isManualMode || !hasNfcTags)
 
+    // Schedule pause: blocked-by-default windows are suspended until this deadline.
+    // Same visual language as the emergency pause (neutral background, countdown, resume).
+    val schedulePausedUntil by viewModel.schedulePausedUntil.collectAsStateWithLifecycle()
+    var pauseRemainingMs by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(schedulePausedUntil) {
+        while (true) {
+            pauseRemainingMs = (schedulePausedUntil - System.currentTimeMillis()).coerceAtLeast(0L)
+            if (pauseRemainingMs <= 0L) break
+            delay(1000)
+        }
+    }
+    val schedulePauseActive = pauseRemainingMs > 0L && !lockState.isLocked
+
     // Animated background — uses visualLocked so it waits for unlock animation
     val manualLockedBg = if (colors.surface.luminance() < 0.5f) Color(0xFF2A1A08) else Color(0xFFFFF8F0)
     val backgroundColor by animateColorAsState(
@@ -184,6 +197,7 @@ fun HomeScreen(
             isSoftLock && visualLocked && !isUnlocking -> manualLockedBg
             visualLocked && !isUnlocking && !isEmergencyActive -> colors.lockedContainer
             isEmergencyActive -> colors.surfaceContainerHigh
+            schedulePauseActive && !visualLocked -> colors.surfaceContainerHigh
             else -> colors.surface
         },
         label = "bgColor",
@@ -280,7 +294,7 @@ fun HomeScreen(
                     modifier = unlockModifier,
                 )
             }
-            if (!visualLocked && appCount > 0 && hasNfcTags) {
+            if (!visualLocked && !schedulePauseActive && appCount > 0 && hasNfcTags) {
                 ManualLockButton(
                     onLock = { viewModel.manualLock() },
                     fillProgress = manualLockFill,
@@ -434,6 +448,7 @@ fun HomeScreen(
                 Text(
                     text = when {
                         isEmergencyActive -> stringResource(R.string.home_status_pause)
+                        schedulePauseActive -> stringResource(R.string.home_status_pause)
                         isUnlocking -> stringResource(R.string.home_status_unlocking)
                         visualLocked -> if (appCount <= 1) stringResource(R.string.home_status_locked_one, appCount) else stringResource(R.string.home_status_locked_many, appCount)
                         else -> stringResource(R.string.home_status_free)
@@ -444,6 +459,7 @@ fun HomeScreen(
                         isUnlocking -> colors.primary
                         isSoftLock && visualLocked -> ManualOrange
                         visualLocked -> colors.lockedPrimary
+                        schedulePauseActive -> colors.onSurfaceVariant
                         else -> colors.primary
                     },
                     letterSpacing = 4.sp,
@@ -504,6 +520,20 @@ fun HomeScreen(
                     }
 
                     Spacer(Modifier.height(32.dp))
+                } else if (schedulePauseActive) {
+                    val mins = (pauseRemainingMs / 60_000).toInt()
+                    val secs = ((pauseRemainingMs % 60_000) / 1000).toInt()
+                    Text(
+                        text = stringResource(R.string.home_emergency_return, mins, secs.toString().padStart(2, '0')),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = colors.onSurface,
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(onClick = { viewModel.resumeScheduledBlocking() }) {
+                        Text(stringResource(R.string.home_resume_blocking))
+                    }
                 } else {
                     Text(
                         text = if (appCount == 1) stringResource(R.string.home_apps_to_block_one, appCount) else stringResource(R.string.home_apps_to_block_many, appCount),
