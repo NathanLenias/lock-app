@@ -38,6 +38,9 @@ sealed interface NfcResult {
     data class TagPaired(val uid: String, val writeResult: NdefWriteResult) : NfcResult
     data class Started(val profileId: Long, val tagName: String?, val isNoEscape: Boolean) : NfcResult
     data class Stopped(val tagName: String?) : NfcResult
+
+    /** Scheduled pause-window scan: unblocked for a limited time, blocking resumes alone. */
+    data class Paused(val resumeInMinutes: Int, val tagName: String?) : NfcResult
     data object IgnoredNoEscapeActive : NfcResult
     data object UnknownTag : NfcResult
     data class Error(@StringRes val messageRes: Int) : NfcResult
@@ -255,11 +258,23 @@ class NfcManager(
                 if (BuildConfig.DEBUG) Log.d(TAG, "Tap ignored — no-escape session active")
                 NfcResult.IgnoredNoEscapeActive
             } else {
-                repository.endLockSession(EndReason.NFC.value)
-                if (BuildConfig.DEBUG) Log.d(TAG, "Stopped via NFC (tag: ${knownTag.name})")
-                NfcResult.Stopped(knownTag.name)
+                val pausedUntil = repository.endLockSession(EndReason.NFC.value)
+                if (pausedUntil != null) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Paused via NFC until $pausedUntil (tag: ${knownTag.name})")
+                    NfcResult.Paused(minutesUntil(pausedUntil), knownTag.name)
+                } else {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Stopped via NFC (tag: ${knownTag.name})")
+                    NfcResult.Stopped(knownTag.name)
+                }
             }
         } else {
+            // Scanning while a schedule pause runs restarts the pause, it does not start a
+            // new session (the phone is only unlocked because of the pause).
+            val restartedUntil = repository.restartActivePause()
+            if (restartedUntil != null) {
+                if (BuildConfig.DEBUG) Log.d(TAG, "Pause restarted until $restartedUntil")
+                return NfcResult.Paused(minutesUntil(restartedUntil), knownTag.name)
+            }
             val profileId = knownTag.profileId ?: repository.getDefaultProfile()?.id
             val profile = profileId?.let { repository.getProfile(it) }
             when {
@@ -326,6 +341,10 @@ class NfcManager(
             NdefWriteResult.TRANSIENT_FAILURE
         }
     }
+
+    /** Minutes until [epochMillis], rounded up (for the pause toast). */
+    private fun minutesUntil(epochMillis: Long): Int =
+        (((epochMillis - clock()).coerceAtLeast(0L) + 59_999L) / 60_000L).toInt()
 
     private fun ByteArray.toHexString(): String =
         joinToString("") { "%02X".format(it) }

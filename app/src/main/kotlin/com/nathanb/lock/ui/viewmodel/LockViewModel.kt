@@ -427,6 +427,13 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                     cancelEmergency()
                     LockForegroundService.stop(getApplication())
                 }
+                is NfcResult.Paused -> {
+                    // Scheduled block paused by the scan: the session (if any) is already
+                    // ended in the repository; the resume alarm re-locks on its own.
+                    cancelGracePeriod()
+                    cancelEmergency()
+                    LockForegroundService.stop(getApplication())
+                }
                 is NfcResult.TagPaired -> {
                     _pairingWriteResult.value = result.writeResult
                     // A transient failure keeps the pairing screen waiting for a retry:
@@ -835,9 +842,20 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         getApplication<LockApplication>().scheduleManager.evaluateAndRearm()
     }
 
-    fun createSchedule(daysOfWeek: Int, startMinuteOfDay: Int, endMinuteOfDay: Int, profileIds: List<Long>) {
+    fun createSchedule(
+        daysOfWeek: Int,
+        startMinuteOfDay: Int,
+        endMinuteOfDay: Int,
+        profileIds: List<Long>,
+        allDay: Boolean = false,
+        scanBehavior: String = com.nathanb.lock.data.model.ScanBehavior.UNLOCK.value,
+        pauseDurationMs: Long? = null,
+    ) {
         viewModelScope.launch {
-            repository.createSchedule(daysOfWeek, startMinuteOfDay, endMinuteOfDay, profileIds)
+            repository.createSchedule(
+                daysOfWeek, startMinuteOfDay, endMinuteOfDay, profileIds,
+                allDay, scanBehavior, pauseDurationMs,
+            )
             rearmSchedules()
         }
     }

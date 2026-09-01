@@ -83,9 +83,18 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
 }
 
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Blocked-by-default schedules (defaults must match @ColumnInfo in Models.kt)
+        db.execSQL("ALTER TABLE `schedules` ADD COLUMN `allDay` INTEGER NOT NULL DEFAULT 0")
+        db.execSQL("ALTER TABLE `schedules` ADD COLUMN `scanBehavior` TEXT NOT NULL DEFAULT 'unlock'")
+        db.execSQL("ALTER TABLE `schedules` ADD COLUMN `pauseDurationMs` INTEGER")
+    }
+}
+
 @Database(
     entities = [Profile::class, Session::class, NfcTag::class, Schedule::class, ScheduleProfileLink::class],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

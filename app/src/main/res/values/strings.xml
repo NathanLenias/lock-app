@@ -527,4 +527,5 @@
     <string name="profile_continuity_subtitle">When the timer ends, keeps blocking this profile\'s apps until the next tag scan</string>
     <string name="profile_continuity_disabled">Pair a tag with this profile to enable continuity.</string>
     <string name="profile_dissociate_tag">Unpair this tag</string>
+    <string name="toast_pause_resumes">Paused · blocking resumes in %d min</string>
 </resources>

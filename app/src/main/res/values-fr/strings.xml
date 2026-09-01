@@ -525,4 +525,5 @@
     <string name="profile_continuity_subtitle">À la fin du minuteur, conserve le blocage des applications du profil jusqu\'au prochain scan du tag NFC</string>
     <string name="profile_continuity_disabled">Associez un tag NFC pour pouvoir activer la continuité.</string>
     <string name="profile_dissociate_tag">Dissocier ce tag</string>
+    <string name="toast_pause_resumes">Pause · le blocage reprend dans %d min</string>
 </resources>

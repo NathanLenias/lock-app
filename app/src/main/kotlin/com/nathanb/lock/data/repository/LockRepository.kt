@@ -21,6 +21,7 @@ import com.nathanb.lock.data.database.SessionDao
 import com.nathanb.lock.data.model.LockState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
+import com.nathanb.lock.data.model.ScanBehavior
 import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.model.Schedule
@@ -87,6 +88,7 @@ class LockRepository(
         val SCHEDULED_PACKAGES = stringPreferencesKey("scheduled_packages")
         val IS_SCHEDULE_ORIGIN = booleanPreferencesKey("is_schedule_origin")
         val CONSUMED_WINDOWS = stringPreferencesKey("consumed_windows")
+        val PAUSED_UNTIL = longPreferencesKey("schedule_paused_until")
     }
 
     /** Reasons that mean the USER ended the session: covering windows get consumed for the day. */
@@ -215,20 +217,34 @@ class LockRepository(
      * mid-evaluation and will arm the next boundary itself. Re-invoking it through the
      * hook from inside would deadlock its run guard (the "frozen engine" ANR).
      */
-    suspend fun endLockSession(reason: String, reevaluate: Boolean = true) {
+    suspend fun endLockSession(reason: String, reevaluate: Boolean = true): Long? {
         val now = System.currentTimeMillis()
         val prefs = dataStore.data.first()
         val sessionId = prefs[Keys.ACTIVE_SESSION_ID]
         if (sessionId != null) {
             sessionDao.endSession(sessionId, now, reason)
         }
-        // User-initiated end: consume the currently covering windows for the day, so the
-        // re-evaluation below (and later alarms) won't re-lock until the next occurrence.
+        // User-initiated end: covering UNLOCK-behavior windows get consumed for the day, so
+        // the re-evaluation below won't re-lock until their next occurrence. PAUSE-behavior
+        // windows are never consumed: the scan pauses blocking for their duration instead,
+        // and the resume alarm (armed by the evaluation) brings the block back.
+        var pausedUntil: Long? = null
         val consumedToAdd = if (reason in consumingEndReasons) {
-            ScheduleWindowCalculator.coveringOccurrences(
-                scheduleDao.getAllOnce(),
+            val schedulesById = scheduleDao.getAllOnce().associateBy { it.id }
+            val covering = ScheduleWindowCalculator.coveringOccurrences(
+                schedulesById.values.toList(),
                 zonedNow(),
-            ).map { it.consumptionKey }
+            )
+            val (pausing, unlocking) = covering.partition {
+                ScanBehavior.fromValue(schedulesById[it.scheduleId]?.scanBehavior) == ScanBehavior.PAUSE
+            }
+            if (pausing.isNotEmpty()) {
+                // Overlapping pause windows: the strictest (shortest) pause wins.
+                val pauseMs = pausing.mapNotNull { schedulesById[it.scheduleId]?.pauseDurationMs }
+                    .minOrNull() ?: Constants.DEFAULT_SCHEDULE_PAUSE_MS
+                pausedUntil = zonedNow().toInstant().toEpochMilli() + pauseMs
+            }
+            unlocking.map { it.consumptionKey }
         } else {
             emptyList()
         }
@@ -245,8 +261,36 @@ class LockRepository(
                 val current = decodeStringSet(it[Keys.CONSUMED_WINDOWS])
                 it[Keys.CONSUMED_WINDOWS] = encodeStringSet(current + consumedToAdd)
             }
+            pausedUntil?.let { until -> it[Keys.PAUSED_UNTIL] = until }
         }
         if (reevaluate) onSessionEnded?.invoke()
+        return pausedUntil
+    }
+
+    /** Epoch millis until which scheduled blocking is paused; 0 when no pause was ever set. */
+    suspend fun getSchedulePausedUntil(): Long =
+        dataStore.data.first()[Keys.PAUSED_UNTIL] ?: 0L
+
+    /**
+     * Scanning while a pause is already running RESTARTS it for the pause duration (no
+     * stacking). Returns the new pausedUntil, or null when no pause is active over a
+     * covering pause-behavior window (callers fall through to normal scan handling).
+     */
+    suspend fun restartActivePause(): Long? {
+        val nowMs = zonedNow().toInstant().toEpochMilli()
+        val current = dataStore.data.first()[Keys.PAUSED_UNTIL] ?: return null
+        if (current <= nowMs) return null
+        val schedulesById = scheduleDao.getAllOnce().associateBy { it.id }
+        val pausing = ScheduleWindowCalculator
+            .coveringOccurrences(schedulesById.values.toList(), zonedNow())
+            .filter { ScanBehavior.fromValue(schedulesById[it.scheduleId]?.scanBehavior) == ScanBehavior.PAUSE }
+        if (pausing.isEmpty()) return null
+        val pauseMs = pausing.mapNotNull { schedulesById[it.scheduleId]?.pauseDurationMs }
+            .minOrNull() ?: Constants.DEFAULT_SCHEDULE_PAUSE_MS
+        val newUntil = nowMs + pauseMs
+        dataStore.edit { it[Keys.PAUSED_UNTIL] = newUntil }
+        onSessionEnded?.invoke() // re-arm the resume alarm on the new deadline
+        return newUntil
     }
 
     // --- Scheduled sessions (started by ScheduleManager, never from the UI) ---
@@ -450,12 +494,18 @@ class LockRepository(
         startMinuteOfDay: Int,
         endMinuteOfDay: Int,
         profileIds: List<Long>,
+        allDay: Boolean = false,
+        scanBehavior: String = ScanBehavior.UNLOCK.value,
+        pauseDurationMs: Long? = null,
     ): Long {
         val id = scheduleDao.insert(
             Schedule(
                 daysOfWeek = daysOfWeek,
                 startMinuteOfDay = startMinuteOfDay,
                 endMinuteOfDay = endMinuteOfDay,
+                allDay = allDay,
+                scanBehavior = scanBehavior,
+                pauseDurationMs = pauseDurationMs,
             )
         )
         scheduleProfileDao.insertAll(
@@ -475,13 +525,28 @@ class LockRepository(
         val now = zonedNow()
         val todayKey = ScheduleWindowCalculator.consumptionKey(schedule.id, now.toLocalDate())
         val consumed = getConsumedWindowKeys()
-        if (todayKey in consumed && ScheduleWindowCalculator.startsLaterToday(schedule, now)) {
+        // All-day windows start at 00:00, so "future start" never lifts them; saving an
+        // all-day schedule means "run it now" (blocked by default), lift unconditionally.
+        if (todayKey in consumed &&
+            (schedule.allDay || ScheduleWindowCalculator.startsLaterToday(schedule, now))
+        ) {
             setConsumedWindowKeys(consumed - todayKey)
         }
     }
 
     suspend fun setScheduleEnabled(scheduleId: Long, enabled: Boolean) {
         scheduleDao.setEnabled(scheduleId, enabled)
+        if (enabled) {
+            // Re-enabling a schedule whose window is in progress must re-lock immediately
+            // ("blocked by default"): lift its current consumption instead of keeping it.
+            val today = zonedNow().toLocalDate()
+            val keys = setOf(
+                ScheduleWindowCalculator.consumptionKey(scheduleId, today),
+                ScheduleWindowCalculator.consumptionKey(scheduleId, today.minusDays(1)),
+            )
+            val consumed = getConsumedWindowKeys()
+            if (consumed.any { it in keys }) setConsumedWindowKeys(consumed - keys)
+        }
     }
 
     suspend fun deleteSchedule(scheduleId: Long) {

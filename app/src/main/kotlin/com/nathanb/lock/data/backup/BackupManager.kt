@@ -130,6 +130,9 @@ object BackupManager {
                     put("endMinuteOfDay", schedule.endMinuteOfDay)
                     put("enabled", schedule.enabled)
                     put("createdAt", schedule.createdAt)
+                    put("allDay", schedule.allDay)
+                    put("scanBehavior", schedule.scanBehavior)
+                    if (schedule.pauseDurationMs != null) put("pauseDurationMs", schedule.pauseDurationMs)
                 })
             }
         }
@@ -198,6 +201,9 @@ object BackupManager {
                 endMinuteOfDay = obj.getInt("endMinuteOfDay"),
                 enabled = obj.optBoolean("enabled", true),
                 createdAt = obj.optLong("createdAt", System.currentTimeMillis()),
+                allDay = obj.optBoolean("allDay", false),
+                scanBehavior = obj.optString("scanBehavior", "unlock"),
+                pauseDurationMs = if (obj.has("pauseDurationMs")) obj.getLong("pauseDurationMs") else null,
             )
         }
     }

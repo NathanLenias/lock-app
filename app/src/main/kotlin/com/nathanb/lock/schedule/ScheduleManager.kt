@@ -109,15 +109,22 @@ class ScheduleManager(
         val occurrences = ScheduleWindowCalculator.coveringOccurrences(schedules, now)
         val union = ScheduleWindowCalculator.activePackages(occurrences, consumed, links, profilesById)
 
+        // A running pause suspends every scheduled block; the resume alarm below brings it
+        // back. Stateless like everything else: an expired pausedUntil is simply inert.
+        val nowMs = now.toInstant().toEpochMilli()
+        val pausedUntil = repository.getSchedulePausedUntil()
+        val pauseActive = pausedUntil > nowMs
+        val effectiveUnion = if (pauseActive) emptySet() else union
+
         val state = repository.getLockState()
         when {
-            union.isEmpty() && state.isLocked && state.isScheduleOrigin -> {
+            effectiveUnion.isEmpty() && state.isLocked && state.isScheduleOrigin -> {
                 // Last covering window closed (or lost its profiles): end the session.
                 // reevaluate=false — we ARE the evaluation; re-entering would self-deadlock.
                 repository.endLockSession(EndReason.SCHEDULE.value, reevaluate = false)
                 effects.stopLockService()
             }
-            union.isNotEmpty() && !state.isLocked -> {
+            effectiveUnion.isNotEmpty() && !state.isLocked -> {
                 val activeIds = occurrences
                     .filter { it.consumptionKey !in consumed }
                     .map { it.scheduleId }
@@ -130,7 +137,7 @@ class ScheduleManager(
                     effects.startLockService()
                 }
             }
-            union.isNotEmpty() && state.isLocked && state.isScheduleOrigin -> {
+            effectiveUnion.isNotEmpty() && state.isLocked && state.isScheduleOrigin -> {
                 // Overlap changed while a scheduled session runs: refresh the union.
                 repository.updateScheduledPackages(union)
             }
@@ -139,10 +146,14 @@ class ScheduleManager(
         }
 
         val next = ScheduleWindowCalculator.nextBoundary(schedules, now)
-        if (next == null) {
+        val boundaries = listOfNotNull(
+            next?.toInstant()?.toEpochMilli(),
+            pausedUntil.takeIf { pauseActive }, // pause resume
+        )
+        if (boundaries.isEmpty()) {
             effects.cancelWindowBoundary()
         } else {
-            effects.armWindowBoundary(next.toInstant().toEpochMilli())
+            effects.armWindowBoundary(boundaries.min())
         }
     }
 }

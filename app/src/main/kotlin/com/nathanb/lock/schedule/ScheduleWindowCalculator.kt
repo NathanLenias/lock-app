@@ -40,6 +40,12 @@ object ScheduleWindowCalculator {
     /** The occurrence of [schedule] starting on [day], or null if [day] isn't selected. */
     private fun occurrenceOn(schedule: Schedule, day: LocalDate, zone: java.time.ZoneId): Occurrence? {
         if (!schedule.isActiveOn(day)) return null
+        if (schedule.allDay) {
+            // Whole selected day: [00:00, next day 00:00). Consecutive selected days chain
+            // into continuous blocking (the midnight boundary re-evaluation keeps the
+            // session alive through the overlap-changed path).
+            return Occurrence(schedule.id, day.atStartOfDay(zone), day.plusDays(1).atStartOfDay(zone))
+        }
         val start = day.atStartOfDay(zone).plusMinutes(schedule.startMinuteOfDay.toLong())
         val endDay = if (schedule.endMinuteOfDay <= schedule.startMinuteOfDay) day.plusDays(1) else day
         val end = endDay.atStartOfDay(zone).plusMinutes(schedule.endMinuteOfDay.toLong())

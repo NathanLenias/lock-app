@@ -51,6 +51,20 @@ data class NfcTag(
  * Blocked apps come from the attached profiles (schedule_profiles join table); a schedule
  * with no attached profile is inert.
  */
+/** What an NFC scan does during a schedule's window. */
+enum class ScanBehavior(val value: String) {
+    /** Current behavior: unblocks until the window's next occurrence (consumes it). */
+    UNLOCK("unlock"),
+
+    /** Unblocks for [Schedule.pauseDurationMs], then blocking resumes automatically. */
+    PAUSE("pause");
+
+    companion object {
+        fun fromValue(value: String?): ScanBehavior =
+            entries.firstOrNull { it.value == value } ?: UNLOCK
+    }
+}
+
 @Entity(tableName = "schedules")
 data class Schedule(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -59,6 +73,11 @@ data class Schedule(
     val endMinuteOfDay: Int,
     @ColumnInfo(defaultValue = "1") val enabled: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
+    /** Covers the whole selected day (start/end minutes are ignored). */
+    @ColumnInfo(defaultValue = "0") val allDay: Boolean = false,
+    @ColumnInfo(defaultValue = "unlock") val scanBehavior: String = ScanBehavior.UNLOCK.value,
+    /** PAUSE behavior only: how long a scan unblocks before blocking resumes. */
+    val pauseDurationMs: Long? = null,
 )
 
 @Entity(

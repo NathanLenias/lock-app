@@ -21,6 +21,7 @@ object Constants {
     const val DEFAULT_EMERGENCY_UNLOCK_DURATION_MS = 5 * 60 * 1000L // 5 minutes
     const val DEFAULT_MAX_EMERGENCY_UNLOCKS = 2
     const val DEFAULT_GRACE_PERIOD_MS = 30 * 1000L // 30 seconds
+    const val DEFAULT_SCHEDULE_PAUSE_MS = 30 * 60 * 1000L // pause-behavior fallback
 
     /** Curated list of commonly distracting apps, ordered by suggestion priority */
     val CURATED_SUGGESTIONS = listOf(

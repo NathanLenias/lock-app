@@ -527,4 +527,5 @@
     <string name="profile_continuity_subtitle">Nach Ablauf des Timers bleiben die Apps dieses Profils bis zum nächsten Tag-Scan blockiert</string>
     <string name="profile_continuity_disabled">Verknüpfen Sie einen NFC-Tag, um die Kontinuität aktivieren zu können.</string>
     <string name="profile_dissociate_tag">Tag trennen</string>
+    <string name="toast_pause_resumes">Pause · Blockierung wird in %d Min. fortgesetzt</string>
 </resources>
