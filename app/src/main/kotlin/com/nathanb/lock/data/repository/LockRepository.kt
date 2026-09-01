@@ -507,6 +507,22 @@ class LockRepository(
         dataStore.edit { it.remove(Keys.PAUSED_UNTIL) }
     }
 
+    /**
+     * Disabling or deleting the last covering pause-behavior window makes a running pause
+     * pointless (nothing would resume): drop it so the UI shows a plain unlock. If another
+     * pause window still covers now, the countdown stays and that window resumes.
+     */
+    private suspend fun clearPauseIfOrphaned() {
+        val nowMs = zonedNow().toInstant().toEpochMilli()
+        val current = dataStore.data.first()[Keys.PAUSED_UNTIL] ?: return
+        if (current <= nowMs) return
+        val schedulesById = scheduleDao.getAllOnce().associateBy { it.id }
+        val stillCovered = ScheduleWindowCalculator
+            .coveringOccurrences(schedulesById.values.toList(), zonedNow())
+            .any { ScanBehavior.fromValue(schedulesById[it.scheduleId]?.scanBehavior) == ScanBehavior.PAUSE }
+        if (!stillCovered) clearSchedulePause()
+    }
+
     suspend fun createSchedule(
         daysOfWeek: Int,
         startMinuteOfDay: Int,
@@ -567,12 +583,15 @@ class LockRepository(
             )
             val consumed = getConsumedWindowKeys()
             if (consumed.any { it in keys }) setConsumedWindowKeys(consumed - keys)
+        } else {
+            clearPauseIfOrphaned()
         }
     }
 
     suspend fun deleteSchedule(scheduleId: Long) {
         scheduleProfileDao.deleteBySchedule(scheduleId)
         scheduleDao.delete(scheduleId)
+        clearPauseIfOrphaned()
     }
 
     suspend fun setTagProfile(uid: String, profileId: Long?) {

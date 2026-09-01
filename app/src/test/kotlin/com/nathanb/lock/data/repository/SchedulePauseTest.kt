@@ -151,6 +151,30 @@ class SchedulePauseTest {
     }
 
     @Test
+    fun `disabling the last covering pause window drops the orphaned pause`() = testScope.runTest {
+        val id = schedule(ScanBehavior.PAUSE, 15 * 60_000L)
+        startScheduled()
+        repository.endLockSession(EndReason.NFC.value)
+        assertTrue(repository.getSchedulePausedUntil() > 0L)
+
+        repository.setScheduleEnabled(id, false)
+
+        assertEquals(0L, repository.getSchedulePausedUntil())
+    }
+
+    @Test
+    fun `disabling one pause window keeps the pause while another still covers`() = testScope.runTest {
+        val id = schedule(ScanBehavior.PAUSE, 15 * 60_000L)
+        schedule(ScanBehavior.PAUSE, 30 * 60_000L)
+        startScheduled()
+        val pausedUntil = repository.endLockSession(EndReason.NFC.value)
+
+        repository.setScheduleEnabled(id, false)
+
+        assertEquals(pausedUntil, repository.getSchedulePausedUntil())
+    }
+
+    @Test
     fun `creating or re-enabling a schedule clears a running pause`() = testScope.runTest {
         val id = schedule(ScanBehavior.PAUSE, 15 * 60_000L)
         startScheduled()
