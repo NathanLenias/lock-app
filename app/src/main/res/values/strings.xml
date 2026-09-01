@@ -532,7 +532,7 @@
     <string name="schedule_all_day">All day</string>
     <string name="schedule_all_day_subtitle">Covers 24 hours a day, without taking a time slot</string>
     <string name="schedule_scan_label">On NFC scan</string>
-    <string name="schedule_scan_unlock">Unlock</string>
+    <string name="schedule_scan_unlock">Unblock</string>
     <string name="schedule_scan_pause">Pause</string>
     <string name="schedule_scan_unlock_hint">Unblocks until the schedule\'s next occurrence.</string>
     <string name="schedule_scan_pause_hint">Unblocks for a limited time, then blocking resumes automatically.</string>

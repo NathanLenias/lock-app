@@ -530,7 +530,7 @@
     <string name="schedule_all_day">Toute la journée</string>
     <string name="schedule_all_day_subtitle">Couvre 24 h/24, sans occuper de plage horaire</string>
     <string name="schedule_scan_label">Au scan NFC</string>
-    <string name="schedule_scan_unlock">Déverrouiller</string>
+    <string name="schedule_scan_unlock">Débloquer</string>
     <string name="schedule_scan_pause">Pause</string>
     <string name="schedule_scan_unlock_hint">Débloque jusqu\'à la prochaine occurrence du planning.</string>
     <string name="schedule_scan_pause_hint">Débloque un temps limité, puis le blocage reprend automatiquement.</string>
