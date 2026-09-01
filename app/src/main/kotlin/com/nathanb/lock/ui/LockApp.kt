@@ -53,6 +53,8 @@ import com.nathanb.lock.ui.screens.settings.PermissionsScreen
 import com.nathanb.lock.ui.screens.settings.SessionSettingsScreen
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
 
 private val TAB_ROUTES = setOf("home", "stats", "settings")
 
@@ -112,6 +114,9 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
     val showNavBar = currentRoute in TAB_ROUTES &&
         (!visualLocked || isEmergencyActive)
 
+    val isLandscape =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     LockTheme(themeMode = themeMode) {
         Box(modifier = Modifier.fillMaxSize()) {
             val bannerVisible = isManualMode && currentRoute in TAB_ROUTES && !visualLocked
@@ -119,6 +124,8 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
             NavHost(
                 navController = navController,
                 startDestination = startDestination,
+                // Landscape: keep tab content clear of the left nav rail.
+                modifier = if (isLandscape && showNavBar) Modifier.padding(start = 88.dp) else Modifier,
                 enterTransition = { EnterTransition.None },
                 exitTransition = { ExitTransition.None },
                 popEnterTransition = { EnterTransition.None },
@@ -312,21 +319,41 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
             // Floating nav bar
             AnimatedVisibility(
                 visible = showNavBar,
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessLow,
-                    ),
-                ) + fadeIn(animationSpec = tween(400)),
-                exit = slideOutVertically(
-                    targetOffsetY = { it },
-                    animationSpec = tween(500, easing = FastOutSlowInEasing),
-                ) + fadeOut(animationSpec = tween(300)),
-                modifier = Modifier.align(Alignment.BottomCenter),
+                enter = if (isLandscape) {
+                    slideInHorizontally(
+                        initialOffsetX = { -it },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                        ),
+                    ) + fadeIn(animationSpec = tween(400))
+                } else {
+                    slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                        ),
+                    ) + fadeIn(animationSpec = tween(400))
+                },
+                exit = if (isLandscape) {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it },
+                        animationSpec = tween(500, easing = FastOutSlowInEasing),
+                    ) + fadeOut(animationSpec = tween(300))
+                } else {
+                    slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(500, easing = FastOutSlowInEasing),
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                modifier = Modifier.align(
+                    if (isLandscape) Alignment.CenterStart else Alignment.BottomCenter,
+                ),
             ) {
                 FloatingNavBar(
                     currentRoute = currentRoute,
+                    vertical = isLandscape,
                     onTabSelected = { route ->
                         if (route != currentRoute) {
                             navController.navigate(route) {

@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -204,6 +205,7 @@ fun HomeScreen(
         // Short screens: the bottom-anchored actions would overlap the centered content,
         // so below this height they join the column flow instead of floating over it.
         val isCompactHeight = maxHeight < 760.dp
+        val isLandscape = maxWidth > maxHeight
 
         // Support pill (top-right), hidden during an active lock to keep the focus screen clean.
         if (!visualLocked && !isUnlocking) {
@@ -416,15 +418,9 @@ fun HomeScreen(
 
             }
         } else {
-            // Normal home content (or manual mode locked — same layout, different colors)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 32.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            // Normal home content (or manual mode locked — same layout, different colors).
+            // Shared pieces, laid out as a column in portrait and side by side in landscape.
+            val homeLogo: @Composable () -> Unit = {
                 AnimatedTriangleLogo(
                     isLocked = isLocked,
                     iconScale = iconScale,
@@ -432,9 +428,8 @@ fun HomeScreen(
                     fillProgress = if (!visualLocked && appCount > 0 && hasNfcTags) manualLockFill.value else 0f,
                     accentColor = if (isSoftLock && visualLocked) ManualOrange else null,
                 )
-
-                Spacer(Modifier.height(32.dp))
-
+            }
+            val homeStatus: @Composable () -> Unit = {
                 // Status text
                 Text(
                     text = when {
@@ -516,8 +511,43 @@ fun HomeScreen(
                         color = colors.onSurfaceVariant.copy(alpha = 0.7f),
                     )
                 }
-
-                inlineActions()
+            }
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 32.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        homeStatus()
+                        homeActions(Modifier, Modifier)
+                    }
+                    Spacer(Modifier.width(64.dp))
+                    homeLogo()
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 32.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    homeLogo()
+                    Spacer(Modifier.height(32.dp))
+                    homeStatus()
+                    inlineActions()
+                }
             }
         }
 

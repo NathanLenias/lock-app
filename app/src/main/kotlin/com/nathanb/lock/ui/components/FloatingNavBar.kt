@@ -7,8 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,9 +56,40 @@ fun FloatingNavBar(
     currentRoute: String?,
     onTabSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
+    vertical: Boolean = false,
 ) {
     val colors = LockTheme.colors
     val navBarBackground = colors.surfaceContainer.copy(alpha = 0.95f)
+
+    if (vertical) {
+        // Landscape: same pill, stacked on the left edge, vertically centered by the caller.
+        Surface(
+            modifier = modifier.padding(start = 16.dp),
+            shape = RoundedCornerShape(50),
+            color = navBarBackground,
+            shadowElevation = 4.dp,
+        ) {
+            Column(
+                modifier = Modifier
+                    .width(IntrinsicSize.Max)
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                NavTab.entries.forEach { tab ->
+                    val selected = currentRoute == tab.route
+                    NavBarItem(
+                        label = stringResource(tab.labelResId),
+                        icon = if (selected) tab.selectedIcon else tab.unselectedIcon,
+                        selected = selected,
+                        onClick = { onTabSelected(tab.route) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+        return
+    }
 
     Surface(
         modifier = modifier
