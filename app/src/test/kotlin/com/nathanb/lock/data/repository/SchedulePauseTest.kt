@@ -151,6 +151,22 @@ class SchedulePauseTest {
     }
 
     @Test
+    fun `creating or re-enabling a schedule clears a running pause`() = testScope.runTest {
+        val id = schedule(ScanBehavior.PAUSE, 15 * 60_000L)
+        startScheduled()
+        repository.endLockSession(EndReason.NFC.value)
+        assertTrue(repository.getSchedulePausedUntil() > 0L)
+
+        repository.createSchedule(0b1111111, 0, 1439, emptyList(), allDay = true)
+        assertEquals(0L, repository.getSchedulePausedUntil())
+
+        repository.endLockSession(EndReason.NFC.value) // no session, but re-pauses via covering window? no: not locked -> no consuming path
+        repository.setScheduleEnabled(id, false)
+        repository.setScheduleEnabled(id, true)
+        assertEquals(0L, repository.getSchedulePausedUntil())
+    }
+
+    @Test
     fun `re-enabling a schedule lifts its current consumption`() = testScope.runTest {
         val id = schedule(ScanBehavior.UNLOCK)
         startScheduled()

@@ -489,6 +489,15 @@ class LockRepository(
         return profileIds.filter { it in standard }.distinct()
     }
 
+    /**
+     * Saving, updating or re-enabling a schedule means "apply blocking now": a running
+     * pause would silently swallow the change (a schedule created mid-pause would not
+     * start), so schedule mutations clear it.
+     */
+    private suspend fun clearSchedulePause() {
+        dataStore.edit { it.remove(Keys.PAUSED_UNTIL) }
+    }
+
     suspend fun createSchedule(
         daysOfWeek: Int,
         startMinuteOfDay: Int,
@@ -498,6 +507,7 @@ class LockRepository(
         scanBehavior: String = ScanBehavior.UNLOCK.value,
         pauseDurationMs: Long? = null,
     ): Long {
+        clearSchedulePause()
         val id = scheduleDao.insert(
             Schedule(
                 daysOfWeek = daysOfWeek,
@@ -515,6 +525,7 @@ class LockRepository(
     }
 
     suspend fun updateSchedule(schedule: Schedule, profileIds: List<Long>) {
+        clearSchedulePause()
         scheduleDao.update(schedule)
         scheduleProfileDao.deleteBySchedule(schedule.id)
         scheduleProfileDao.insertAll(
@@ -537,6 +548,7 @@ class LockRepository(
     suspend fun setScheduleEnabled(scheduleId: Long, enabled: Boolean) {
         scheduleDao.setEnabled(scheduleId, enabled)
         if (enabled) {
+            clearSchedulePause()
             // Re-enabling a schedule whose window is in progress must re-lock immediately
             // ("blocked by default"): lift its current consumption instead of keeping it.
             val today = zonedNow().toLocalDate()
