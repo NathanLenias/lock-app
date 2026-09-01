@@ -88,6 +88,7 @@ object BackupManager {
                     put("type", profile.type)
                     put("isDefault", profile.isDefault)
                     if (profile.durationMs != null) put("durationMs", profile.durationMs)
+                    if (profile.continuity) put("continuity", true)
                 })
             }
         }
@@ -158,6 +159,7 @@ object BackupManager {
                 type = obj.optString("type", "standard"),
                 isDefault = obj.optBoolean("isDefault", false),
                 durationMs = if (obj.has("durationMs")) obj.getLong("durationMs") else null,
+                continuity = obj.optBoolean("continuity", false),
             )
         }
     }

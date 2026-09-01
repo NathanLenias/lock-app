@@ -23,6 +23,8 @@ data class Profile(
     @ColumnInfo(defaultValue = "standard") val type: String = ProfileType.STANDARD.value,
     @ColumnInfo(defaultValue = "0") val isDefault: Boolean = false,
     val durationMs: Long? = null,
+    /** No-escape only: when the timer ends, keep blocking until the next tag scan. */
+    @ColumnInfo(defaultValue = "0") val continuity: Boolean = false,
 )
 
 @Entity(tableName = "sessions", indices = [Index("startTime")])

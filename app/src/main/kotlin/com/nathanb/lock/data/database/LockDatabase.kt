@@ -76,9 +76,16 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
     }
 }
 
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Blocking continuity flag (default must match @ColumnInfo default in Models.kt)
+        db.execSQL("ALTER TABLE `profiles` ADD COLUMN `continuity` INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
 @Database(
     entities = [Profile::class, Session::class, NfcTag::class, Schedule::class, ScheduleProfileLink::class],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

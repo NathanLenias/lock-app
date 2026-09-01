@@ -41,9 +41,16 @@ class SessionTimeoutReceiver : BroadcastReceiver() {
                 withTimeoutOrNull(RECEIVER_TIMEOUT_MS) {
                     val state = app.repository.getLockState()
                     if (matchesSession(state, expectedStartTime)) {
-                        if (BuildConfig.DEBUG) Log.d(TAG, "Session auto-unlock ($reason)")
-                        app.repository.endLockSession(reason)
-                        LockForegroundService.stop(context)
+                        if (app.repository.endOrContinueTimedSession(reason)) {
+                            // Blocking continuity: the session now runs as a standard one
+                            // until the next tag scan. Restarting the service refreshes
+                            // the notification and re-arms the global safety timeout.
+                            if (BuildConfig.DEBUG) Log.d(TAG, "Session continued until scan")
+                            LockForegroundService.start(context)
+                        } else {
+                            if (BuildConfig.DEBUG) Log.d(TAG, "Session auto-unlock ($reason)")
+                            LockForegroundService.stop(context)
+                        }
                     } else if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Stale timeout alarm ignored (expected start=$expectedStartTime)")
                     }

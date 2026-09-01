@@ -286,8 +286,11 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                         if (lockState.value.isLocked) {
                             cancelGracePeriod()
                             cancelEmergency()
-                            repository.endLockSession(EndReason.DURATION.value)
-                            LockForegroundService.stop(getApplication())
+                            if (repository.endOrContinueTimedSession(EndReason.DURATION.value)) {
+                                LockForegroundService.start(getApplication())
+                            } else {
+                                LockForegroundService.stop(getApplication())
+                            }
                         }
                     }
                 }
@@ -526,8 +529,11 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
             if (state.isLocked && System.currentTimeMillis() - start >= duration) {
                 cancelGracePeriod()
                 cancelEmergency()
-                repository.endLockSession(EndReason.DURATION.value)
-                LockForegroundService.stop(getApplication())
+                if (repository.endOrContinueTimedSession(EndReason.DURATION.value)) {
+                    LockForegroundService.start(getApplication())
+                } else {
+                    LockForegroundService.stop(getApplication())
+                }
             }
         }
     }
@@ -783,6 +789,10 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setProfileDuration(profileId: Long, durationMs: Long) {
         viewModelScope.launch { repository.setProfileDuration(profileId, durationMs) }
+    }
+
+    fun setProfileContinuity(profileId: Long, enabled: Boolean) {
+        viewModelScope.launch { repository.setProfileContinuity(profileId, enabled) }
     }
 
     fun setDefaultProfile(profileId: Long) {

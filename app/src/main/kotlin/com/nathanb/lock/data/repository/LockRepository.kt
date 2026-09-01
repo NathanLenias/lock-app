@@ -498,6 +498,41 @@ class LockRepository(
         profileDao.update(profile.copy(durationMs = durationMs))
     }
 
+    suspend fun setProfileContinuity(profileId: Long, enabled: Boolean) {
+        val profile = profileDao.getById(profileId) ?: return
+        profileDao.update(profile.copy(continuity = enabled))
+    }
+
+    /**
+     * A timed (no-escape) session reached its end. Default: end it with [reason]. If the
+     * active profile opted into blocking continuity AND at least one tag exists to unlock
+     * (any known tag stops a standard session), convert the session in place into a
+     * standard one that keeps blocking until the next scan: the timer is removed, the
+     * no-escape flag drops, and the emergency budget comes back (it is a standard session
+     * now, and the safety valves must exist since the timer no longer bounds it).
+     * Returns true when the session was continued — callers must then KEEP the foreground
+     * service alive (restarting it re-arms the global safety timeout).
+     */
+    suspend fun endOrContinueTimedSession(reason: String): Boolean {
+        val state = getLockState()
+        val profile = state.activeProfileId?.let { profileDao.getById(it) }
+        val shouldContinue = reason == EndReason.DURATION.value &&
+            state.isLocked && state.isNoEscape &&
+            profile?.continuity == true &&
+            hasAnyNfcTag()
+        if (!shouldContinue) {
+            endLockSession(reason)
+            return false
+        }
+        dataStore.edit { prefs ->
+            prefs.remove(Keys.LOCK_DURATION_MS)
+            prefs[Keys.IS_NO_ESCAPE] = false
+            prefs[Keys.EMERGENCY_UNLOCKS] =
+                prefs[Keys.MAX_EMERGENCY_UNLOCKS_SETTING] ?: Constants.DEFAULT_MAX_EMERGENCY_UNLOCKS
+        }
+        return true
+    }
+
     // Session history & stats
     val sessions: Flow<List<Session>> = sessionDao.getAll()
     val completedSessionCount: Flow<Int> = sessionDao.getCompletedCount()
