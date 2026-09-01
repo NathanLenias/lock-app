@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -195,11 +196,15 @@ fun HomeScreen(
 
     var showSupportSheet by remember { mutableStateOf(false) }
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor),
     ) {
+        // Short screens: the bottom-anchored actions would overlap the centered content,
+        // so below this height they join the column flow instead of floating over it.
+        val isCompactHeight = maxHeight < 760.dp
+
         // Support pill (top-right), hidden during an active lock to keep the focus screen clean.
         if (!visualLocked && !isUnlocking) {
             SupportPill(
@@ -241,6 +246,54 @@ fun HomeScreen(
                 onLater = { viewModel.declineSupportPrompt() },
                 onDismiss = { viewModel.declineSupportPrompt() },
             )
+        }
+
+        // Bottom actions (lock / emergency unlock / grace cancel). One definition, two
+        // placements: floating overlay on regular screens, inline in the scrollable column
+        // on compact ones. Callers pass the modifiers for the two padding cases (48/120dp).
+        val homeActions: @Composable (Modifier, Modifier) -> Unit = { unlockModifier, lockModifier ->
+            // Unlock button (emergency or manual) — never during a no-escape session.
+            // Manual unlock is also offered with zero tags so a standard lock is never a trap.
+            if (visualLocked && !isUnlocking && !isGracePeriod && !lockState.isNoEscape) {
+                if (isManualMode || !hasNfcTags) {
+                    EmergencyUnlockButton(
+                        remainingUnlocks = 0,
+                        onLongPress = { showManualUnlockDialog = true },
+                        showRemainingLabel = false,
+                        modifier = unlockModifier,
+                    )
+                } else if (!isEmergencyActive && lockState.emergencyUnlocksRemaining > 0) {
+                    EmergencyUnlockButton(
+                        remainingUnlocks = lockState.emergencyUnlocksRemaining,
+                        onLongPress = { showEmergencyDialog = true },
+                        modifier = unlockModifier,
+                    )
+                }
+            }
+            if (isGracePeriod) {
+                GracePeriodIndicator(
+                    graceTimeRemaining = graceTimeRemaining,
+                    gracePeriodMs = gracePeriodMs,
+                    onCancel = { viewModel.cancelLock() },
+                    modifier = unlockModifier,
+                )
+            }
+            if (!visualLocked && appCount > 0 && hasNfcTags) {
+                ManualLockButton(
+                    onLock = { viewModel.manualLock() },
+                    fillProgress = manualLockFill,
+                    modifier = lockModifier,
+                )
+            }
+        }
+        val inlineActions: @Composable () -> Unit = {
+            if (isCompactHeight) {
+                Spacer(Modifier.height(32.dp))
+                homeActions(Modifier, Modifier)
+                // Clearance below the actions: the floating nav bar overlays the bottom of
+                // the screen when unlocked; without it the lock button hides behind the bar.
+                Spacer(Modifier.height(if (visualLocked) 24.dp else 104.dp))
+            }
         }
 
         if (!visualLocked && !isManualMode && !setupStatus.isComplete) {
@@ -285,6 +338,8 @@ fun HomeScreen(
                     },
                     onActivateManualMode = { viewModel.enableManualMode() },
                 )
+
+                inlineActions()
             }
         } else if (isManualMode && !visualLocked) {
             // Manual mode — unlocked
@@ -461,52 +516,18 @@ fun HomeScreen(
                         color = colors.onSurfaceVariant.copy(alpha = 0.7f),
                     )
                 }
+
+                inlineActions()
             }
         }
 
-        // Unlock button (emergency or manual) — never during a no-escape session.
-        // Manual unlock is also offered with zero tags so a standard lock is never a trap.
-        if (visualLocked && !isUnlocking && !isGracePeriod && !lockState.isNoEscape) {
-            if (isManualMode || !hasNfcTags) {
-                EmergencyUnlockButton(
-                    remainingUnlocks = 0,
-                    onLongPress = { showManualUnlockDialog = true },
-                    showRemainingLabel = false,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        .padding(bottom = 48.dp),
-                )
-            } else if (!isEmergencyActive && lockState.emergencyUnlocksRemaining > 0) {
-                EmergencyUnlockButton(
-                    remainingUnlocks = lockState.emergencyUnlocksRemaining,
-                    onLongPress = { showEmergencyDialog = true },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        .padding(bottom = 48.dp),
-                )
-            }
-        }
-
-        // Grace period cancel
-        if (isGracePeriod) {
-            GracePeriodIndicator(
-                graceTimeRemaining = graceTimeRemaining,
-                gracePeriodMs = gracePeriodMs,
-                onCancel = { viewModel.cancelLock() },
-                modifier = Modifier
+        if (!isCompactHeight) {
+            homeActions(
+                Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
                     .padding(bottom = 48.dp),
-            )
-        }
-
-        if (!visualLocked && appCount > 0 && hasNfcTags) {
-            ManualLockButton(
-                onLock = { viewModel.manualLock() },
-                fillProgress = manualLockFill,
-                modifier = Modifier
+                Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
                     .padding(bottom = 120.dp),
