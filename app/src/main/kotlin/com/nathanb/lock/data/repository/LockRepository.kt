@@ -31,6 +31,7 @@ import com.nathanb.lock.schedule.ScheduleWindowCalculator
 import java.time.ZonedDateTime
 import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.util.Constants
+import com.nathanb.lock.util.SupportPrompt
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,6 +83,7 @@ class LockRepository(
         val LOCK_DURATION_MS = longPreferencesKey("lock_duration_ms")
         // In-app prompts
         val SUPPORT_PROMPT_STAGE = intPreferencesKey("support_prompt_stage")
+        val SUPPORT_NEXT_THRESHOLD = intPreferencesKey("support_next_threshold")
         val LAST_SEEN_VERSION = intPreferencesKey("last_seen_version_code")
         val IS_NO_ESCAPE = booleanPreferencesKey("is_no_escape")
         // Schedules (recurring auto-lock windows)
@@ -404,11 +406,17 @@ class LockRepository(
     }
 
     /** 0 = never shown; 1..4 = milestones already declined (3, 10, 20, 30 sessions); 5 = done/never. */
-    val supportPromptStage: Flow<Int> = dataStore.data.map { it[Keys.SUPPORT_PROMPT_STAGE] ?: 0 }
-        .distinctUntilChanged()
+    /**
+     * Session-count milestone at which the next support card shows. The cadence lives in
+     * [SupportPrompt]; pre-1.3.0 installs stored a stage index, migrated on read.
+     */
+    val supportNextThreshold: Flow<Int> = dataStore.data.map { prefs ->
+        prefs[Keys.SUPPORT_NEXT_THRESHOLD]
+            ?: SupportPrompt.fromLegacyStage(prefs[Keys.SUPPORT_PROMPT_STAGE])
+    }
 
-    suspend fun setSupportPromptStage(stage: Int) {
-        dataStore.edit { it[Keys.SUPPORT_PROMPT_STAGE] = stage }
+    suspend fun setSupportNextThreshold(threshold: Int) {
+        dataStore.edit { it[Keys.SUPPORT_NEXT_THRESHOLD] = threshold }
     }
 
     val lastSeenVersionCode: Flow<Int> = dataStore.data.map { it[Keys.LAST_SEEN_VERSION] ?: 0 }

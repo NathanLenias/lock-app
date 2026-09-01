@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.nathanb.lock.util.SupportPrompt
 
 data class InstalledApp(
     val packageName: String,
@@ -617,22 +618,30 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     // --- In-app prompts (support reminder + changelog) ---
     // Initial values are chosen so the prompts DON'T show during the DataStore load window
     // (avoids a one-frame flash): "done" for support, "up-to-date" for the changelog.
-    val supportPromptStage: StateFlow<Int> = repository.supportPromptStage
+    val supportNextThreshold: StateFlow<Int> = repository.supportNextThreshold
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Int.MAX_VALUE)
 
     val lastSeenVersionCode: StateFlow<Int> = repository.lastSeenVersionCode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.nathanb.lock.BuildConfig.VERSION_CODE)
 
-    /** User tapped "maybe later" / closed the support card: advance to the next milestone. */
+    /** "Maybe later" / closed: next milestone is the next multiple of 10 sessions. */
     fun declineSupportPrompt() {
         _inAppCardShownThisLaunch.value = true
-        viewModelScope.launch { repository.setSupportPromptStage(supportPromptStage.value + 1) }
+        viewModelScope.launch {
+            repository.setSupportNextThreshold(
+                SupportPrompt.nextAfterDecline(completedSessionCount.value),
+            )
+        }
     }
 
-    /** User tapped "support": stop prompting forever. */
+    /** "Support" tapped: ask again 20 sessions later, then back to the every-10 rhythm. */
     fun completeSupportPrompt() {
         _inAppCardShownThisLaunch.value = true
-        viewModelScope.launch { repository.setSupportPromptStage(Int.MAX_VALUE) }
+        viewModelScope.launch {
+            repository.setSupportNextThreshold(
+                SupportPrompt.nextAfterSupport(completedSessionCount.value),
+            )
+        }
     }
 
     fun markVersionSeen(versionCode: Int) {

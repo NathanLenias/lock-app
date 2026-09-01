@@ -115,7 +115,7 @@ fun HomeScreen(
     val nfcTags by viewModel.nfcTags.collectAsStateWithLifecycle()
     val hasNfcTags = nfcTags.isNotEmpty()
     val completedSessionCount by viewModel.completedSessionCount.collectAsStateWithLifecycle()
-    val supportPromptStage by viewModel.supportPromptStage.collectAsStateWithLifecycle()
+    val supportNextThreshold by viewModel.supportNextThreshold.collectAsStateWithLifecycle()
     val lastSeenVersionCode by viewModel.lastSeenVersionCode.collectAsStateWithLifecycle()
     val pendingUid by viewModel.pendingPairingUid.collectAsStateWithLifecycle()
     val pairingWriteResult by viewModel.pairingWriteResult.collectAsStateWithLifecycle()
@@ -242,10 +242,8 @@ fun HomeScreen(
         val notLocked = !lockState.isLocked && !visualLocked
         val changelogPending = notLocked &&
             com.nathanb.lock.BuildConfig.VERSION_CODE > lastSeenVersionCode
-        val supportThresholds = listOf(3, 10, 20, 30)
         val supportPending = notLocked && !changelogPending && !inAppCardShown &&
-            supportPromptStage < supportThresholds.size &&
-            completedSessionCount >= supportThresholds[supportPromptStage]
+            completedSessionCount >= supportNextThreshold
 
         if (changelogPending) {
             ChangelogCard(
