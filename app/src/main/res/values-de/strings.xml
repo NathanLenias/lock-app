@@ -91,6 +91,7 @@
     <string name="permissions_missing_overlay">Overlay</string>
     <string name="permissions_missing_notifications">Benachrichtigungen</string>
     <string name="permissions_missing_suffix">fehlt</string>
+    <string name="accessibility_reenable_hint">Wenn der Schalter in den Android-Einstellungen bereits aktiviert erscheint, schalten Sie ihn aus und wieder ein.</string>
 
     <!-- NFC Tags Screen -->
     <string name="nfc_tags_title">NFC-Tags</string>
@@ -211,7 +212,10 @@
     <string name="notification_channel_name">Lock-Sitzung</string>
     <string name="notification_channel_desc">Benachrichtigung über aktive Blockiersitzung</string>
     <string name="notification_session_active">Sitzung aktiv</string>
-    <string name="notification_session_active_count">Sitzung aktiv · %1$d App%2$s blockiert</string>
+    <plurals name="notification_session_active_count">
+        <item quantity="one">Sitzung aktiv · %1$d App blockiert</item>
+        <item quantity="other">Sitzung aktiv · %1$d Apps blockiert</item>
+    </plurals>
 
     <!-- Onboarding: Welcome (Page 0) -->
     <string name="onboarding_welcome_title">Übernehmen Sie wieder\ndie Kontrolle über Ihre Aufmerksamkeit</string>

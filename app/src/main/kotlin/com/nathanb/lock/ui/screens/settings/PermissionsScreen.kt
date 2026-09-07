@@ -113,7 +113,13 @@ fun PermissionsScreen(
             PermissionRow(
                 icon = Icons.Outlined.Accessibility,
                 title = stringResource(R.string.permissions_accessibility_title),
-                subtitle = stringResource(R.string.permissions_accessibility_subtitle),
+                // After a process kill ("Active apps" > Stop, force stop) the Android toggle can
+                // still read as enabled while the service is unbound: say how to get it back.
+                subtitle = if (accessibilityOk) {
+                    stringResource(R.string.permissions_accessibility_subtitle)
+                } else {
+                    stringResource(R.string.accessibility_reenable_hint)
+                },
                 isGranted = accessibilityOk,
                 onClick = { PermissionHelper.openAccessibilitySettings(context) },
             )

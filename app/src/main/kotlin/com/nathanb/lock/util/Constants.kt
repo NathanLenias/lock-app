@@ -39,7 +39,7 @@ object Constants {
 
     const val NOTIFICATION_CHANNEL_ID = "lock_session"
     const val NOTIFICATION_ID = 1
-    const val FOREGROUND_SERVICE_REQUEST_CODE = 100
+    const val SESSION_NOTIFICATION_REQUEST_CODE = 100
 
     const val PRIVACY_URL = "https://lock-app.fr/privacy"
 }

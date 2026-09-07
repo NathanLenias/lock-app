@@ -91,6 +91,7 @@
     <string name="permissions_missing_overlay">overlay</string>
     <string name="permissions_missing_notifications">notifications</string>
     <string name="permissions_missing_suffix">missing</string>
+    <string name="accessibility_reenable_hint">If the switch already shows as enabled in Android settings, turn it off, then on again.</string>
 
     <!-- NFC Tags Screen -->
     <string name="nfc_tags_title">NFC Tags</string>
@@ -211,7 +212,10 @@
     <string name="notification_channel_name">Lock Session</string>
     <string name="notification_channel_desc">Active blocking session notification</string>
     <string name="notification_session_active">Session active</string>
-    <string name="notification_session_active_count">Session active · %1$d app%2$s blocked</string>
+    <plurals name="notification_session_active_count">
+        <item quantity="one">Session active · %1$d app blocked</item>
+        <item quantity="other">Session active · %1$d apps blocked</item>
+    </plurals>
 
     <!-- Onboarding: Welcome (Page 0) -->
     <string name="onboarding_welcome_title">Take back control\nof your attention</string>

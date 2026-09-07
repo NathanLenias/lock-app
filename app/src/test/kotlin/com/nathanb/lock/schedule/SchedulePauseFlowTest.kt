@@ -47,11 +47,11 @@ class SchedulePauseFlowTest {
 
     private class FakeEffects : ScheduleEffects {
         var armedAtMillis: Long? = null
-        var serviceRunning = false
+        var notifierRunning = false
         override fun armWindowBoundary(triggerAtEpochMillis: Long) { armedAtMillis = triggerAtEpochMillis }
         override fun cancelWindowBoundary() { armedAtMillis = null }
-        override fun startLockService() { serviceRunning = true }
-        override fun stopLockService() { serviceRunning = false }
+        override suspend fun startSessionNotifier() { notifierRunning = true }
+        override fun stopSessionNotifier() { notifierRunning = false }
     }
 
     private lateinit var repository: LockRepository
@@ -107,7 +107,7 @@ class SchedulePauseFlowTest {
 
         manager.evaluateAndRearm()
         assertTrue("all-day window must lock", repository.getLockState().isLocked)
-        assertTrue(effects.serviceRunning)
+        assertTrue(effects.notifierRunning)
 
         // NFC scan: the repository pauses, then the hook re-evaluates.
         val pausedUntil = repository.endLockSession(EndReason.NFC.value)
@@ -119,7 +119,7 @@ class SchedulePauseFlowTest {
         now = now.plusMinutes(16)
         manager.evaluateAndRearm()
         assertTrue("blocking must resume", repository.getLockState().isLocked)
-        assertTrue(effects.serviceRunning)
+        assertTrue(effects.notifierRunning)
         assertTrue(repository.getConsumedWindowKeys().isEmpty())
     }
 

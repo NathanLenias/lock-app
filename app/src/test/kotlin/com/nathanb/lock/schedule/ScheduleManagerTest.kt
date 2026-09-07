@@ -49,7 +49,7 @@ class ScheduleManagerTest {
     private class FakeEffects : ScheduleEffects {
         var armedAtMillis: Long? = null
         var cancelled = false
-        var serviceRunning = false
+        var notifierRunning = false
 
         override fun armWindowBoundary(triggerAtEpochMillis: Long) {
             armedAtMillis = triggerAtEpochMillis
@@ -61,8 +61,8 @@ class ScheduleManagerTest {
             cancelled = true
         }
 
-        override fun startLockService() { serviceRunning = true }
-        override fun stopLockService() { serviceRunning = false }
+        override suspend fun startSessionNotifier() { notifierRunning = true }
+        override fun stopSessionNotifier() { notifierRunning = false }
     }
 
     private lateinit var profileDao: FakeProfileDao
@@ -121,7 +121,7 @@ class ScheduleManagerTest {
         clock = at(10)
         manager.evaluateAndRearm()
         assertTrue(repository.getLockState().isLocked)
-        assertTrue(effects.serviceRunning)
+        assertTrue(effects.notifierRunning)
         assertEquals(epoch(17), effects.armedAtMillis)
 
         clock = at(17)
@@ -130,7 +130,7 @@ class ScheduleManagerTest {
         val state = repository.getLockState()
         assertFalse(state.isLocked)
         assertFalse(state.isScheduleOrigin)
-        assertFalse(effects.serviceRunning)
+        assertFalse(effects.notifierRunning)
         // Next boundary = tomorrow 09:00 (daily schedule).
         assertEquals(at(9).plusDays(1).toInstant().toEpochMilli(), effects.armedAtMillis)
         val endedSession = repository.sessions.first().firstOrNull { it.endTime != null }
@@ -152,13 +152,13 @@ class ScheduleManagerTest {
         clock = at(13, 35)
         manager.evaluateAndRearm()
         assertFalse(repository.getLockState().isLocked)
-        assertFalse(effects.serviceRunning)
+        assertFalse(effects.notifierRunning)
         assertEquals(epoch(13, 40), effects.armedAtMillis) // B's start IS armed
 
         clock = at(13, 40)
         manager.evaluateAndRearm()
         assertTrue(repository.getLockState().isLocked) // B started
-        assertTrue(effects.serviceRunning)
+        assertTrue(effects.notifierRunning)
         assertEquals(epoch(13, 45), effects.armedAtMillis)
     }
 
@@ -174,7 +174,7 @@ class ScheduleManagerTest {
         manager.evaluateAndRearm()
 
         assertFalse(repository.getLockState().isLocked)
-        assertFalse(effects.serviceRunning)
+        assertFalse(effects.notifierRunning)
     }
 
     // --- Existing behaviors stay intact ---

@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import com.nathanb.lock.data.model.EndReason
 import com.nathanb.lock.data.repository.LockRepository
-import com.nathanb.lock.service.LockForegroundService
+import com.nathanb.lock.service.SessionNotifier
 import com.nathanb.lock.util.setWakeupAlarm
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -21,8 +21,8 @@ interface ScheduleEffects {
     /** Arm the single window-boundary alarm (exact when the platform allows it). */
     fun armWindowBoundary(triggerAtEpochMillis: Long)
     fun cancelWindowBoundary()
-    fun startLockService()
-    fun stopLockService()
+    suspend fun startSessionNotifier()
+    fun stopSessionNotifier()
 }
 
 class AndroidScheduleEffects(private val context: Context) : ScheduleEffects {
@@ -50,9 +50,9 @@ class AndroidScheduleEffects(private val context: Context) : ScheduleEffects {
         alarmManager.cancel(pendingIntent())
     }
 
-    override fun startLockService() = LockForegroundService.start(context)
+    override suspend fun startSessionNotifier() = SessionNotifier.start(context)
 
-    override fun stopLockService() = LockForegroundService.stop(context)
+    override fun stopSessionNotifier() = SessionNotifier.stop(context)
 
     private companion object {
         const val BOUNDARY_REQUEST_CODE = 200
@@ -122,7 +122,7 @@ class ScheduleManager(
                 // Last covering window closed (or lost its profiles): end the session.
                 // reevaluate=false — we ARE the evaluation; re-entering would self-deadlock.
                 repository.endLockSession(EndReason.SCHEDULE.value, reevaluate = false)
-                effects.stopLockService()
+                effects.stopSessionNotifier()
             }
             effectiveUnion.isNotEmpty() && !state.isLocked -> {
                 val activeIds = occurrences
@@ -134,7 +134,7 @@ class ScheduleManager(
                 }?.profileId
                 if (firstProfileId != null) {
                     repository.startScheduledSession(firstProfileId, union)
-                    effects.startLockService()
+                    effects.startSessionNotifier()
                 }
             }
             effectiveUnion.isNotEmpty() && state.isLocked && state.isScheduleOrigin -> {

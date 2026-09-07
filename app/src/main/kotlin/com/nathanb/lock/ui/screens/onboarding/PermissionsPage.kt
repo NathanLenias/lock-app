@@ -83,6 +83,7 @@ internal fun PermissionsPage(
                 titleRes = R.string.onboarding_perm_accessibility_title,
                 descRes = R.string.onboarding_perm_accessibility_desc,
                 detailRes = R.string.onboarding_perm_accessibility_detail,
+                hintRes = R.string.accessibility_reenable_hint,
                 isGranted = { accessibilityOk },
                 openSettings = { PermissionHelper.openAccessibilitySettings(it) },
             ),
@@ -237,7 +238,11 @@ internal fun PermissionsPage(
         LockBottomSheet(
             onDismiss = { sheetPermission = null },
             title = stringResource(perm.titleRes),
-            body = stringResource(perm.detailRes),
+            body = buildString {
+                append(stringResource(perm.detailRes))
+                val hint = perm.hintRes
+                if (hint != null && !perm.isGranted()) append("\n\n").append(stringResource(hint))
+            },
             icon = perm.icon,
         ) {
             Button(
@@ -270,6 +275,8 @@ private data class PermissionInfo(
     val descRes: Int,
     val detailRes: Int,
     val isGranted: () -> Boolean,
+    /** Extra line shown in the detail sheet while the permission is missing. */
+    val hintRes: Int? = null,
     val openSettings: (Context) -> Unit,
 )
 

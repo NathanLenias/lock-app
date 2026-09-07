@@ -94,6 +94,7 @@
     <string name="permissions_missing_overlay">superposition</string>
     <string name="permissions_missing_notifications">notifications</string>
     <string name="permissions_missing_suffix">manquante(s)</string>
+    <string name="accessibility_reenable_hint">Si l\'interrupteur apparaît déjà activé dans les réglages Android, désactivez-le puis réactivez-le.</string>
 
     <!-- NFC Tags Screen -->
     <string name="nfc_tags_title">Tags NFC</string>
@@ -214,7 +215,10 @@
     <string name="notification_channel_name">Session Lock</string>
     <string name="notification_channel_desc">Notification de session de blocage active</string>
     <string name="notification_session_active">Session active</string>
-    <string name="notification_session_active_count">Session active · %1$d app%2$s bloquée%3$s</string>
+    <plurals name="notification_session_active_count">
+        <item quantity="one">Session active · %1$d app bloquée</item>
+        <item quantity="other">Session active · %1$d apps bloquées</item>
+    </plurals>
 
     <!-- Stats: Today Card -->
     <string name="stats_today">Aujourd\'hui</string>

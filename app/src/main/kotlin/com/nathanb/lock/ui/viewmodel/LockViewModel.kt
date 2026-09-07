@@ -32,7 +32,7 @@ import com.nathanb.lock.data.repository.LockRepository
 import com.nathanb.lock.nfc.NdefWriteResult
 import com.nathanb.lock.nfc.NfcManager
 import com.nathanb.lock.nfc.NfcResult
-import com.nathanb.lock.service.LockForegroundService
+import com.nathanb.lock.service.SessionNotifier
 import com.nathanb.lock.ui.theme.ThemeMode
 import com.nathanb.lock.util.Constants
 import kotlinx.coroutines.Dispatchers
@@ -262,14 +262,14 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Self-heal: a timed (no-escape) session must auto-end even if the foreground service was
-    // killed (app update, OOM, reboot). Independent of LockForegroundService.timeoutJob.
+    // Self-heal: a timed (no-escape) session must auto-end even if the timeout alarm was
+    // lost (app update, OOM, reboot). Independent of the SessionTimeoutReceiver alarm.
     private var autoEndJob: kotlinx.coroutines.Job? = null
     private var wasLocked = false
     init {
         viewModelScope.launch {
             lockState.collect { state ->
-                // Sessions can end outside the ViewModel (FGS timeout, schedule window end):
+                // Sessions can end outside the ViewModel (timeout alarm, schedule window end):
                 // clear grace/emergency UI state so it doesn't leak into the next session.
                 if (wasLocked && !state.isLocked) {
                     cancelGracePeriod()
@@ -288,9 +288,9 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                             cancelGracePeriod()
                             cancelEmergency()
                             if (repository.endOrContinueTimedSession(EndReason.DURATION.value)) {
-                                LockForegroundService.start(getApplication())
+                                SessionNotifier.start(getApplication())
                             } else {
-                                LockForegroundService.stop(getApplication())
+                                SessionNotifier.stop(getApplication())
                             }
                         }
                     }
@@ -420,20 +420,20 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
             _nfcEvents.emit(result)
             when (result) {
                 is NfcResult.Started -> {
-                    LockForegroundService.start(getApplication())
+                    SessionNotifier.start(getApplication())
                     if (!result.isNoEscape) startGracePeriod() // No-escape: instant lock, no grace
                 }
                 is NfcResult.Stopped -> {
                     cancelGracePeriod()
                     cancelEmergency()
-                    LockForegroundService.stop(getApplication())
+                    SessionNotifier.stop(getApplication())
                 }
                 is NfcResult.Paused -> {
                     // Scheduled block paused by the scan: the session (if any) is already
                     // ended in the repository; the resume alarm re-locks on its own.
                     cancelGracePeriod()
                     cancelEmergency()
-                    LockForegroundService.stop(getApplication())
+                    SessionNotifier.stop(getApplication())
                 }
                 is NfcResult.TagPaired -> {
                     _pairingWriteResult.value = result.writeResult
@@ -496,10 +496,10 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         _emergencyTimeRemaining.value = 0
     }
 
-    /** Shared session start: persists, starts the service, and grace-period unless no-escape. */
+    /** Shared session start: persists, posts the notification + timeout, and grace-period unless no-escape. */
     private suspend fun beginSession(profileId: Long) {
         repository.startLockSession(profileId)
-        LockForegroundService.start(getApplication())
+        SessionNotifier.start(getApplication())
         val isNoEscape = repository.getProfile(profileId)
             ?.let { ProfileType.fromValue(it.type) == ProfileType.NO_ESCAPE } ?: false
         if (!isNoEscape) startGracePeriod()
@@ -527,7 +527,7 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Foreground safety net: if a timed (no-escape) session has reached its end, terminate it.
      * Guarded and idempotent — no-op for standard sessions, still-running sessions, or when idle.
-     * Complements the ViewModel self-heal and the foreground-service timer.
+     * Complements the ViewModel self-heal and the timeout alarm.
      */
     fun endTimedSessionIfExpired() {
         viewModelScope.launch {
@@ -538,9 +538,9 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
                 cancelGracePeriod()
                 cancelEmergency()
                 if (repository.endOrContinueTimedSession(EndReason.DURATION.value)) {
-                    LockForegroundService.start(getApplication())
+                    SessionNotifier.start(getApplication())
                 } else {
-                    LockForegroundService.stop(getApplication())
+                    SessionNotifier.stop(getApplication())
                 }
             }
         }
@@ -552,7 +552,7 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
             cancelGracePeriod()
             cancelEmergency()
             repository.endLockSession(EndReason.MANUAL.value)
-            LockForegroundService.stop(getApplication())
+            SessionNotifier.stop(getApplication())
         }
     }
 
@@ -568,7 +568,7 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
             cancelEmergency()
             if (lockState.value.isLocked) {
                 repository.endLockSession(EndReason.CANCELLED.value)
-                LockForegroundService.stop(getApplication())
+                SessionNotifier.stop(getApplication())
             }
             repository.setManualMode(false)
         }
@@ -605,7 +605,7 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
             cancelGracePeriod()
             cancelEmergency()
             repository.endLockSession(EndReason.CANCELLED.value)
-            LockForegroundService.stop(getApplication())
+            SessionNotifier.stop(getApplication())
         }
     }
 

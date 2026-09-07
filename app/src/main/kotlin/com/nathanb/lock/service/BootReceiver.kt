@@ -28,8 +28,10 @@ class BootReceiver : BroadcastReceiver() {
                 val state = app.repository.getLockState()
 
                 if (state.isLocked) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Was locked before reboot, restarting foreground service")
-                    LockForegroundService.start(context)
+                    // Re-posts the session notification and re-arms the timeout alarm (alarms
+                    // don't survive a reboot).
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Was locked before reboot, restoring session notification + timeout")
+                    SessionNotifier.start(context)
                 }
 
                 // Alarms don't survive a reboot: re-evaluate windows and re-arm the next boundary.

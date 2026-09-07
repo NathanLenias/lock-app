@@ -52,7 +52,7 @@ class LockApplication : Application() {
         )
 
         scheduleManager = ScheduleManager(repository, AndroidScheduleEffects(this))
-        // Any session end (NFC, manual, timeout, FGS...) re-evaluates the windows.
+        // Any session end (NFC, manual, timeout alarm...) re-evaluates the windows.
         repository.onSessionEnded = { scheduleManager.evaluateAndRearm() }
         // Startup safety net: covers missed inexact alarms and process death.
         appScope.launch { scheduleManager.evaluateAndRearm() }

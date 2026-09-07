@@ -662,7 +662,8 @@ fun ProfileDetailScreen(
             onDismiss = { showPermRequired = false },
             icon = Icons.Outlined.Info,
             title = stringResource(R.string.profile_perm_required_title),
-            body = stringResource(R.string.profile_perm_required_body),
+            body = stringResource(R.string.profile_perm_required_body) + "\n\n" +
+                stringResource(R.string.accessibility_reenable_hint),
             actions = {
                 Button(
                     onClick = {

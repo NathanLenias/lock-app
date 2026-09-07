@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
-    <!-- Foreground Service -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Session notification (an ordinary notification on purpose: no foreground service, so
+         Lock never shows up under "Active apps", whose Stop button used to kill the process
+         and leave the accessibility service unbound) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Battery Optimization -->
@@ -67,16 +67,6 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
-
-        <!-- Foreground Service -->
-        <service
-            android:name=".service.LockForegroundService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="App blocker: blocks distracting apps during focus sessions" />
         </service>
 
         <!-- Boot Receiver -->
