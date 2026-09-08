@@ -25,18 +25,25 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate — action=${intent.action}")
+        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate — action=${intent.action}, recreated=${savedInstanceState != null}")
         enableEdgeToEdge()
 
-        val isNfcLaunch = intent.action == NfcAdapter.ACTION_NDEF_DISCOVERED ||
-            intent.action == NfcAdapter.ACTION_TAG_DISCOVERED
+        // A recreation (rotation, theme change, process restore) hands the launch intent
+        // back verbatim. Only a fresh launch may treat it as a tag scan: replaying it would
+        // toggle the session on every rotation (landscape regression, 1.3.0).
+        val isFreshLaunch = savedInstanceState == null
+        val launchIntent = intent
+        val isNfcLaunch = isFreshLaunch && isNfcAction(launchIntent.action)
 
         setContent {
             LockApp(viewModel = viewModel, isNfcLaunch = isNfcLaunch)
         }
 
         // Handle NFC intent if app was launched via tag (background/manifest case)
-        handleNfcIntent(intent)
+        if (isFreshLaunch) {
+            handleNfcIntent(launchIntent)
+            neutralizeNfcIntent(launchIntent)
+        }
     }
 
     override fun onResume() {
@@ -64,7 +71,24 @@ class MainActivity : ComponentActivity() {
         if (BuildConfig.DEBUG) Log.d(TAG, "onNewIntent — action=${intent.action}")
         setIntent(intent)
         handleNfcIntent(intent)
+        neutralizeNfcIntent(intent)
     }
+
+    /**
+     * Once a tag intent has been handed to [handleNfcIntent] (which keeps its own reference),
+     * the activity must not remember it: `getIntent()` is what a recreation replays, and a
+     * scan must never be replayed. Only tag intents are replaced, so a plain launcher intent
+     * keeps its categories.
+     */
+    private fun neutralizeNfcIntent(handled: Intent) {
+        if (!isNfcAction(handled.action)) return
+        setIntent(Intent(Intent.ACTION_MAIN))
+    }
+
+    private fun isNfcAction(action: String?): Boolean =
+        action == NfcAdapter.ACTION_NDEF_DISCOVERED ||
+            action == NfcAdapter.ACTION_TAG_DISCOVERED ||
+            action == NfcAdapter.ACTION_TECH_DISCOVERED
 
     /**
      * Handle NFC intents delivered via the manifest (background/cold start case).
