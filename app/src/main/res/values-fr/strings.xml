@@ -541,5 +541,5 @@
     <string name="schedule_pause_duration_label">Durée de la pause</string>
     <string name="duration_unit_hour">h</string>
     <string name="inapp_changelog_3_title">Fiabilité</string>
-    <string name="inapp_changelog_3_body">Correction : la fin de session automatique pouvait arriver en retard quand le téléphone était en veille. Tout se déclenche désormais à l\'heure.</string>
+    <string name="inapp_changelog_3_body">Correction : la fin de session automatique pouvait arriver en retard quand le téléphone était en veille. Correction : Lock n\'apparaît plus dans « Applications actives » d\'Android, d\'où un arrêt pouvait désactiver le blocage sans prévenir.</string>
 </resources>

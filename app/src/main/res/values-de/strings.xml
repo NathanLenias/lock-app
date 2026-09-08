@@ -543,5 +543,5 @@
     <string name="schedule_pause_duration_label">Pausendauer</string>
     <string name="duration_unit_hour">Std.</string>
     <string name="inapp_changelog_3_title">Zuverlässigkeit</string>
-    <string name="inapp_changelog_3_body">Korrektur: Das automatische Sitzungsende konnte sich verzögern, während das Telefon schlief. Alles wird jetzt pünktlich ausgelöst.</string>
+    <string name="inapp_changelog_3_body">Korrektur: Das automatische Sitzungsende konnte sich verzögern, während das Telefon schlief. Korrektur: Lock erscheint nicht mehr unter „Aktive Apps“ in Android, wo ein Stopp die Blockierung unbemerkt aufheben konnte.</string>
 </resources>

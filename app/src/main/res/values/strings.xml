@@ -543,5 +543,5 @@
     <string name="schedule_pause_duration_label">Pause duration</string>
     <string name="duration_unit_hour">h</string>
     <string name="inapp_changelog_3_title">Reliability</string>
-    <string name="inapp_changelog_3_body">Fix: automatic session end could run late while the phone was asleep. Everything now fires on time.</string>
+    <string name="inapp_changelog_3_body">Fix: automatic session end could run late while the phone was asleep. Fix: Lock no longer appears in Android\'s Active apps panel, where stopping it could silently disable blocking.</string>
 </resources>
