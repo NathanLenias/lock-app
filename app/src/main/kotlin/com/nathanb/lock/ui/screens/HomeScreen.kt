@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalContext
@@ -222,11 +223,14 @@ fun HomeScreen(
         val isLandscape = maxWidth > maxHeight
 
         // Support pill (top-right), hidden during an active lock to keep the focus screen clean.
+        // zIndex: the full-screen scrollable columns below are declared after it and would
+        // otherwise sit on top and swallow its taps (regression of the short-screen scroll).
         if (!visualLocked && !isUnlocking) {
             SupportPill(
                 onClick = { showSupportSheet = true },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
+                    .zIndex(1f)
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(top = 12.dp, end = 16.dp),
             )
