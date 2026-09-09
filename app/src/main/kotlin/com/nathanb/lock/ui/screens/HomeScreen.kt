@@ -82,6 +82,7 @@ import com.nathanb.lock.ui.screens.home.ManualUnlockBottomSheet
 import com.nathanb.lock.ui.screens.home.SetupChecklistSection
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
+import com.nathanb.lock.util.Constants
 import com.nathanb.lock.util.PermissionHelper
 import kotlinx.coroutines.delay
 
@@ -244,8 +245,10 @@ fun HomeScreen(
         // and at most one card per app launch ---
         val inAppCardShown by viewModel.inAppCardShownThisLaunch.collectAsStateWithLifecycle()
         val notLocked = !lockState.isLocked && !visualLocked
+        // Only users who last saw a version older than the card's content get it; a bug-fix
+        // release must not re-show the same card to everyone.
         val changelogPending = notLocked &&
-            com.nathanb.lock.BuildConfig.VERSION_CODE > lastSeenVersionCode
+            lastSeenVersionCode < Constants.CHANGELOG_SINCE_VERSION_CODE
         val supportPending = notLocked && !changelogPending && !inAppCardShown &&
             completedSessionCount >= supportNextThreshold
 
