@@ -139,6 +139,9 @@
     <string name="app_picker_category_social">Social</string>
     <string name="app_picker_category_games">Jeux</string>
     <string name="app_picker_category_tools">Outils</string>
+    <string name="app_picker_settings_warning_title">Bloquer les Réglages Android ?</string>
+    <string name="app_picker_settings_warning_body">Pendant une session, vous ne pourrez plus ouvrir les Réglages, donc ni désactiver le service d\'accessibilité ni changer les permissions de Lock.\n\nPour sortir, il vous restera votre tag, le déblocage d\'urgence, la fin du minuteur, ou la désinstallation de Lock depuis l\'écran d\'accueil.</string>
+    <string name="app_picker_settings_warning_confirm">Bloquer les Réglages</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">Statistiques</string>

@@ -136,6 +136,9 @@
     <string name="app_picker_category_social">Social</string>
     <string name="app_picker_category_games">Games</string>
     <string name="app_picker_category_tools">Tools</string>
+    <string name="app_picker_settings_warning_title">Block Android Settings?</string>
+    <string name="app_picker_settings_warning_body">During a session you will not be able to open Settings, so you cannot disable the accessibility service or change Lock\'s permissions.\n\nTo get out, you will still have your tag, the emergency unlock, the end of the timer, or uninstalling Lock from the home screen.</string>
+    <string name="app_picker_settings_warning_confirm">Block Settings</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">Statistics</string>

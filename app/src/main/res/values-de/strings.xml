@@ -136,6 +136,9 @@
     <string name="app_picker_category_social">Sozial</string>
     <string name="app_picker_category_games">Spiele</string>
     <string name="app_picker_category_tools">Tools</string>
+    <string name="app_picker_settings_warning_title">Android-Einstellungen blockieren?</string>
+    <string name="app_picker_settings_warning_body">Während einer Sitzung können Sie die Einstellungen nicht öffnen, also weder den Bedienungshilfen-Dienst deaktivieren noch die Berechtigungen von Lock ändern.\n\nZum Beenden bleiben Ihnen Ihr Tag, die Notfall-Freigabe, das Ende des Timers oder die Deinstallation von Lock vom Startbildschirm.</string>
+    <string name="app_picker_settings_warning_confirm">Einstellungen blockieren</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">Statistik</string>

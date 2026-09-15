@@ -11,6 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.graphics.Color
+import com.nathanb.lock.ui.components.LockBottomSheet
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.ime
@@ -82,6 +89,8 @@ fun AppPickerScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(AppCategory.ALL) }
     var blockedCardExpanded by remember { mutableStateOf(true) }
+    // Blocking Android Settings is opt-in and confirmed: it removes the usual way out.
+    var showSettingsWarning by remember { mutableStateOf(false) }
 
     val selectedSnapshot = selectedApps.toMap()
     val blockedApps = remember(installedApps, selectedSnapshot) {
@@ -248,9 +257,10 @@ fun AppPickerScreen(
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         BulkActions(
                             onAddAll = {
-                                filteredApps.forEach { app ->
-                                    selectedApps[app.packageName] = true
-                                }
+                                // Settings only joins through its own card and confirmation.
+                                filteredApps
+                                    .filter { it.packageName != Constants.SETTINGS_PACKAGE }
+                                    .forEach { app -> selectedApps[app.packageName] = true }
                             },
                             onRemoveAll = {
                                 filteredApps.forEach { app ->
@@ -270,7 +280,12 @@ fun AppPickerScreen(
                         isSelected = selectedSnapshot[app.packageName] == true,
                         icon = iconCache[app.packageName],
                         onToggle = {
-                            selectedApps[app.packageName] = selectedSnapshot[app.packageName] != true
+                            val select = selectedSnapshot[app.packageName] != true
+                            if (select && app.packageName == Constants.SETTINGS_PACKAGE) {
+                                showSettingsWarning = true
+                            } else {
+                                selectedApps[app.packageName] = select
+                            }
                         },
                     )
                 }
@@ -281,5 +296,43 @@ fun AppPickerScreen(
                 }
             }
         }
+    }
+
+    if (showSettingsWarning) {
+        LockBottomSheet(
+            onDismiss = { showSettingsWarning = false },
+            icon = Icons.Outlined.Warning,
+            title = stringResource(R.string.app_picker_settings_warning_title),
+            body = stringResource(R.string.app_picker_settings_warning_body),
+            actions = {
+                Button(
+                    onClick = {
+                        selectedApps[Constants.SETTINGS_PACKAGE] = true
+                        showSettingsWarning = false
+                    },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
+                ) {
+                    Text(
+                        text = stringResource(R.string.app_picker_settings_warning_confirm),
+                        fontFamily = SatoshiFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                TextButton(
+                    onClick = { showSettingsWarning = false },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.action_cancel),
+                        fontFamily = SatoshiFamily,
+                        color = colors.onSurfaceVariant,
+                    )
+                }
+            },
+        )
     }
 }

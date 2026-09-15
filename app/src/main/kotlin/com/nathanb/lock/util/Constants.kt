@@ -8,9 +8,14 @@ object Constants {
         "com.android.launcher3",
     )
 
-    /** Packages that must never be blocked */
+    /**
+     * Android Settings. Not whitelisted: blocking it is a deliberate per-profile choice
+     * (it closes the door to disabling the accessibility service), confirmed in the picker.
+     */
+    const val SETTINGS_PACKAGE = "com.android.settings"
+
+    /** Packages that must never be blocked: emergency calls, the launcher, Lock itself. */
     val WHITELISTED_PACKAGES = setOf(
-        "com.android.settings",
         "com.google.android.dialer",
         "com.android.phone",
         "com.nathanb.lock",
