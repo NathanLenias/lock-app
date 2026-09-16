@@ -13,7 +13,7 @@
     <string name="action_edit">Modifier</string>
     <string name="action_support">Support</string>
     <string name="support_title">Soutenir Lock</string>
-    <string name="support_body">Lock est développé par une seule personne, est 100\u00A0% gratuite et le restera. Si l\'app vous plaît et vous aide au quotidien, votre soutien, même symbolique, aide à financer les prochaines fonctionnalités et à maintenir l\'app à jour.\n\nMerci d\'avance ❤️</string>
+    <string name="support_body" formatted="false">Lock est développé par une seule personne, est 100\u00A0% gratuite et le restera. Si l\'app vous plaît et vous aide au quotidien, votre soutien, même symbolique, aide à financer les prochaines fonctionnalités et à maintenir l\'app à jour.\n\nMerci d\'avance ❤️</string>
     <string name="support_cta">Je soutiens Lock</string>
     <string name="label_info">Info</string>
 
@@ -42,7 +42,16 @@
     <string name="emergency_unlock_cd">Déblocage d\'urgence</string>
     <string name="emergency_remaining">%d restant(s)</string>
     <string name="emergency_title">Déblocage d\'urgence</string>
-    <string name="emergency_body">Vous aurez accès à toutes les apps pendant %1$d minute%2$s, puis le blocage reprendra automatiquement.\n\n%3$d déblocage(s) restant(s)</string>
+    <plurals name="emergency_body_access">
+        <item quantity="one">Vous aurez accès à toutes les apps pendant %d minute, puis le blocage reprendra automatiquement.</item>
+        <item quantity="other">Vous aurez accès à toutes les apps pendant %d minutes, puis le blocage reprendra automatiquement.</item>
+        <item quantity="many">Vous aurez accès à toutes les apps pendant %d minutes, puis le blocage reprendra automatiquement.</item>
+    </plurals>
+    <plurals name="emergency_body_remaining">
+        <item quantity="one">%d déblocage restant</item>
+        <item quantity="other">%d déblocages restants</item>
+        <item quantity="many">%d déblocages restants</item>
+    </plurals>
     <string name="emergency_confirm">Confirmer le déblocage</string>
 
     <!-- Grace period -->
@@ -55,7 +64,11 @@
     <!-- Settings Screen -->
     <string name="settings_title">Réglages</string>
     <string name="settings_nfc_tags">Tags NFC</string>
-    <string name="settings_nfc_tags_count">%1$d tag%2$s associé%3$s</string>
+    <plurals name="settings_nfc_tags_count">
+        <item quantity="one">%1$d tag associé</item>
+        <item quantity="other">%1$d tags associés</item>
+        <item quantity="many">%1$d tags associés</item>
+    </plurals>
     <string name="settings_session">Session</string>
     <string name="settings_session_subtitle">Délai de grâce, durée, ..</string>
     <string name="settings_appearance">Apparence</string>
@@ -221,6 +234,7 @@
     <plurals name="notification_session_active_count">
         <item quantity="one">Session active · %1$d app bloquée</item>
         <item quantity="other">Session active · %1$d apps bloquées</item>
+        <item quantity="many">Session active · %1$d apps bloquées</item>
     </plurals>
 
     <!-- Stats: Today Card -->
@@ -241,7 +255,7 @@
     <!-- Onboarding: Welcome (Page 0) -->
     <string name="onboarding_welcome_title">Reprenez le contrôle\nde votre attention</string>
     <string name="onboarding_welcome_desc">Bloquez vos apps distrayantes avec un simple tag NFC.</string>
-    <string name="onboarding_welcome_accent">Simple et 100% gratuit</string>
+    <string name="onboarding_welcome_accent" formatted="false">Simple et 100% gratuit</string>
     <string name="onboarding_welcome_cta">Commencer</string>
 
     <!-- Onboarding: How it works (Page 1) -->

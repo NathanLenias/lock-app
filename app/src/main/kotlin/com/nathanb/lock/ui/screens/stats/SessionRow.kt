@@ -14,28 +14,30 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nathanb.lock.data.model.Session
 import com.nathanb.lock.ui.theme.LockTheme
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.Date
 
-private val sessionDateFormatter = DateTimeFormatter.ofPattern("EEE d MMM", Locale.FRANCE)
+/** ICU skeleton: each locale orders weekday, day and month its own way (fr "lun. 14 sept.", en "Mon, Sep 14", ja "9月14日(月)"). */
+private const val SESSION_DATE_SKELETON = "EEEdMMM"
 
 @Composable
 internal fun SessionRow(session: Session, modifier: Modifier = Modifier) {
     val colors = LockTheme.colors
-    val zone = ZoneId.systemDefault()
-    val date = Instant.ofEpochMilli(session.startTime).atZone(zone).toLocalDate()
-    val dateText = date.format(sessionDateFormatter)
-        .replaceFirstChar { it.uppercase() }
+    val locale = LocalConfiguration.current.locales[0]
+    val dateFormat = remember(locale) {
+        android.icu.text.DateFormat.getInstanceForSkeleton(SESSION_DATE_SKELETON, locale)
+    }
+    val dateText = dateFormat.format(Date(session.startTime))
+        .replaceFirstChar { it.titlecase(locale) }
     val durationMs = (session.endTime ?: System.currentTimeMillis()) - session.startTime
 
     Card(

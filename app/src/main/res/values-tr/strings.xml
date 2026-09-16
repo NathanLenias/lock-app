@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lock</string>
+    <string name="accessibility_service_description">Lock, hangi uygulamaların kullanıldığını algılamak ve odaklanma oturumlarınız sırasında seçtiğiniz uygulamaları engellemek için bu hizmeti kullanır.</string>
+
+    <!-- Common -->
+    <string name="action_cancel">İptal</string>
+    <string name="action_done">Bitti</string>
+    <string name="action_confirm">Onayla</string>
+    <string name="action_continue">Devam</string>
+    <string name="action_back">Geri</string>
+    <string name="action_save">Kaydet</string>
+    <string name="action_edit">Düzenle</string>
+    <string name="action_support">Destekle</string>
+    <string name="label_info">Bilgi</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Ana sayfa</string>
+    <string name="nav_stats">İstatistikler</string>
+    <string name="nav_settings">Ayarlar</string>
+
+    <!-- Home Screen -->
+    <string name="home_status_pause">MOLA</string>
+    <string name="home_status_unlocking">KİLİT AÇILIYOR</string>
+    <string name="home_status_locked_one">%d UYGULAMA\nENGELLENDİ</string>
+    <string name="home_status_locked_many">%d UYGULAMA\nENGELLENDİ</string>
+    <string name="home_status_free">SERBEST</string>
+    <string name="home_emergency_return">%1$d:%2$s sonra devam</string>
+    <string name="home_resume_blocking">Engellemeyi sürdür</string>
+    <string name="home_no_apps">Engellenecek uygulama yok</string>
+    <string name="home_configure_apps">Uygulamaları Ayarlar bölümünden seçin</string>
+    <string name="home_apps_to_block_one">Engellenecek %d uygulama</string>
+    <string name="home_apps_to_block_many">Engellenecek %d uygulama</string>
+    <string name="home_associate_nfc">Engellemeyi etkinleştirmek için bir NFC etiketi eşleştirin</string>
+    <string name="home_or_scan_nfc">veya NFC etiketini okutun</string>
+    <string name="home_activate_lock">Engellemeyi başlat</string>
+
+    <!-- Emergency -->
+    <string name="emergency_unlock_cd">Acil kilit açma</string>
+    <string name="emergency_remaining">%d kaldı</string>
+    <string name="emergency_title">Acil kilit açma</string>
+    <plurals name="emergency_body_access">
+        <item quantity="one">%d dakika boyunca tüm uygulamalara erişebileceksiniz, ardından engelleme otomatik olarak devam edecek.</item>
+        <item quantity="other">%d dakika boyunca tüm uygulamalara erişebileceksiniz, ardından engelleme otomatik olarak devam edecek.</item>
+    </plurals>
+    <plurals name="emergency_body_remaining">
+        <item quantity="one">%d acil kilit açma hakkı kaldı</item>
+        <item quantity="other">%d acil kilit açma hakkı kaldı</item>
+    </plurals>
+    <string name="emergency_confirm">Kilit açmayı onayla</string>
+
+    <!-- Grace period -->
+    <string name="grace_cancel">İptal</string>
+
+    <!-- Splash -->
+    <string name="splash_unlocking">KİLİT AÇILIYOR</string>
+    <string name="splash_lock">LOCK</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_nfc_tags">NFC Etiketleri</string>
+    <plurals name="settings_nfc_tags_count">
+        <item quantity="one">%1$d etiket eşleştirildi</item>
+        <item quantity="other">%1$d etiket eşleştirildi</item>
+    </plurals>
+    <string name="settings_session">Oturum</string>
+    <string name="settings_session_subtitle">Bekleme süresi, süre, …</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="settings_notifications_on">Açık</string>
+    <string name="settings_notifications_off">Kapalı</string>
+    <string name="settings_system">SİSTEM</string>
+    <string name="settings_permissions">İzinler</string>
+    <string name="settings_permissions_ok">Tümü etkin</string>
+    <string name="settings_permissions_missing">%s eksik</string>
+    <string name="settings_data">Veriler</string>
+    <string name="settings_breathing">Nefes molası</string>
+    <string name="settings_privacy">Gizlilik politikası</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_rate">Play Store\'da bizi değerlendirin</string>
+
+    <!-- Theme -->
+    <string name="theme_auto">Otomatik</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+
+    <!-- Profile Card -->
+    <string name="profile_apps_to_block">Engellenecek uygulamalar</string>
+    <string name="profile_apps_selected">%d uygulama seçildi</string>
+
+    <!-- Permissions Screen -->
+    <string name="permissions_title">İzinler</string>
+    <string name="permissions_accessibility_title">Erişilebilirlik hizmeti</string>
+    <string name="permissions_accessibility_subtitle">Uygulamaları algılar ve engeller</string>
+    <string name="permissions_battery_title">Pil optimizasyonu</string>
+    <string name="permissions_battery_subtitle">Android\'in hizmeti durdurmasını önler</string>
+    <string name="permissions_overlay_title">Diğer uygulamaların üzerinde göster</string>
+    <string name="permissions_overlay_subtitle">Engelleme ekranını gösterir</string>
+    <string name="permissions_all_granted">Tüm izinler etkin</string>
+    <string name="permissions_missing_accessibility">erişilebilirlik</string>
+    <string name="permissions_missing_overlay">üstte gösterme</string>
+    <string name="permissions_missing_notifications">bildirimler</string>
+    <string name="permissions_missing_suffix">eksik</string>
+    <string name="accessibility_reenable_hint">Android ayarlarında anahtar zaten açık görünüyorsa önce kapatıp yeniden açın.</string>
+
+    <!-- NFC Tags Screen -->
+    <string name="nfc_tags_title">NFC Etiketleri</string>
+    <string name="nfc_tags_count">%1$d/5 etiket eşleştirildi</string>
+    <string name="nfc_tags_add">Etiket ekle</string>
+    <string name="nfc_tags_empty">Eşleştirilmiş etiket yok. Eklemek için + simgesine dokunun.</string>
+    <string name="nfc_tags_already_exists">Bu etiket zaten kayıtlı: %s</string>
+    <string name="nfc_tags_default_name">NFC Etiketi</string>
+    <string name="nfc_tags_default_name_n">NFC Etiketi %d</string>
+    <string name="nfc_tags_paired">Etiket eşleştirildi!</string>
+    <string name="nfc_tags_paired_subtitle">NFC etiketiniz başarıyla eklendi.</string>
+    <string name="nfc_tags_waiting">NFC etiketi bekleniyor…</string>
+    <string name="nfc_tags_waiting_subtitle">NFC etiketinizi telefonunuzun arkasına tutun ve onay gelene kadar orada tutmaya devam edin.</string>
+    <string name="nfc_tags_rename_title">Etiketi yeniden adlandır</string>
+    <string name="nfc_tags_name_title">Bu etikete ad verin</string>
+    <string name="nfc_tags_name_label">Ad</string>
+    <string name="nfc_tags_rename_cd">Yeniden adlandır</string>
+    <string name="nfc_tags_delete_cd">Sil</string>
+    <string name="nfc_tags_associated_count">%1$d / %2$d etiket eşleştirildi</string>
+    <string name="nfc_info_row">Bir etiket bir profili başlatır ve diğerlerinin kilidini açabilir. Daha fazla bilgi.</string>
+    <string name="nfc_help_title">Etiketler nasıl çalışır?</string>
+    <string name="nfc_help_rule1_title">Bir etiket = bir profil</string>
+    <string name="nfc_help_rule1_body">Bir etiketi okutmak, ona atanmış profili başlatır.</string>
+    <string name="nfc_help_rule2_title">Her etiket kilidi açar</string>
+    <string name="nfc_help_rule2_body">Devam eden bir engellemeyi herhangi bir etiketle durdurabilirsiniz. İstisna: kaçışsız profiller sonuna kadar sürer, hiçbir etiket onları durduramaz.</string>
+    <string name="nfc_help_cta">Anladım</string>
+    <string name="nfc_pick_profile_title">Hangi profil başlatılsın?</string>
+    <string name="nfc_pick_profile_subtitle">\"%s\" etiketini okuttuğunuzda</string>
+
+    <!-- App Picker Screen -->
+    <string name="app_picker_title">Engellenecek uygulamalar</string>
+    <string name="app_picker_search">Uygulama ara…</string>
+    <string name="app_picker_suggestions">Öneriler</string>
+    <string name="app_picker_blocked_count">%d uygulama engellendi</string>
+    <string name="app_picker_expand">Genişletmek için dokunun</string>
+    <string name="app_picker_collapse">Daraltmak için dokunun</string>
+    <string name="app_picker_no_blocked">Engellenen uygulama yok</string>
+    <string name="app_picker_remove_cd">%s uygulamasını kaldır</string>
+    <string name="app_picker_add_all">Tümünü ekle</string>
+    <string name="app_picker_remove_all">Tümünü kaldır</string>
+    <string name="app_picker_category_all">Tümü</string>
+    <string name="app_picker_category_social">Sosyal</string>
+    <string name="app_picker_category_games">Oyunlar</string>
+    <string name="app_picker_category_tools">Araçlar</string>
+    <string name="app_picker_settings_warning_title">Android Ayarlar engellensin mi?</string>
+    <string name="app_picker_settings_warning_body">Oturum sırasında Ayarlar\'ı açamayacağınız için erişilebilirlik hizmetini kapatamaz veya Lock\'un izinlerini değiştiremezsiniz.\n\nÇıkmak için yine de etiketiniz, acil kilit açma, sayacın bitmesi veya Lock\'u ana ekrandan kaldırma seçenekleriniz olacak.</string>
+    <string name="app_picker_settings_warning_confirm">Ayarlar\'ı engelle</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">İstatistikler</string>
+    <string name="stats_sessions">oturum</string>
+    <string name="stats_total">toplam</string>
+    <string name="stats_average">ortalama</string>
+    <string name="stats_this_week">Bu hafta</string>
+    <string name="stats_recent_sessions">Son oturumlar</string>
+    <string name="stats_history">Geçmiş</string>
+    <string name="stats_streak_days">gün üst üste</string>
+    <string name="stats_previous_week">Önceki hafta</string>
+    <string name="stats_next_week">Sonraki hafta</string>
+    <string name="stats_vs_previous_week_positive">Önceki haftaya göre +%d sa</string>
+    <string name="stats_vs_previous_week_negative">Önceki haftaya göre -%d sa</string>
+
+    <!-- Breathing -->
+    <string name="breathing_inhale">Nefes alın</string>
+    <string name="breathing_hold">Tutun</string>
+    <string name="breathing_exhale">Nefes verin</string>
+    <string name="breathing_subtitle">Nefes almak için bir an ayırın</string>
+
+    <!-- Session Settings -->
+    <string name="session_settings_title">Oturum ayarları</string>
+    <string name="session_settings_desc">Engelleme davranışını yapılandırın: etkinleşmeden önceki bekleme, acil kilit açma hakları ve maksimum süre.</string>
+    <string name="session_grace_period">BEKLEME SÜRESİ</string>
+    <string name="session_grace_period_title">Bekleme süresi</string>
+    <string name="session_grace_period_tooltip">Manuel veya NFC ile başlatılan bir engellemeyi iptal etmek için tanınan süre. Yanlışlıkla başlattıysanız vazgeçmenizi sağlar.</string>
+    <string name="session_grace_immediate">Hemen</string>
+    <string name="session_grace_15s">15 saniye</string>
+    <string name="session_grace_30s">30 saniye</string>
+    <string name="session_grace_1m">1 dakika</string>
+    <string name="session_grace_2m">2 dakika</string>
+    <string name="session_emergency_unlocks">ACİL KİLİT AÇMA</string>
+    <string name="session_emergency_unlocks_title">Acil kilit açma hakları</string>
+    <string name="session_emergency_unlocks_tooltip">Oturum başına kullanılabilecek kilit açma sayısı. Her kilit açma, engellenen uygulamalara ve Lock ayarlarına geçici erişim sağlar. Bu haklar her yeni engellemede yenilenir.</string>
+    <string name="session_emergency_duration">ACİL KİLİT AÇMA SÜRESİ</string>
+    <string name="session_emergency_duration_title">Acil kilit açma süresi</string>
+    <string name="session_emergency_duration_tooltip">Her acil kilit açmada engellenen uygulamalara ve Lock ayarlarına erişim süresi.</string>
+    <string name="session_emergency_2m">2 dakika</string>
+    <string name="session_emergency_5m">5 dakika</string>
+    <string name="session_emergency_10m">10 dakika</string>
+    <string name="session_max_duration">MAKSİMUM OTURUM SÜRESİ</string>
+    <string name="session_max_duration_title">Maksimum oturum süresi</string>
+    <string name="session_max_duration_tooltip">Etiketinizi kaybetmeniz durumunda güvenlik önlemi. Bu süre dolduğunda engelleme otomatik olarak kapanır.</string>
+    <string name="session_timeout_2h">2 saat</string>
+    <string name="session_timeout_3h">3 saat</string>
+    <string name="session_timeout_5h">5 saat</string>
+    <string name="session_timeout_8h">8 saat</string>
+    <string name="session_timeout_unlimited">Sınırsız</string>
+    <string name="session_unlimited_warning_title">Sınırsız süre</string>
+    <string name="session_unlimited_warning_body">Sınırsız seçeneğinde, etiketinizi kaybederseniz oturumunuz hiç bitmez. Tek çıkış yolu Lock\'u kaldırmak olur.</string>
+    <string name="session_unlimited_confirm">Anladım, etkinleştir</string>
+
+    <!-- Data Screen -->
+    <string name="data_title">Veriler</string>
+    <string name="data_privacy_text">Lock\'ta kullanımınız tamamen\u00A0gizlidir: hiçbir kullanım verisi\u00A0toplamıyoruz. Verileriniz telefonunuzda kalır. Cihaz değiştirirken verilerinizi korumak isterseniz aşağıdaki düğmeyle dışa aktarın.</string>
+    <string name="data_privacy_scope">Dahil edilen\u00A0veriler: profiller, etiketler, istatistikler</string>
+    <string name="data_export">Dışa aktar</string>
+    <string name="data_export_subtitle">Profilleri ve etiketleri JSON olarak kaydedin</string>
+    <string name="data_import">İçe aktar</string>
+    <string name="data_import_subtitle">JSON dosyasından geri yükleyin</string>
+    <string name="data_export_success">Yedek dışa aktarıldı</string>
+    <string name="data_import_success">İçe aktarıldı: %1$d profil, %2$d etiket</string>
+    <string name="data_info_title">Verileriniz, gizliliğiniz</string>
+    <string name="data_info_body">Verilerinizi hiçbir sunucuda saklamıyoruz. Kullanım verilerinizi (profil, engellenen uygulamalar, kayıtlı etiketler, istatistikler) daha sonra yeniden içe aktarmak üzere saklamak isterseniz Dışa aktar seçeneğine dokunun.</string>
+    <string name="data_info_cd">Bilgi</string>
+    <string name="data_management_title">VERİ YÖNETİMİ</string>
+
+    <!-- NFC Tags Card (settings) -->
+    <string name="nfc_card_title">NFC Etiketleri</string>
+    <string name="nfc_card_count">%d etiket eşleştirildi</string>
+
+    <!-- Service Notifications -->
+    <string name="notification_channel_name">Lock Oturumu</string>
+    <string name="notification_channel_desc">Etkin engelleme oturumu bildirimi</string>
+    <string name="notification_session_active">Oturum etkin</string>
+    <plurals name="notification_session_active_count">
+        <item quantity="one">Oturum etkin · %1$d uygulama engellendi</item>
+        <item quantity="other">Oturum etkin · %1$d uygulama engellendi</item>
+    </plurals>
+
+    <!-- Onboarding: Welcome (Page 0) -->
+    <string name="onboarding_welcome_title">Dikkatinizin kontrolünü\ngeri alın</string>
+    <string name="onboarding_welcome_desc">Dikkat dağıtan uygulamaları basit bir NFC etiketiyle engelleyin.</string>
+    <string name="onboarding_welcome_accent" formatted="false">Basit ve %100 ücretsiz</string>
+    <string name="onboarding_welcome_cta">Başlayın</string>
+
+    <!-- Onboarding: How it works (Page 1) -->
+    <string name="onboarding_how_title">Nasıl çalışır?</string>
+    <string name="onboarding_how_subtitle">3 basit adımda</string>
+    <string name="onboarding_how_step1_title">Etiketinizi okutun</string>
+    <string name="onboarding_how_step1_desc">Engellemeyi başlatmak için telefonunuzu NFC etiketine yaklaştırın.</string>
+    <string name="onboarding_how_step2_title">Uygulamalar engellenir</string>
+    <string name="onboarding_how_step2_desc">Seçtiğiniz uygulamalara erişilemez olur.</string>
+    <string name="onboarding_how_step3_title">Kaldırmak için yeniden okutun</string>
+    <string name="onboarding_how_step3_desc">Yeni bir okutma engellemeyi kapatır. Hepsi bu.</string>
+
+    <!-- Onboarding: Why physical (Page 2) -->
+    <string name="onboarding_why_title">Kilidi açmak için ayağa kalkın.</string>
+    <string name="onboarding_why_accent">Her şeyi değiştiren de bu.</string>
+    <string name="onboarding_why_arg1_title">Bir dokunuş değil, fiziksel bir hareket</string>
+    <string name="onboarding_why_arg1_desc">Kalkıp etiketi okutmanız gerekir. Bu küçük zorluk, niyeti güçlendirir.</string>
+    <string name="onboarding_why_arg2_title">Atlatması imkânsız</string>
+    <string name="onboarding_why_arg2_desc">Gizli düğme yok, hile yok. Tek anahtar etikettir.</string>
+    <string name="onboarding_why_arg3_title">Bir ekran süresi uygulaması daha değil</string>
+    <string name="onboarding_why_arg3_desc">Lock sürenizi takip etmez. Kaydırmayı imkânsız kılar.</string>
+
+    <!-- Onboarding: Permissions (Page 3) -->
+    <string name="onboarding_perm_title">İzinler</string>
+    <string name="onboarding_perm_subtitle">Lock\'un düzgün çalışması için bu 3 izin gerekir. Etkinleştirmek için her karta dokunun.</string>
+    <string name="onboarding_perm_accessibility_title">Erişilebilirlik hizmeti</string>
+    <string name="onboarding_perm_accessibility_desc">Engellenen uygulamaların açıldığını algılar</string>
+    <string name="onboarding_perm_accessibility_detail">Bu hizmet, engellenen bir uygulamayı açtığınızda Lock\'un bunu algılamasını sağlar. Bu izin olmadan engelleme çalışamaz.\n\nLock\'un çalışma şeklinin temeli budur.</string>
+    <string name="onboarding_perm_overlay_title">Diğer uygulamaların üzerinde göster</string>
+    <string name="onboarding_perm_overlay_desc">Bir engelleme ekranı gösterir</string>
+    <string name="onboarding_perm_overlay_detail">Bu izin, Lock\'un hedeflenen uygulamaların üzerinde engelleme ekranını göstermesini sağlar. Bu izin olmadan engelleme ekranı görünemez.</string>
+    <string name="onboarding_perm_battery_title">Pil optimizasyonu</string>
+    <string name="onboarding_perm_battery_desc">Android\'in Lock\'u durdurmasını önler</string>
+    <string name="onboarding_perm_battery_detail">Android, pil tasarrufu için Lock\'u arka planda durdurabilir.\n\nBu izin, ekran kapalıyken bile engellemenin etkin kalmasını sağlar.</string>
+    <string name="onboarding_perm_info">Her izin Android ayarlarından manuel olarak verilir. Hiçbir veri toplanmaz.</string>
+    <string name="onboarding_perm_cta">İzinleri yapılandır</string>
+    <string name="onboarding_perm_cta_done">Devam</string>
+    <string name="onboarding_perm_skip">Daha sonra yapılandır</string>
+    <string name="onboarding_perm_note">Lock\'un çalışması için gerekli</string>
+    <string name="onboarding_perm_open_settings">Ayarları aç</string>
+
+    <!-- Onboarding: App Picker (Page 4) -->
+    <string name="onboarding_apps_title">Engellenecek\nuygulamaları seçin</string>
+    <string name="onboarding_apps_subtitle">Bu listeyi daha sonra değiştirebilirsiniz</string>
+    <string name="onboarding_apps_counter">%d uygulama seçildi</string>
+    <string name="onboarding_apps_popular">POPÜLER</string>
+    <string name="onboarding_apps_all">TÜM UYGULAMALAR</string>
+    <string name="onboarding_apps_search">Uygulama ara…</string>
+    <string name="onboarding_apps_cta">Devam · %d uygulama</string>
+    <string name="onboarding_apps_skip">Daha sonra seç</string>
+
+    <!-- Onboarding: NFC (Page 5) -->
+    <string name="onboarding_nfc_title">NFC etiketinizi okutun</string>
+    <string name="onboarding_nfc_desc">Lock ile eşleştirmek için NFC etiketinizi telefonunuzun arkasına tutun.</string>
+    <string name="onboarding_nfc_waiting">NFC etiketi bekleniyor…</string>
+    <string name="onboarding_nfc_hint">Tüm senaryolarınızı kapsamak için en fazla 5 NFC etiketi ekleyebilirsiniz: ofis, ev, cüzdan…</string>
+    <string name="onboarding_nfc_skip">Şimdilik atla</string>
+
+    <!-- Onboarding: Completion (Page 6) — complete -->
+    <string name="onboarding_done_title">Her şey hazır!</string>
+    <string name="onboarding_done_subtitle">Lock yapılandırıldı ve odaklanmanıza yardımcı olmaya hazır.</string>
+    <string name="onboarding_done_cta">Ana sayfaya git</string>
+    <string name="onboarding_done_hint">Engellemeyi başlatmak için NFC etiketinizi okutun</string>
+
+    <!-- Onboarding: Completion (Page 6) — incomplete -->
+    <string name="onboarding_incomplete_title">Tebrikler!</string>
+    <string name="onboarding_incomplete_subtitle">Lock kurulumunda\nepey yol aldınız.</string>
+    <string name="onboarding_incomplete_cta">Lock\'u keşfedin</string>
+    <string name="onboarding_incomplete_hint">Kurulumu Ayarlar bölümünden,\nkendi hızınızda tamamlayabilirsiniz.</string>
+    <string name="onboarding_incomplete_permissions">İzinler verildi</string>
+    <string name="onboarding_incomplete_apps">Engellenecek uygulamalar</string>
+    <string name="onboarding_incomplete_nfc">NFC Etiketi</string>
+
+    <!-- Home: Setup Checklist -->
+    <string name="setup_progress">%1$d/%2$d adım tamamlandı</string>
+    <string name="setup_permissions_title">İzinleri etkinleştirin</string>
+    <string name="setup_permissions_desc">Lock\'un çalışması için gerekli</string>
+    <string name="setup_permissions_cta">Yapılandır</string>
+    <string name="setup_apps_title">Engellenecek uygulamaları seçin</string>
+    <string name="setup_apps_desc">Dikkatinizi en çok dağıtan uygulamaları seçin</string>
+    <string name="setup_apps_cta">Yapılandır</string>
+    <string name="setup_nfc_title">NFC etiketi eşleştirin</string>
+    <string name="setup_nfc_desc">Telefonunuzu kilitlemek ve açmak için gerekli</string>
+    <string name="setup_nfc_cta">Okut</string>
+    <string name="setup_permissions_done">İzinler verildi</string>
+    <string name="setup_apps_done_one">Uygulama seçildi</string>
+    <string name="setup_apps_done_many">Uygulamalar seçildi</string>
+    <string name="setup_apps_done_count_one">%d uygulama engellendi</string>
+    <string name="setup_apps_done_count_many">%d uygulama engellendi</string>
+    <string name="setup_nfc_done">NFC etiketi eşleştirildi</string>
+
+    <!-- Manual Mode -->
+    <string name="manual_mode_card_title">Manuel mod</string>
+    <string name="manual_mode_card_desc">Lock\'u NFC etiketi olmadan kullanın. Engellemeyi istediğiniz zaman uygulamadan kapatabilirsiniz.</string>
+    <string name="manual_mode_card_warning">Sınırlı kullanım, Lock\'u denemek için</string>
+    <string name="manual_mode_card_cta">Manuel modu etkinleştir</string>
+    <string name="manual_mode_banner">Manuel mod etkin</string>
+    <string name="manual_mode_info_title">Manuel mod</string>
+    <string name="manual_mode_info_body">Manuel mod, Lock\'u NFC etiketi olmadan denemenizi sağlar.\n\nEngellemeyi doğrudan uygulamadan başlatıp kapatabilirsiniz. En iyi deneyim için bir NFC etiketi eşleştirin; manuel mod otomatik olarak devre dışı kalır.</string>
+    <string name="manual_mode_lock_cta">Engellemeyi başlat</string>
+    <string name="manual_mode_unlock_title">Engellemeyi kaldır</string>
+    <string name="manual_mode_unlock_body">Engelleme kapatılacak ve tüm uygulamalarınıza yeniden erişebileceksiniz.</string>
+    <string name="manual_mode_unlock_confirm">Kaldırmayı onayla</string>
+    <string name="manual_mode_unlock_cd">Engellemeyi kaldır</string>
+    <string name="manual_mode_disable">Manuel modu kapat</string>
+    <string name="manual_mode_sub_free">Engelleme kapalı</string>
+    <string name="manual_mode_nfc_nudge_title">NFC etiketine geçin</string>
+    <string name="manual_mode_nfc_nudge_desc">En iyi deneyim için</string>
+    <string name="manual_mode_nfc_nudge_cta">NFC etiketi eşleştir</string>
+    <string name="manual_mode_separator">veya</string>
+
+    <!-- Support -->
+    <string name="support_title">Lock\'u destekleyin</string>
+    <string name="support_body" formatted="false">Lock tek bir kişi tarafından geliştiriliyor, %100\u00A0ücretsiz ve öyle kalacak. Uygulamayı beğeniyor ve her gün işinize yarıyorsa, sembolik de olsa desteğiniz yeni özelliklerin geliştirilmesine ve uygulamanın güncel tutulmasına katkı sağlar.\n\nŞimdiden teşekkürler ❤️</string>
+    <string name="support_cta">Lock\'u destekliyorum</string>
+
+    <!-- Onboarding: Common -->
+    <string name="onboarding_continue">Devam</string>
+
+    <!-- Stats: Today Card -->
+    <string name="stats_today">Bugün</string>
+    <string name="stats_today_sessions_one">%d oturum</string>
+    <string name="stats_today_sessions_many">%d oturum</string>
+    <string name="stats_today_focus_hours">%1$d sa %2$s dk odak</string>
+    <string name="stats_today_focus_minutes">%d dk odak</string>
+    <string name="stats_today_focus_zero">0 sa odak</string>
+
+    <!-- Misc -->
+    <string name="default_profile_name">Varsayılan</string>
+    <string name="error_export">Dışa aktarma başarısız</string>
+    <string name="error_import">İçe aktarma başarısız</string>
+    <string name="nfc_tags_paired_success">Etiket eşleştirildi!</string>
+    <string name="nfc_tags_paired_success_subtitle">NFC etiketiniz başarıyla eklendi.</string>
+
+    <!-- Block Overlay -->
+    <string name="overlay_title">Odaklanmaya devam!</string>
+    <string name="overlay_subtitle">%s şu anda engelli!\nYeniden erişmek için Lock\'un bir etiketle kapatılması gerekir.</string>
+    <string name="overlay_subtitle_no_escape">%s oturumunuz bitene kadar engelli.\nHiçbir etiket kilidi açamaz, sayaç bittiğinde geri gelin.</string>
+    <string name="overlay_button">Tamam</string>
+
+    <!-- NFC Toasts -->
+    <string name="toast_blocking_on">Engelleme başlatıldı%s</string>
+    <string name="toast_blocking_off">Engelleme kapatıldı%s</string>
+    <string name="toast_unknown_tag">Bilinmeyen etiket</string>
+    <string name="toast_error_no_tag">Eşleştirilmiş etiket yok</string>
+    <string name="toast_error_no_profile">Yapılandırılmış profil yok</string>
+    <string name="toast_error_no_apps">Önce engellenecek uygulamaları seçin</string>
+    <string name="toast_no_escape_active">Oturum devam ediyor, kilit açılamaz.</string>
+
+    <!-- Profiles -->
+    <string name="profiles_section_title">Profiller</string>
+    <string name="profiles_section_principal">Ana profil</string>
+    <string name="profiles_section_others">Diğer profiller</string>
+    <string name="profiles_new">Yeni profil</string>
+    <string name="profiles_max_reached">%1$d / %2$d profil · üst sınıra ulaşıldı</string>
+    <string name="profile_type_short_standard">Normal</string>
+    <string name="profile_type_short_no_escape">Kaçış yok</string>
+    <string name="profiles_all_title">Tüm profiller</string>
+    <string name="profiles_all_subtitle">%1$d profil · Varsayılan: %2$s</string>
+    <string name="profiles_manage_subtitle">Engelleme modlarınızı yönetin</string>
+    <string name="profiles_count_badge">%1$d / %2$d</string>
+    <string name="profiles_max_reached_text">En fazla %d profil oluşturulabilir.</string>
+    <string name="profile_row_subtitle">%1$s · %2$d uygulama</string>
+
+    <!-- New profile wizard -->
+    <string name="wizard_title">Yeni profil</string>
+    <string name="wizard_step_counter">Adım %1$d / %2$d</string>
+    <string name="wizard_continue">Devam</string>
+    <string name="wizard_continue_count">Devam (%d)</string>
+    <string name="wizard_create">Profili oluştur</string>
+    <string name="wizard_type_label">Engelleme türü</string>
+    <string name="wizard_type_normal_title">Normal</string>
+    <string name="wizard_type_normal_subtitle">Uygulamalarınızı engeller. NFC etiketinizle istediğiniz zaman açın.</string>
+    <string name="wizard_type_no_escape_title">Kaçış yok</string>
+    <string name="wizard_type_no_escape_badge">5-20 dk</string>
+    <string name="wizard_type_no_escape_subtitle">Uygulamalarınızı belirli bir süre boyunca engeller. Süre dolmadan durdurulamaz.</string>
+    <string name="wizard_name_label">Profil adı</string>
+    <string name="wizard_source_label">Başlangıç noktası</string>
+    <string name="wizard_source_scratch_title">Sıfırdan başla</string>
+    <string name="wizard_source_scratch_subtitle">Seçili uygulama yok</string>
+    <string name="wizard_source_copy_title">%s profilinden kopyala</string>
+    <string name="wizard_source_copy_subtitle">%d uygulama</string>
+    <string name="wizard_duration_info">Bu profil kaçışsız: süresini seçin.</string>
+    <string name="wizard_duration_label">Engelleme süresi</string>
+    <string name="wizard_duration_warning">Başladıktan sonra sayaç bitmeden durdurulamaz.</string>
+    <string name="wizard_recap_title">Özet</string>
+    <string name="wizard_recap_subtitle">Profilinizi oluşturmadan önce gözden geçirin</string>
+    <string name="wizard_recap_name">Ad</string>
+    <string name="wizard_recap_type">Tür</string>
+    <string name="wizard_recap_apps">Uygulamalar</string>
+    <string name="wizard_recap_apps_value">%d uygulama</string>
+    <string name="wizard_recap_duration">Süre</string>
+    <string name="wizard_recap_default">Varsayılan profil olarak ayarla</string>
+    <string name="wizard_recap_default_subtitle">Ana ekrandan başlatılır</string>
+    <string name="profile_badge_default">Varsayılan</string>
+    <string name="profile_badge_no_escape">Kaçış yok</string>
+    <string name="profile_type_standard_title">Standart engelleme</string>
+    <string name="profile_type_standard_subtitle">NFC etiketinizle açılır ve kapanır.</string>
+    <string name="profile_type_no_escape_title">Kaçışsız oturum</string>
+    <string name="profile_type_no_escape_subtitle">Bir süre seçin, başlatın ve sonuna kadar odaklanın.</string>
+    <string name="profile_apps_count_blocked">%d uygulama engellenecek</string>
+    <string name="profile_apps_count_inaccessible">%d uygulamaya erişilemeyecek</string>
+    <string name="profile_default_toggle">Varsayılan profil</string>
+    <string name="profile_default_toggle_subtitle">Ana ekrandan başlatılır</string>
+    <string name="profile_default_locked_info">Kaçışsız bir profil varsayılan olarak ayarlanamaz.</string>
+    <string name="profile_header_subtitle_standard">Standart engelleme, açılabilir</string>
+    <string name="profile_header_subtitle_no_escape">Süreli engelleme, kaçış yok</string>
+    <string name="profile_duration_title">Süre</string>
+    <string name="profile_duration_minutes">%d dk</string>
+    <string name="profile_associate_tag">Etiket bağla</string>
+    <string name="nfc_associate_another">Başka bir etiket bağla</string>
+    <string name="tag_status_associated">Bağlı</string>
+    <string name="profile_no_tag">Bağlı etiket yok</string>
+    <string name="profile_start">Başlat</string>
+    <string name="profile_start_with_duration">Başlat · %d dk</string>
+    <string name="profile_delete">Profili sil</string>
+    <string name="profile_delete_confirm_title">Bu profil silinsin mi?</string>
+    <string name="profile_delete_confirm_body">\"%s\" profili ve ayarları kalıcı olarak silinecek. Bu işlem geri alınamaz.</string>
+    <string name="profile_delete_confirm_action">Kalıcı olarak sil</string>
+    <string name="profile_rename">Profili yeniden adlandır</string>
+    <string name="profile_new_choose_type">Profil türü</string>
+    <string name="profile_new_name">Profil adı</string>
+    <string name="profile_new_copy_apps">Uygulamaları mevcut bir profilden kopyala</string>
+    <string name="profile_delete_blocked_default">Varsayılan profil silinemez. Önce başka bir profili varsayılan yapın.</string>
+    <string name="profile_delete_blocked_active">Etkin bir oturum sırasında profil silinemez.</string>
+    <string name="profile_se_confirm_title">Kaçışsız oturum başlatılsın mı?</string>
+    <string name="profile_se_confirm_body">%d dakika boyunca bu uygulamalara erişilemeyecek. Süre dolmadan kilit açılamaz.</string>
+    <string name="tag_pick_profile_title">Bu etiket hangi profili başlatsın?</string>
+    <string name="profile_manual_mode_title">Manuel mod</string>
+    <string name="profile_manual_mode_body">Ayarlanmış NFC etiketi yok. Engellemeyi istediğiniz zaman uygulamadan kapatabilirsiniz.</string>
+    <string name="profile_perm_required_title">İzin gerekli</string>
+    <string name="profile_perm_required_body">Uygulamaları engellemek için erişilebilirlik hizmetinin etkin olması gerekir. Bu izin olmadan bir profil başlatmak hiçbir şeyi engellemez.</string>
+    <string name="profile_perm_required_cta">Erişilebilirliği etkinleştir</string>
+    <string name="home_status_locked_no_escape">KAÇIŞ\nYOK</string>
+    <!-- In-app cards -->
+    <string name="inapp_support_title">Lock\'u beğendiniz mi?</string>
+    <string name="inapp_support_body">Lock tek bir kişi tarafından, reklamsız ve izlemesiz olarak geliştiriliyor. Küçük bir destek, uygulamanın ücretsiz kalmasına ve yeni özelliklerin geliştirilmesine yardımcı olur.</string>
+    <string name="inapp_support_cta">Projeyi destekle</string>
+    <string name="inapp_support_later">Belki daha sonra</string>
+    <string name="inapp_changelog_version">SÜRÜM %s</string>
+    <string name="inapp_changelog_title">Lock\'ta yenilikler</string>
+    <string name="inapp_changelog_cta">Keşfet</string>
+    <string name="inapp_changelog_1_title">Zamanlamalar</string>
+    <string name="inapp_changelog_1_body">Yeni: tüm gün süren zamanlamalar ve okutmanın ne yapacağını seçme: engellemeyi kaldırma ya da kendiliğinden biten bir mola.</string>
+    <string name="inapp_changelog_2_title">Süreli profiller</string>
+    <string name="inapp_changelog_2_body">Yeni: 2 saate kadar özel süre ve engelleme sürekliliği: sayaç bittiğinde bir sonraki okutmaya kadar engelli kalın.</string>
+
+    <!-- Schedules -->
+    <string name="schedule_settings_entry">Zamanlamalar</string>
+    <string name="schedule_settings_subtitle">Profillerinizi belirli saatlerde engelleyin</string>
+    <string name="schedules_title">Zamanlamalar</string>
+    <string name="schedules_subtitle">Otomatik engelleme</string>
+    <string name="schedules_empty_title">Zamanlama yok</string>
+    <string name="schedules_empty_body">Etiketinizi okutmadan profillerinizi belirli saatlerde otomatik olarak engellemek için bir zamanlama oluşturun.</string>
+    <string name="schedules_new">Yeni zamanlama</string>
+    <string name="schedule_edit_title_new">Yeni zamanlama</string>
+    <string name="schedule_edit_title_edit">Zamanlamayı düzenle</string>
+    <string name="schedule_days_label">Günler</string>
+    <string name="schedule_hours_label">Saatler</string>
+    <string name="schedule_start_label">Başlangıç</string>
+    <string name="schedule_end_label">Bitiş</string>
+    <string name="schedule_time_range">%1$s – %2$s</string>
+    <string name="schedule_time_range_overnight">%1$s – %2$s (+1)</string>
+    <string name="schedule_every_day">Her gün</string>
+    <string name="schedule_overnight_hint">Bu aralık gece yarısını geçiyor: engelleme ertesi gün %1$s saatinde sona erer.</string>
+    <string name="schedule_days_required">En az bir gün seçin</string>
+    <string name="schedule_same_time_error">Başlangıç ve bitiş saatleri farklı olmalı</string>
+    <string name="schedule_profiles_label">Engellenecek profiller</string>
+    <string name="schedule_profiles_hint">Seçilen profillerin uygulamaları aralık boyunca engellenir.</string>
+    <string name="schedule_add_profile">Profil ekle</string>
+    <string name="schedule_no_profile">Profil yok</string>
+    <string name="schedule_profile_apps">%1$d uygulama</string>
+    <string name="schedule_picker_title">Engellenecek profiller</string>
+    <string name="schedule_picker_empty">Kullanılabilir standart profil yok.</string>
+    <string name="schedule_save">Kaydet</string>
+    <string name="schedule_delete">Zamanlamayı sil</string>
+    <string name="schedule_delete_confirm_title">Bu zamanlama silinsin mi?</string>
+    <string name="schedule_delete_confirm_body">Engelleme aralıkları artık tetiklenmeyecek.</string>
+    <string name="schedule_delete_confirm_cta">Sil</string>
+    <string name="schedule_alarm_perm_title">Alarmlar ve hatırlatıcılara izin verin</string>
+    <string name="schedule_alarm_perm_body">Lock\'un zamanlanmış engellemeleri tam zamanında başlatıp bitirmesi için bu izin gerekir.</string>
+    <string name="schedule_alarm_perm_later">Daha sonra</string>
+    <string-array name="schedule_day_initials">
+        <item>P</item><item>S</item><item>Ç</item><item>P</item><item>C</item><item>C</item><item>P</item>
+    </string-array>
+
+    <!-- NFC tag writing -->
+    <string name="nfc_write_interrupted">Yazma kesildi. Yeniden denemek için etiketi telefona sabit şekilde tutun.</string>
+    <string name="nfc_write_protected_title">Etiket yazmaya karşı korumalı</string>
+    <string name="nfc_write_protected_body">Bu etiket Lock\'un verilerini saklayamıyor, bu yüzden yalnızca uygulama açıkken çalışır. Yine de eşleştirildi.</string>
+    <string name="nfc_tag_rewrite">Etiketi yeniden yaz</string>
+    <string name="nfc_tag_rewrite_waiting">Etiket yeniden yazılıyor…</string>
+    <string name="nfc_tag_rewrite_subtitle">%1$s etiketini onay gelene kadar telefonunuzun arkasına tutun.</string>
+    <string name="nfc_tag_rewrite_done">Etiket yeniden yazıldı</string>
+    <string name="nfc_tag_rewrite_done_subtitle">Artık Lock kapalıyken de çalışır.</string>
+    <string name="nfc_tag_rewrite_hint">Etiket uygulama kapalıyken çalışmıyor mu? Yeniden yazın.</string>
+
+    <string name="nfc_write_failed_title">Bu etikete yazılamıyor</string>
+    <string name="nfc_write_failed_body">Yazma sürekli başarısız oluyor. Yine de eşleştirebilirsiniz: Lock açıkken çalışır, ancak uygulama kapalıyken çalışmaz.</string>
+    <string name="nfc_write_failed_cta">Yine de eşleştir</string>
+    <string name="nfc_write_failed_retry">Yeniden dene</string>
+    <string name="profile_duration_unit">dk</string>
+    <string name="profile_duration_custom">Özel</string>
+    <string name="profile_duration_decrease">Süreyi azalt</string>
+    <string name="profile_duration_increase">Süreyi artır</string>
+    <string name="profile_continuity_section">Engelleme sürekliliği</string>
+    <string name="profile_continuity_title">Okutulana kadar engelli kal</string>
+    <string name="profile_continuity_subtitle">Sayaç bittiğinde, bir sonraki etiket okutmasına kadar bu profilin uygulamalarını engellemeye devam eder</string>
+    <string name="profile_continuity_disabled">Sürekliliği etkinleştirmek için bu profile bir etiket eşleştirin.</string>
+    <string name="profile_dissociate_tag">Bu etiketin eşleşmesini kaldır</string>
+    <string name="toast_pause_resumes">Mola · engelleme %d dk sonra devam eder</string>
+    <string name="schedule_window_label">Aralık</string>
+    <string name="schedule_all_day">Tüm gün</string>
+    <string name="schedule_all_day_subtitle">Saat aralığı seçmeden günün 24 saatini kapsar</string>
+    <string name="schedule_scan_label">NFC okutulduğunda</string>
+    <string name="schedule_scan_unlock">Engellemeyi kaldır</string>
+    <string name="schedule_scan_pause">Mola</string>
+    <string name="schedule_scan_unlock_hint">Zamanlamanın bir sonraki tekrarına kadar engellemeyi kaldırır.</string>
+    <string name="schedule_scan_pause_hint">Sınırlı bir süre için engellemeyi kaldırır, ardından engelleme otomatik olarak devam eder.</string>
+    <string name="schedule_pause_duration_label">Mola süresi</string>
+    <string name="duration_unit_hour">sa</string>
+    <string name="inapp_changelog_3_title">Güvenilirlik</string>
+    <string name="inapp_changelog_3_body">Düzeltme: telefon uyku modundayken oturumun otomatik bitişi gecikebiliyordu. Düzeltme: Lock artık Android\'in Etkin uygulamalar panelinde görünmüyor; oradan durdurulması engellemeyi sessizce devre dışı bırakabiliyordu. Düzeltme: oturum sırasında telefonu döndürmek artık oturumu açıp kapatmıyor.</string>
+</resources>

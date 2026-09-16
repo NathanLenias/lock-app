@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lock</string>
+    <string name="accessibility_service_description">Lock はこのサービスを使用して、使用中のアプリを検出し、集中セッション中に選択したアプリをブロックします。</string>
+
+    <!-- Common -->
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_done">完了</string>
+    <string name="action_confirm">確認</string>
+    <string name="action_continue">続行</string>
+    <string name="action_back">戻る</string>
+    <string name="action_save">保存</string>
+    <string name="action_edit">編集</string>
+    <string name="action_support">応援する</string>
+    <string name="label_info">情報</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_stats">統計</string>
+    <string name="nav_settings">設定</string>
+
+    <!-- Home Screen -->
+    <string name="home_status_pause">一時停止</string>
+    <string name="home_status_unlocking">解除中</string>
+    <string name="home_status_locked_one">%d個のアプリ\nブロック中</string>
+    <string name="home_status_locked_many">%d個のアプリ\nブロック中</string>
+    <string name="home_status_free">ブロックなし</string>
+    <string name="home_emergency_return">再開まで %1$d:%2$s</string>
+    <string name="home_resume_blocking">ブロックを再開</string>
+    <string name="home_no_apps">ブロックするアプリがありません</string>
+    <string name="home_configure_apps">設定でアプリを選択してください</string>
+    <string name="home_apps_to_block_one">ブロック対象：%d個のアプリ</string>
+    <string name="home_apps_to_block_many">ブロック対象：%d個のアプリ</string>
+    <string name="home_associate_nfc">ブロックを使用するには NFC タグを登録してください</string>
+    <string name="home_or_scan_nfc">または NFC タグをスキャン</string>
+    <string name="home_activate_lock">ブロックを開始</string>
+
+    <!-- Emergency -->
+    <string name="emergency_unlock_cd">緊急解除</string>
+    <string name="emergency_remaining">残り%d回</string>
+    <string name="emergency_title">緊急解除</string>
+    <plurals name="emergency_body_access">
+        <item quantity="other">%d分間、すべてのアプリにアクセスできます。その後、ブロックは自動的に再開されます。</item>
+    </plurals>
+    <plurals name="emergency_body_remaining">
+        <item quantity="other">残りの緊急解除：%d回</item>
+    </plurals>
+    <string name="emergency_confirm">解除する</string>
+
+    <!-- Grace period -->
+    <string name="grace_cancel">キャンセル</string>
+
+    <!-- Splash -->
+    <string name="splash_unlocking">解除中</string>
+    <string name="splash_lock">LOCK</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">設定</string>
+    <string name="settings_nfc_tags">NFC タグ</string>
+    <plurals name="settings_nfc_tags_count">
+        <item quantity="other">登録済みのタグ：%1$d個</item>
+    </plurals>
+    <string name="settings_session">セッション</string>
+    <string name="settings_session_subtitle">猶予時間、最大時間など</string>
+    <string name="settings_appearance">外観</string>
+    <string name="settings_notifications">通知</string>
+    <string name="settings_notifications_on">オン</string>
+    <string name="settings_notifications_off">オフ</string>
+    <string name="settings_system">システム</string>
+    <string name="settings_permissions">権限</string>
+    <string name="settings_permissions_ok">すべて有効</string>
+    <string name="settings_permissions_missing">%s が未設定</string>
+    <string name="settings_data">データ</string>
+    <string name="settings_breathing">リラックスタイム</string>
+    <string name="settings_privacy">プライバシー ポリシー</string>
+    <string name="settings_about">アプリについて</string>
+    <string name="settings_rate">Play ストアで評価する</string>
+
+    <!-- Theme -->
+    <string name="theme_auto">自動</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+
+    <!-- Profile Card -->
+    <string name="profile_apps_to_block">ブロックするアプリ</string>
+    <string name="profile_apps_selected">%d個のアプリを選択済み</string>
+
+    <!-- Permissions Screen -->
+    <string name="permissions_title">権限</string>
+    <string name="permissions_accessibility_title">ユーザー補助サービス</string>
+    <string name="permissions_accessibility_subtitle">アプリを検出してブロックします</string>
+    <string name="permissions_battery_title">電池の最適化</string>
+    <string name="permissions_battery_subtitle">Android によるサービスの停止を防ぎます</string>
+    <string name="permissions_overlay_title">他のアプリの上に重ねて表示</string>
+    <string name="permissions_overlay_subtitle">ブロック画面を表示します</string>
+    <string name="permissions_all_granted">すべての権限が有効です</string>
+    <string name="permissions_missing_accessibility">ユーザー補助</string>
+    <string name="permissions_missing_overlay">オーバーレイ</string>
+    <string name="permissions_missing_notifications">通知</string>
+    <string name="permissions_missing_suffix">未設定</string>
+    <string name="accessibility_reenable_hint">Android の設定でスイッチがすでにオンになっている場合は、いったんオフにしてから再度オンにしてください。</string>
+
+    <!-- NFC Tags Screen -->
+    <string name="nfc_tags_title">NFC タグ</string>
+    <string name="nfc_tags_count">登録済みのタグ：%1$d/5</string>
+    <string name="nfc_tags_add">タグを追加</string>
+    <string name="nfc_tags_empty">登録済みのタグはありません。+ をタップして追加してください。</string>
+    <string name="nfc_tags_already_exists">このタグはすでに登録されています：%s</string>
+    <string name="nfc_tags_default_name">NFC タグ</string>
+    <string name="nfc_tags_default_name_n">NFC タグ %d</string>
+    <string name="nfc_tags_paired">タグを登録しました</string>
+    <string name="nfc_tags_paired_subtitle">NFC タグが正常に追加されました。</string>
+    <string name="nfc_tags_waiting">NFC タグを待機中…</string>
+    <string name="nfc_tags_waiting_subtitle">NFC タグをスマートフォンの背面に当て、確認が表示されるまでそのままにしてください。</string>
+    <string name="nfc_tags_rename_title">タグの名前を変更</string>
+    <string name="nfc_tags_name_title">タグに名前を付ける</string>
+    <string name="nfc_tags_name_label">名前</string>
+    <string name="nfc_tags_rename_cd">名前を変更</string>
+    <string name="nfc_tags_delete_cd">削除</string>
+    <string name="nfc_tags_associated_count">登録済みのタグ：%1$d / %2$d</string>
+    <string name="nfc_info_row">タグは 1 つのプロフィールを開始し、他のプロフィールを解除できます。詳細を見る</string>
+    <string name="nfc_help_title">タグの仕組み</string>
+    <string name="nfc_help_rule1_title">1 つのタグに 1 つのプロフィール</string>
+    <string name="nfc_help_rule1_body">タグをスキャンすると、そのタグに割り当てられたプロフィールが開始されます。</string>
+    <string name="nfc_help_rule2_title">どのタグでも解除できます</string>
+    <string name="nfc_help_rule2_body">進行中のブロックはどのタグでも停止できます。ただし、解除不可のプロフィールは終了まで実行され、どのタグでも停止できません。</string>
+    <string name="nfc_help_cta">OK</string>
+    <string name="nfc_pick_profile_title">開始するプロフィール</string>
+    <string name="nfc_pick_profile_subtitle">タグ「%s」をスキャンしたとき</string>
+
+    <!-- App Picker Screen -->
+    <string name="app_picker_title">ブロックするアプリ</string>
+    <string name="app_picker_search">アプリを検索…</string>
+    <string name="app_picker_suggestions">おすすめ</string>
+    <string name="app_picker_blocked_count">%d個のアプリをブロック</string>
+    <string name="app_picker_expand">タップして展開</string>
+    <string name="app_picker_collapse">タップして折りたたむ</string>
+    <string name="app_picker_no_blocked">ブロック中のアプリはありません</string>
+    <string name="app_picker_remove_cd">%s を削除</string>
+    <string name="app_picker_add_all">すべて追加</string>
+    <string name="app_picker_remove_all">すべて削除</string>
+    <string name="app_picker_category_all">すべて</string>
+    <string name="app_picker_category_social">SNS</string>
+    <string name="app_picker_category_games">ゲーム</string>
+    <string name="app_picker_category_tools">ツール</string>
+    <string name="app_picker_settings_warning_title">Android の設定をブロックしますか？</string>
+    <string name="app_picker_settings_warning_body">セッション中は設定を開けなくなるため、ユーザー補助サービスの無効化や Lock の権限の変更ができなくなります。\n\nセッションを終える手段として、タグ、緊急解除、タイマーの終了、ホーム画面からの Lock のアンインストールは引き続き使用できます。</string>
+    <string name="app_picker_settings_warning_confirm">設定をブロック</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">統計</string>
+    <string name="stats_sessions">セッション</string>
+    <string name="stats_total">合計</string>
+    <string name="stats_average">平均</string>
+    <string name="stats_this_week">今週</string>
+    <string name="stats_recent_sessions">最近のセッション</string>
+    <string name="stats_history">履歴</string>
+    <string name="stats_streak_days">日連続</string>
+    <string name="stats_previous_week">前の週</string>
+    <string name="stats_next_week">次の週</string>
+    <string name="stats_vs_previous_week_positive">前週比 +%d時間</string>
+    <string name="stats_vs_previous_week_negative">前週比 -%d時間</string>
+
+    <!-- Breathing -->
+    <string name="breathing_inhale">吸って</string>
+    <string name="breathing_hold">止めて</string>
+    <string name="breathing_exhale">吐いて</string>
+    <string name="breathing_subtitle">少し呼吸を整えましょう</string>
+
+    <!-- Session Settings -->
+    <string name="session_settings_title">セッション設定</string>
+    <string name="session_settings_desc">ブロックの動作を設定します：開始までの猶予時間、緊急解除、最大時間。</string>
+    <string name="session_grace_period">猶予時間</string>
+    <string name="session_grace_period_title">猶予時間</string>
+    <string name="session_grace_period_tooltip">手動または NFC でブロックを開始した後、キャンセルできる時間です。誤って開始してしまった場合に取り消せます。</string>
+    <string name="session_grace_immediate">すぐに開始</string>
+    <string name="session_grace_15s">15秒</string>
+    <string name="session_grace_30s">30秒</string>
+    <string name="session_grace_1m">1分</string>
+    <string name="session_grace_2m">2分</string>
+    <string name="session_emergency_unlocks">緊急解除</string>
+    <string name="session_emergency_unlocks_title">緊急解除の回数</string>
+    <string name="session_emergency_unlocks_tooltip">セッションごとに使用できる解除の回数です。解除するたびに、ブロック中のアプリと Lock の設定に一時的にアクセスできます。回数はブロックを開始するたびにリセットされます。</string>
+    <string name="session_emergency_duration">緊急解除の時間</string>
+    <string name="session_emergency_duration_title">緊急解除の時間</string>
+    <string name="session_emergency_duration_tooltip">緊急解除 1 回あたりに、ブロック中のアプリと Lock の設定にアクセスできる時間です。</string>
+    <string name="session_emergency_2m">2分</string>
+    <string name="session_emergency_5m">5分</string>
+    <string name="session_emergency_10m">10分</string>
+    <string name="session_max_duration">セッションの最大時間</string>
+    <string name="session_max_duration_title">セッションの最大時間</string>
+    <string name="session_max_duration_tooltip">タグを紛失した場合の安全策です。この時間が経過すると、ブロックは自動的に解除されます。</string>
+    <string name="session_timeout_2h">2時間</string>
+    <string name="session_timeout_3h">3時間</string>
+    <string name="session_timeout_5h">5時間</string>
+    <string name="session_timeout_8h">8時間</string>
+    <string name="session_timeout_unlimited">無制限</string>
+    <string name="session_unlimited_warning_title">無制限の時間</string>
+    <string name="session_unlimited_warning_body">無制限を選択すると、タグを紛失した場合にセッションが終了しなくなります。その場合、Lock をアンインストールする以外に方法はありません。</string>
+    <string name="session_unlimited_confirm">理解したうえで有効にする</string>
+
+    <!-- Data Screen -->
+    <string name="data_title">データ</string>
+    <string name="data_privacy_text">Lock では、あなたの利用状況は 100% 非公開です。利用データは一切収集しません。データはスマートフォン内にのみ保存されます。機種変更の際にデータを引き継ぐには、下のボタンからエクスポートしてください。</string>
+    <string name="data_privacy_scope">含まれるデータ：プロフィール、タグ、統計</string>
+    <string name="data_export">エクスポート</string>
+    <string name="data_export_subtitle">プロフィールとタグを JSON 形式で保存</string>
+    <string name="data_import">インポート</string>
+    <string name="data_import_subtitle">JSON ファイルから復元</string>
+    <string name="data_export_success">バックアップをエクスポートしました</string>
+    <string name="data_import_success">インポート完了：プロフィール %1$d件、タグ %2$d個</string>
+    <string name="data_info_title">あなたのデータ、あなたのプライバシー</string>
+    <string name="data_info_body">データはサーバーに保存されません。利用データ（プロフィール、ブロックするアプリ、登録済みのタグ、統計）を保存して後で再インポートするには、[エクスポート] をタップしてください。</string>
+    <string name="data_info_cd">情報</string>
+    <string name="data_management_title">データ管理</string>
+
+    <!-- NFC Tags Card (settings) -->
+    <string name="nfc_card_title">NFC タグ</string>
+    <string name="nfc_card_count">登録済みのタグ：%d個</string>
+
+    <!-- Service Notifications -->
+    <string name="notification_channel_name">Lock セッション</string>
+    <string name="notification_channel_desc">進行中のブロックセッションの通知</string>
+    <string name="notification_session_active">セッション進行中</string>
+    <plurals name="notification_session_active_count">
+        <item quantity="other">セッション進行中・%1$d個のアプリをブロック中</item>
+    </plurals>
+
+    <!-- Onboarding: Welcome (Page 0) -->
+    <string name="onboarding_welcome_title">集中力を\n取り戻す</string>
+    <string name="onboarding_welcome_desc">NFC タグ 1 つで、気が散るアプリをブロックします。</string>
+    <string name="onboarding_welcome_accent" formatted="false">シンプルで 100% 無料</string>
+    <string name="onboarding_welcome_cta">始める</string>
+
+    <!-- Onboarding: How it works (Page 1) -->
+    <string name="onboarding_how_title">仕組み</string>
+    <string name="onboarding_how_subtitle">簡単 3 ステップ</string>
+    <string name="onboarding_how_step1_title">タグをスキャン</string>
+    <string name="onboarding_how_step1_desc">スマートフォンを NFC タグに当ててブロックを開始します。</string>
+    <string name="onboarding_how_step2_title">アプリがブロックされます</string>
+    <string name="onboarding_how_step2_desc">選択したアプリが使えなくなります。</string>
+    <string name="onboarding_how_step3_title">もう一度スキャンして解除</string>
+    <string name="onboarding_how_step3_desc">もう一度スキャンするとブロックが解除されます。それだけです。</string>
+
+    <!-- Onboarding: Why physical (Page 2) -->
+    <string name="onboarding_why_title">解除するには、立ち上がること。</string>
+    <string name="onboarding_why_accent">それがすべてを変えます。</string>
+    <string name="onboarding_why_arg1_title">タップではなく、体を動かす</string>
+    <string name="onboarding_why_arg1_desc">立ち上がってタグをスキャンする必要があります。そのひと手間が、意志を生みます。</string>
+    <string name="onboarding_why_arg2_title">抜け道はありません</string>
+    <string name="onboarding_why_arg2_desc">隠しボタンも、ごまかしもありません。タグだけが唯一の鍵です。</string>
+    <string name="onboarding_why_arg3_title">よくあるスクリーンタイム アプリではありません</string>
+    <string name="onboarding_why_arg3_desc">Lock は使用時間を記録しません。スクロールそのものをできなくします。</string>
+
+    <!-- Onboarding: Permissions (Page 3) -->
+    <string name="onboarding_perm_title">権限</string>
+    <string name="onboarding_perm_subtitle">Lock が正常に動作するには、次の 3 つの権限が必要です。各カードをタップして有効にしてください。</string>
+    <string name="onboarding_perm_accessibility_title">ユーザー補助サービス</string>
+    <string name="onboarding_perm_accessibility_desc">ブロック中のアプリの起動を検出します</string>
+    <string name="onboarding_perm_accessibility_detail">このサービスにより、Lock はブロック中のアプリが開かれたことを検出できます。この権限がないと、ブロックは機能しません。\n\nLock の仕組みの中核となる権限です。</string>
+    <string name="onboarding_perm_overlay_title">他のアプリの上に重ねて表示</string>
+    <string name="onboarding_perm_overlay_desc">ブロック画面を表示します</string>
+    <string name="onboarding_perm_overlay_detail">この権限により、Lock は対象のアプリの上にブロック画面を表示できます。この権限がないと、ブロック画面は表示されません。</string>
+    <string name="onboarding_perm_battery_title">電池の最適化</string>
+    <string name="onboarding_perm_battery_desc">Android による Lock の停止を防ぎます</string>
+    <string name="onboarding_perm_battery_detail">Android は電池を節約するために、バックグラウンドで Lock を停止することがあります。\n\nこの権限により、画面がオフのときでもブロックが維持されます。</string>
+    <string name="onboarding_perm_info">各権限は Android の設定で手動で設定します。データは一切収集されません。</string>
+    <string name="onboarding_perm_cta">権限を設定</string>
+    <string name="onboarding_perm_cta_done">続行</string>
+    <string name="onboarding_perm_skip">後で設定</string>
+    <string name="onboarding_perm_note">Lock の動作に必要です</string>
+    <string name="onboarding_perm_open_settings">設定を開く</string>
+
+    <!-- Onboarding: App Picker (Page 4) -->
+    <string name="onboarding_apps_title">ブロックするアプリを\n選択</string>
+    <string name="onboarding_apps_subtitle">このリストは後で変更できます</string>
+    <string name="onboarding_apps_counter">%d個のアプリを選択済み</string>
+    <string name="onboarding_apps_popular">人気</string>
+    <string name="onboarding_apps_all">すべてのアプリ</string>
+    <string name="onboarding_apps_search">アプリを検索…</string>
+    <string name="onboarding_apps_cta">続行・%d個のアプリ</string>
+    <string name="onboarding_apps_skip">後で選択</string>
+
+    <!-- Onboarding: NFC (Page 5) -->
+    <string name="onboarding_nfc_title">NFC タグをスキャン</string>
+    <string name="onboarding_nfc_desc">NFC タグをスマートフォンの背面に当てて、Lock に登録します。</string>
+    <string name="onboarding_nfc_waiting">NFC タグを待機中…</string>
+    <string name="onboarding_nfc_hint">NFC タグは最大 5 つまで追加できます。オフィス、自宅、財布など、場面に合わせて使い分けられます。</string>
+    <string name="onboarding_nfc_skip">今はスキップ</string>
+
+    <!-- Onboarding: Completion (Page 6) - complete -->
+    <string name="onboarding_done_title">準備完了</string>
+    <string name="onboarding_done_subtitle">Lock の設定が完了しました。集中の維持をお手伝いします。</string>
+    <string name="onboarding_done_cta">ホームへ</string>
+    <string name="onboarding_done_hint">NFC タグをスキャンしてブロックを開始します</string>
+
+    <!-- Onboarding: Completion (Page 6) - incomplete -->
+    <string name="onboarding_incomplete_title">お疲れさまでした</string>
+    <string name="onboarding_incomplete_subtitle">Lock の設定が\n順調に進んでいます。</string>
+    <string name="onboarding_incomplete_cta">Lock を使ってみる</string>
+    <string name="onboarding_incomplete_hint">残りの設定は、設定画面から\nご自分のペースで完了できます。</string>
+    <string name="onboarding_incomplete_permissions">権限を許可済み</string>
+    <string name="onboarding_incomplete_apps">ブロックするアプリ</string>
+    <string name="onboarding_incomplete_nfc">NFC タグ</string>
+
+    <!-- Home: Setup Checklist -->
+    <string name="setup_progress">%1$d/%2$d ステップ完了</string>
+    <string name="setup_permissions_title">権限を有効にする</string>
+    <string name="setup_permissions_desc">Lock の動作に必要です</string>
+    <string name="setup_permissions_cta">設定</string>
+    <string name="setup_apps_title">ブロックするアプリを選択</string>
+    <string name="setup_apps_desc">最も気が散るアプリを選択してください</string>
+    <string name="setup_apps_cta">設定</string>
+    <string name="setup_nfc_title">NFC タグを登録</string>
+    <string name="setup_nfc_desc">ロックと解除に必要です</string>
+    <string name="setup_nfc_cta">スキャン</string>
+    <string name="setup_permissions_done">権限を許可済み</string>
+    <string name="setup_apps_done_one">アプリを選択済み</string>
+    <string name="setup_apps_done_many">アプリを選択済み</string>
+    <string name="setup_apps_done_count_one">%d個のアプリをブロック</string>
+    <string name="setup_apps_done_count_many">%d個のアプリをブロック</string>
+    <string name="setup_nfc_done">NFC タグを登録済み</string>
+
+    <!-- Manual Mode -->
+    <string name="manual_mode_card_title">手動モード</string>
+    <string name="manual_mode_card_desc">NFC タグなしで Lock を使用します。ブロックはアプリからいつでも解除できます。</string>
+    <string name="manual_mode_card_warning">お試し用の限定的なモードです</string>
+    <string name="manual_mode_card_cta">手動モードを有効にする</string>
+    <string name="manual_mode_banner">手動モードが有効です</string>
+    <string name="manual_mode_info_title">手動モード</string>
+    <string name="manual_mode_info_body">手動モードでは、NFC タグなしで Lock を試せます。\n\nブロックの開始と解除はアプリから直接行えます。本来の使い方をするには NFC タグを登録してください。登録すると、手動モードは自動的に無効になります。</string>
+    <string name="manual_mode_lock_cta">ブロックを開始</string>
+    <string name="manual_mode_unlock_title">ブロックを解除</string>
+    <string name="manual_mode_unlock_body">ブロックが解除され、すべてのアプリに再びアクセスできるようになります。</string>
+    <string name="manual_mode_unlock_confirm">解除する</string>
+    <string name="manual_mode_unlock_cd">ブロックを解除</string>
+    <string name="manual_mode_disable">手動モードを無効にする</string>
+    <string name="manual_mode_sub_free">ブロックは解除されています</string>
+    <string name="manual_mode_nfc_nudge_title">NFC タグに切り替える</string>
+    <string name="manual_mode_nfc_nudge_desc">本来の使い方をするために</string>
+    <string name="manual_mode_nfc_nudge_cta">NFC タグを登録</string>
+    <string name="manual_mode_separator">または</string>
+
+    <!-- Support -->
+    <string name="support_title">Lock を応援する</string>
+    <string name="support_body" formatted="false">Lock は 1 人で開発しており、100% 無料で、今後も無料のままです。このアプリを気に入って毎日お使いいただいているなら、ささやかな応援でも、今後の機能開発とアプリの更新の支えになります。\n\nよろしくお願いします ❤️</string>
+    <string name="support_cta">応援する</string>
+
+    <!-- Onboarding: Common -->
+    <string name="onboarding_continue">続行</string>
+
+    <!-- Stats: Today Card -->
+    <string name="stats_today">今日</string>
+    <string name="stats_today_sessions_one">%d回のセッション</string>
+    <string name="stats_today_sessions_many">%d回のセッション</string>
+    <string name="stats_today_focus_hours">集中 %1$d時間%2$s分</string>
+    <string name="stats_today_focus_minutes">集中 %d分</string>
+    <string name="stats_today_focus_zero">集中 0分</string>
+
+    <!-- Misc -->
+    <string name="default_profile_name">デフォルト</string>
+    <string name="error_export">エクスポートに失敗しました</string>
+    <string name="error_import">インポートに失敗しました</string>
+    <string name="nfc_tags_paired_success">タグを登録しました</string>
+    <string name="nfc_tags_paired_success_subtitle">NFC タグが正常に追加されました。</string>
+
+    <!-- Block Overlay -->
+    <string name="overlay_title">集中を続けましょう</string>
+    <string name="overlay_subtitle">%s は現在ブロック中です。\n再び使用するには、タグで Lock を解除する必要があります。</string>
+    <string name="overlay_subtitle_no_escape">%s はセッションが終了するまでブロックされます。\nどのタグでも解除できません。タイマーが終了したら戻ってきてください。</string>
+    <string name="overlay_button">OK</string>
+
+    <!-- NFC Toasts -->
+    <string name="toast_blocking_on">ブロックを開始しました%s</string>
+    <string name="toast_blocking_off">ブロックを解除しました%s</string>
+    <string name="toast_unknown_tag">不明なタグです</string>
+    <string name="toast_error_no_tag">タグが登録されていません</string>
+    <string name="toast_error_no_profile">プロフィールが設定されていません</string>
+    <string name="toast_error_no_apps">まずブロックするアプリを選択してください</string>
+    <string name="toast_no_escape_active">セッション進行中のため解除できません。</string>
+
+    <!-- Profiles -->
+    <string name="profiles_section_title">プロフィール</string>
+    <string name="profiles_section_principal">メインプロフィール</string>
+    <string name="profiles_section_others">その他のプロフィール</string>
+    <string name="profiles_new">新しいプロフィール</string>
+    <string name="profiles_max_reached">プロフィール %1$d / %2$d・上限に達しました</string>
+    <string name="profile_type_short_standard">通常</string>
+    <string name="profile_type_short_no_escape">解除不可</string>
+    <string name="profiles_all_title">すべてのプロフィール</string>
+    <string name="profiles_all_subtitle">%1$d件のプロフィール・デフォルト：%2$s</string>
+    <string name="profiles_manage_subtitle">ブロックモードを管理</string>
+    <string name="profiles_count_badge">%1$d / %2$d</string>
+    <string name="profiles_max_reached_text">プロフィールの上限（%d件）に達しました。</string>
+    <string name="profile_row_subtitle">%1$s・%2$d個のアプリ</string>
+
+    <!-- New profile wizard -->
+    <string name="wizard_title">新しいプロフィール</string>
+    <string name="wizard_step_counter">ステップ %1$d / %2$d</string>
+    <string name="wizard_continue">続行</string>
+    <string name="wizard_continue_count">続行（%d）</string>
+    <string name="wizard_create">プロフィールを作成</string>
+    <string name="wizard_type_label">ブロックの種類</string>
+    <string name="wizard_type_normal_title">通常</string>
+    <string name="wizard_type_normal_subtitle">アプリをブロックします。NFC タグでいつでも解除できます。</string>
+    <string name="wizard_type_no_escape_title">解除不可</string>
+    <string name="wizard_type_no_escape_badge">5〜20分</string>
+    <string name="wizard_type_no_escape_subtitle">一定時間アプリをブロックします。終了前に停止することはできません。</string>
+    <string name="wizard_name_label">プロフィール名</string>
+    <string name="wizard_source_label">ベース</string>
+    <string name="wizard_source_scratch_title">最初から作成</string>
+    <string name="wizard_source_scratch_subtitle">アプリ未選択</string>
+    <string name="wizard_source_copy_title">%s からコピー</string>
+    <string name="wizard_source_copy_subtitle">%d個のアプリ</string>
+    <string name="wizard_duration_info">このプロフィールは解除不可です。時間を選択してください。</string>
+    <string name="wizard_duration_label">ブロック時間</string>
+    <string name="wizard_duration_warning">開始すると、タイマーが終了するまで停止できません。</string>
+    <string name="wizard_recap_title">確認</string>
+    <string name="wizard_recap_subtitle">作成する前に内容をご確認ください</string>
+    <string name="wizard_recap_name">名前</string>
+    <string name="wizard_recap_type">種類</string>
+    <string name="wizard_recap_apps">アプリ</string>
+    <string name="wizard_recap_apps_value">%d個</string>
+    <string name="wizard_recap_duration">時間</string>
+    <string name="wizard_recap_default">デフォルトのプロフィールに設定</string>
+    <string name="wizard_recap_default_subtitle">ホーム画面から開始されます</string>
+    <string name="profile_badge_default">デフォルト</string>
+    <string name="profile_badge_no_escape">解除不可</string>
+    <string name="profile_type_standard_title">標準ブロック</string>
+    <string name="profile_type_standard_subtitle">NFC タグでオンとオフを切り替えます。</string>
+    <string name="profile_type_no_escape_title">解除不可セッション</string>
+    <string name="profile_type_no_escape_subtitle">時間を選んで開始し、終了まで集中を続けます。</string>
+    <string name="profile_apps_count_blocked">%d個のアプリがブロックされます</string>
+    <string name="profile_apps_count_inaccessible">%d個のアプリが使用できなくなります</string>
+    <string name="profile_default_toggle">デフォルトのプロフィール</string>
+    <string name="profile_default_toggle_subtitle">ホーム画面から開始できます</string>
+    <string name="profile_default_locked_info">解除不可のプロフィールはデフォルトに設定できません。</string>
+    <string name="profile_header_subtitle_standard">標準ブロック、解除可能</string>
+    <string name="profile_header_subtitle_no_escape">時間指定ブロック、解除不可</string>
+    <string name="profile_duration_title">時間</string>
+    <string name="profile_duration_minutes">%d分</string>
+    <string name="profile_associate_tag">タグを関連付ける</string>
+    <string name="nfc_associate_another">別のタグを関連付ける</string>
+    <string name="tag_status_associated">関連付け済み</string>
+    <string name="profile_no_tag">タグが関連付けられていません</string>
+    <string name="profile_start">開始</string>
+    <string name="profile_start_with_duration">開始・%d分</string>
+    <string name="profile_delete">プロフィールを削除</string>
+    <string name="profile_delete_confirm_title">このプロフィールを削除しますか？</string>
+    <string name="profile_delete_confirm_body">プロフィール「%s」とその設定は完全に削除されます。この操作は元に戻せません。</string>
+    <string name="profile_delete_confirm_action">完全に削除</string>
+    <string name="profile_rename">プロフィール名を変更</string>
+    <string name="profile_new_choose_type">プロフィールの種類</string>
+    <string name="profile_new_name">プロフィール名</string>
+    <string name="profile_new_copy_apps">既存のプロフィールからアプリをコピー</string>
+    <string name="profile_delete_blocked_default">デフォルトのプロフィールは削除できません。先に別のプロフィールをデフォルトに設定してください。</string>
+    <string name="profile_delete_blocked_active">セッション中はプロフィールを削除できません。</string>
+    <string name="profile_se_confirm_title">解除不可セッションを開始しますか？</string>
+    <string name="profile_se_confirm_body">%d分間、これらのアプリは使用できなくなります。終了前に解除することはできません。</string>
+    <string name="tag_pick_profile_title">このタグで開始するプロフィール</string>
+    <string name="profile_manual_mode_title">手動モード</string>
+    <string name="profile_manual_mode_body">NFC タグが登録されていません。ブロックはアプリからいつでも解除できます。</string>
+    <string name="profile_perm_required_title">権限が必要です</string>
+    <string name="profile_perm_required_body">アプリをブロックするには、ユーザー補助サービスを有効にする必要があります。有効でない場合、プロフィールを開始しても何もブロックされません。</string>
+    <string name="profile_perm_required_cta">ユーザー補助を有効にする</string>
+    <string name="home_status_locked_no_escape">解除\n不可</string>
+    <!-- In-app cards -->
+    <string name="inapp_support_title">Lock を気に入っていただけましたか？</string>
+    <string name="inapp_support_body">Lock は 1 人で開発しており、広告もトラッキングもありません。ささやかな応援が、アプリを無料に保ち、次の機能を作る力になります。</string>
+    <string name="inapp_support_cta">プロジェクトを応援</string>
+    <string name="inapp_support_later">後で</string>
+    <string name="inapp_changelog_version">バージョン %s</string>
+    <string name="inapp_changelog_title">Lock の新機能</string>
+    <string name="inapp_changelog_cta">見てみる</string>
+    <string name="inapp_changelog_1_title">スケジュール</string>
+    <string name="inapp_changelog_1_body">新機能：終日スケジュールに対応。スキャン時の動作も選べます（解除、または自動的に終わる一時停止）。</string>
+    <string name="inapp_changelog_2_title">時間指定プロフィール</string>
+    <string name="inapp_changelog_2_body">新機能：最大 2 時間までのカスタム時間に対応。また、ブロックの継続機能により、タイマー終了後も次のスキャンまでブロックを維持できます。</string>
+
+    <!-- Schedules -->
+    <string name="schedule_settings_entry">スケジュール</string>
+    <string name="schedule_settings_subtitle">決まった時間にプロフィールをブロック</string>
+    <string name="schedules_title">スケジュール</string>
+    <string name="schedules_subtitle">自動ブロック</string>
+    <string name="schedules_empty_title">スケジュールはありません</string>
+    <string name="schedules_empty_body">スケジュールを作成すると、タグをスキャンしなくても、決まった時間にプロフィールを自動的にブロックできます。</string>
+    <string name="schedules_new">新しいスケジュール</string>
+    <string name="schedule_edit_title_new">新しいスケジュール</string>
+    <string name="schedule_edit_title_edit">スケジュールを編集</string>
+    <string name="schedule_days_label">曜日</string>
+    <string name="schedule_hours_label">時間帯</string>
+    <string name="schedule_start_label">開始</string>
+    <string name="schedule_end_label">終了</string>
+    <string name="schedule_time_range">%1$s〜%2$s</string>
+    <string name="schedule_time_range_overnight">%1$s〜%2$s（翌日）</string>
+    <string name="schedule_every_day">毎日</string>
+    <string name="schedule_overnight_hint">この時間帯は日をまたぎます。ブロックは翌日の %1$s に終了します。</string>
+    <string name="schedule_days_required">曜日を 1 つ以上選択してください</string>
+    <string name="schedule_same_time_error">開始時刻と終了時刻は異なる時刻にしてください</string>
+    <string name="schedule_profiles_label">ブロックするプロフィール</string>
+    <string name="schedule_profiles_hint">選択したプロフィールのアプリが、この時間帯にブロックされます。</string>
+    <string name="schedule_add_profile">プロフィールを追加</string>
+    <string name="schedule_no_profile">プロフィールなし</string>
+    <string name="schedule_profile_apps">%1$d個のアプリ</string>
+    <string name="schedule_picker_title">ブロックするプロフィール</string>
+    <string name="schedule_picker_empty">利用できる標準プロフィールがありません。</string>
+    <string name="schedule_save">保存</string>
+    <string name="schedule_delete">スケジュールを削除</string>
+    <string name="schedule_delete_confirm_title">このスケジュールを削除しますか？</string>
+    <string name="schedule_delete_confirm_body">このブロックの時間帯は今後実行されなくなります。</string>
+    <string name="schedule_delete_confirm_cta">削除</string>
+    <string name="schedule_alarm_perm_title">アラームとリマインダーを許可</string>
+    <string name="schedule_alarm_perm_body">スケジュールしたブロックを時間どおりに開始・終了するには、この権限が必要です。</string>
+    <string name="schedule_alarm_perm_later">後で</string>
+    <string-array name="schedule_day_initials">
+        <item>月</item><item>火</item><item>水</item><item>木</item><item>金</item><item>土</item><item>日</item>
+    </string-array>
+
+    <!-- NFC tag writing -->
+    <string name="nfc_write_interrupted">書き込みが中断されました。タグをスマートフォンに当てたまま動かさずに、もう一度お試しください。</string>
+    <string name="nfc_write_protected_title">タグは書き込み保護されています</string>
+    <string name="nfc_write_protected_body">このタグには Lock のデータを保存できないため、アプリを開いているときにのみ動作します。タグ自体は登録されました。</string>
+    <string name="nfc_tag_rewrite">タグを書き換える</string>
+    <string name="nfc_tag_rewrite_waiting">タグを書き換え中…</string>
+    <string name="nfc_tag_rewrite_subtitle">確認が表示されるまで、%1$s をスマートフォンの背面に当てたままにしてください。</string>
+    <string name="nfc_tag_rewrite_done">タグを書き換えました</string>
+    <string name="nfc_tag_rewrite_done_subtitle">Lock を閉じているときでも動作するようになりました。</string>
+    <string name="nfc_tag_rewrite_hint">アプリを閉じているとタグが動作しない場合は、書き換えてください。</string>
+
+    <string name="nfc_write_failed_title">このタグに書き込めません</string>
+    <string name="nfc_write_failed_body">書き込みに繰り返し失敗しています。このまま登録することもできますが、その場合 Lock を開いているときは動作し、閉じているときは動作しません。</string>
+    <string name="nfc_write_failed_cta">このまま登録</string>
+    <string name="nfc_write_failed_retry">再試行</string>
+    <string name="profile_duration_unit">分</string>
+    <string name="profile_duration_custom">カスタム</string>
+    <string name="profile_duration_decrease">時間を短くする</string>
+    <string name="profile_duration_increase">時間を長くする</string>
+    <string name="profile_continuity_section">ブロックの継続</string>
+    <string name="profile_continuity_title">スキャンまでブロックを維持</string>
+    <string name="profile_continuity_subtitle">タイマー終了後も、次にタグをスキャンするまでこのプロフィールのアプリをブロックし続けます</string>
+    <string name="profile_continuity_disabled">継続を有効にするには、このプロフィールにタグを関連付けてください。</string>
+    <string name="profile_dissociate_tag">このタグの関連付けを解除</string>
+    <string name="toast_pause_resumes">一時停止中・%d分後にブロックを再開します</string>
+    <string name="schedule_window_label">時間帯</string>
+    <string name="schedule_all_day">終日</string>
+    <string name="schedule_all_day_subtitle">時間帯を指定せず、1 日 24 時間を対象にします</string>
+    <string name="schedule_scan_label">NFC スキャン時</string>
+    <string name="schedule_scan_unlock">解除</string>
+    <string name="schedule_scan_pause">一時停止</string>
+    <string name="schedule_scan_unlock_hint">スケジュールの次の開始時刻までブロックを解除します。</string>
+    <string name="schedule_scan_pause_hint">一定時間だけ解除し、その後自動的にブロックを再開します。</string>
+    <string name="schedule_pause_duration_label">一時停止の時間</string>
+    <string name="duration_unit_hour">時間</string>
+    <string name="inapp_changelog_3_title">安定性の向上</string>
+    <string name="inapp_changelog_3_body">修正：スマートフォンのスリープ中にセッションの自動終了が遅れることがある問題。修正：Android の「実行中のアプリ」パネルに Lock が表示されなくなりました。そこから停止すると、気づかないうちにブロックが無効になることがありました。修正：セッション中に画面を回転しても、セッションが切り替わらなくなりました。</string>
+</resources>

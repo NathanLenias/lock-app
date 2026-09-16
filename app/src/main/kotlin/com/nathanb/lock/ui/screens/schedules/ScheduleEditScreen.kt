@@ -63,6 +63,7 @@ import com.nathanb.lock.util.Constants
 import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.screens.profile.DurationChip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
@@ -482,7 +483,7 @@ private fun SegmentButton(
 @Composable
 private fun SectionLabel(text: String) {
     Text(
-        text = text.uppercase(),
+        text = text.uppercase(LocalConfiguration.current.locales[0]),
         fontFamily = SatoshiFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,

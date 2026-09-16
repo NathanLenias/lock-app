@@ -39,7 +39,14 @@
     <string name="emergency_unlock_cd">Notentsperrung</string>
     <string name="emergency_remaining">%d übrig</string>
     <string name="emergency_title">Notentsperrung</string>
-    <string name="emergency_body">Sie haben %1$d Minute%2$s lang Zugriff auf alle Apps, danach wird die Blockierung automatisch fortgesetzt.\n\n%3$d Notentsperrung(en) übrig</string>
+    <plurals name="emergency_body_access">
+        <item quantity="one">Sie haben %d Minute lang Zugriff auf alle Apps, danach wird die Blockierung automatisch fortgesetzt.</item>
+        <item quantity="other">Sie haben %d Minuten lang Zugriff auf alle Apps, danach wird die Blockierung automatisch fortgesetzt.</item>
+    </plurals>
+    <plurals name="emergency_body_remaining">
+        <item quantity="one">%d Notentsperrung übrig</item>
+        <item quantity="other">%d Notentsperrungen übrig</item>
+    </plurals>
     <string name="emergency_confirm">Entsperrung bestätigen</string>
 
     <!-- Grace period -->
@@ -52,7 +59,10 @@
     <!-- Settings Screen -->
     <string name="settings_title">Einstellungen</string>
     <string name="settings_nfc_tags">NFC-Tags</string>
-    <string name="settings_nfc_tags_count">%1$d Tag%2$s gekoppelt</string>
+    <plurals name="settings_nfc_tags_count">
+        <item quantity="one">%1$d Tag gekoppelt</item>
+        <item quantity="other">%1$d Tags gekoppelt</item>
+    </plurals>
     <string name="settings_session">Sitzung</string>
     <string name="settings_session_subtitle">Schonfrist, Dauer, …</string>
     <string name="settings_appearance">Darstellung</string>
@@ -223,7 +233,7 @@
     <!-- Onboarding: Welcome (Page 0) -->
     <string name="onboarding_welcome_title">Übernehmen Sie wieder\ndie Kontrolle über Ihre Aufmerksamkeit</string>
     <string name="onboarding_welcome_desc">Blockieren Sie ablenkende Apps mit einem einfachen NFC-Tag.</string>
-    <string name="onboarding_welcome_accent">Einfach und 100 % kostenlos</string>
+    <string name="onboarding_welcome_accent" formatted="false">Einfach und 100 % kostenlos</string>
     <string name="onboarding_welcome_cta">Loslegen</string>
 
     <!-- Onboarding: How it works (Page 1) -->
@@ -337,7 +347,7 @@
 
     <!-- Support -->
     <string name="support_title">Lock unterstützen</string>
-    <string name="support_body">Lock wird von einer einzigen Person entwickelt, ist zu 100 % kostenlos und bleibt es auch. Wenn Ihnen die App gefällt und sie Ihnen täglich hilft, hilft Ihre Unterstützung, auch eine symbolische, künftige Funktionen zu finanzieren und die App aktuell zu halten.\n\nVielen Dank im Voraus ❤️</string>
+    <string name="support_body" formatted="false">Lock wird von einer einzigen Person entwickelt, ist zu 100 % kostenlos und bleibt es auch. Wenn Ihnen die App gefällt und sie Ihnen täglich hilft, hilft Ihre Unterstützung, auch eine symbolische, künftige Funktionen zu finanzieren und die App aktuell zu halten.\n\nVielen Dank im Voraus ❤️</string>
     <string name="support_cta">Ich unterstütze Lock</string>
 
     <!-- Onboarding: Common -->

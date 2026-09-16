@@ -60,6 +60,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.R
 import com.nathanb.lock.data.model.Profile
@@ -665,7 +666,7 @@ private fun RecapRow(label: String, value: String, valueIsBadge: Boolean, badgeN
 @Composable
 private fun WizLabel(text: String) {
     Text(
-        text = text.uppercase(),
+        text = text.uppercase(LocalConfiguration.current.locales[0]),
         fontFamily = SatoshiFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,

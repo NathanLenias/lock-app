@@ -34,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,10 +44,10 @@ import androidx.compose.ui.unit.sp
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.theme.LockTheme
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.ZoneId
 
-private val DAY_LABELS = listOf("L", "M", "M", "J", "V", "S", "D")
+/** ICU skeleton for the week range: "14 – 20 sept." (fr), "Sep 14 – 20" (en), "9月14日～20日" (ja). */
+private const val WEEK_RANGE_SKELETON = "MMMd"
 
 @Composable
 internal fun WeeklyBarChart(
@@ -58,13 +60,16 @@ internal fun WeeklyBarChart(
     val colors = LockTheme.colors
     val maxDailyMs = week.days.maxOfOrNull { it.totalMs }?.coerceAtLeast(1L) ?: 1L
 
-    val dateFormatter = DateTimeFormatter.ofPattern("d", Locale.FRANCE)
-    val monthFormatter = DateTimeFormatter.ofPattern("MMM", Locale.FRANCE)
-
-    val startDay = week.weekStart.format(dateFormatter)
-    val endDay = week.weekEnd.dayOfMonth
-    val month = week.weekEnd.format(monthFormatter)
-    val rangeText = "$startDay — $endDay $month"
+    val locale = LocalConfiguration.current.locales[0]
+    val dayLabels = stringArrayResource(R.array.schedule_day_initials)
+    val rangeText = remember(locale, week.weekStart, week.weekEnd) {
+        val zone = ZoneId.systemDefault()
+        val interval = android.icu.util.DateInterval(
+            week.weekStart.atStartOfDay(zone).toInstant().toEpochMilli(),
+            week.weekEnd.atStartOfDay(zone).toInstant().toEpochMilli(),
+        )
+        android.icu.text.DateIntervalFormat.getInstance(WEEK_RANGE_SKELETON, locale).format(interval)
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         // Section title
@@ -225,7 +230,7 @@ internal fun WeeklyBarChart(
                             Spacer(Modifier.height(6.dp))
 
                             Text(
-                                text = DAY_LABELS[index],
+                                text = dayLabels[index],
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = if (isToday) FontWeight.Bold else FontWeight.SemiBold,
                                     fontSize = 10.sp,

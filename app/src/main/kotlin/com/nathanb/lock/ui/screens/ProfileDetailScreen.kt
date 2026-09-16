@@ -63,6 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -795,7 +796,7 @@ private fun AssociatedTagRow(name: String, onRemove: (() -> Unit)? = null) {
 @Composable
 private fun SectionLabel(text: String) {
     Text(
-        text = text.uppercase(),
+        text = text.uppercase(LocalConfiguration.current.locales[0]),
         fontFamily = SatoshiFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,

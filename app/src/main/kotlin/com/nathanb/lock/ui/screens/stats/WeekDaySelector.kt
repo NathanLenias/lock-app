@@ -17,13 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nathanb.lock.R
 import com.nathanb.lock.ui.theme.LockTheme
 import java.time.LocalDate
-
-private val DAY_LABELS = listOf("L", "M", "M", "J", "V", "S", "D")
 
 @Composable
 internal fun WeekDaySelector(
@@ -32,6 +32,7 @@ internal fun WeekDaySelector(
 ) {
     val colors = LockTheme.colors
     val today = LocalDate.now()
+    val dayLabels = stringArrayResource(R.array.schedule_day_initials)
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -61,7 +62,7 @@ internal fun WeekDaySelector(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = DAY_LABELS[index],
+                        text = dayLabels[index],
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,

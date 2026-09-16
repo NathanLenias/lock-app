@@ -69,6 +69,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.R
@@ -256,7 +257,7 @@ fun SettingsScreen(
                         modifier = Modifier.weight(1f),
                         icon = Icons.Outlined.Nfc,
                         title = stringResource(R.string.settings_nfc_tags),
-                        subtitle = stringResource(R.string.settings_nfc_tags_count, nfcTags.size, if (nfcTags.size > 1) "s" else "", if (nfcTags.size > 1) "s" else ""),
+                        subtitle = pluralStringResource(R.plurals.settings_nfc_tags_count, nfcTags.size, nfcTags.size),
                         badge = "${nfcTags.size}",
                         onClick = onNavigateToNfcTags,
                     )

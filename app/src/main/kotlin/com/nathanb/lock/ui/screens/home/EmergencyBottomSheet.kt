@@ -13,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
@@ -32,7 +33,9 @@ internal fun EmergencyBottomSheet(
         onDismiss = onDismiss,
         icon = Icons.Default.LockOpen,
         title = stringResource(R.string.emergency_title),
-        body = stringResource(R.string.emergency_body, durationMinutes, if (durationMinutes > 1) "s" else "", remainingUnlocks),
+        body = pluralStringResource(R.plurals.emergency_body_access, durationMinutes, durationMinutes) +
+            "\n\n" +
+            pluralStringResource(R.plurals.emergency_body_remaining, remainingUnlocks, remainingUnlocks),
         actions = {
             Button(
                 onClick = onConfirm,
