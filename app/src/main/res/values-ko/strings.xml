@@ -555,4 +555,38 @@
     <string name="duration_unit_hour">시간</string>
     <string name="inapp_changelog_3_title">안정성</string>
     <string name="inapp_changelog_3_body">수정: 휴대전화가 절전 상태일 때 세션 자동 종료가 늦어질 수 있던 문제. 수정: Lock이 더 이상 Android의 활성 앱 패널에 표시되지 않습니다(여기서 중지하면 차단이 조용히 꺼질 수 있었습니다). 수정: 세션 중 화면을 회전해도 더 이상 세션이 전환되지 않습니다.</string>
+
+    <!-- Website blocking -->
+    <string name="websites_title">차단할 웹사이트</string>
+    <string name="websites_row_optional">선택 사항</string>
+    <string name="websites_row_summary">%1$s: %2$s</string>
+    <string name="websites_row_permission_off">권한이 해제되어 웹사이트가 차단되지 않습니다</string>
+    <string name="websites_profile_label">%1$s 프로필</string>
+    <string name="websites_intro_title">브라우저에서 웹사이트 차단하기</string>
+    <string name="websites_intro_body">Lock은 웹사이트를 알아보기 위해 브라우저에 표시된 주소를 읽습니다. 이를 위해 별도의 접근성 권한이 필요하며, 언제든지 해제할 수 있습니다.</string>
+    <string name="websites_intro_point_address">Lock은 열려 있는 웹사이트의 주소만 확인합니다.</string>
+    <string name="websites_intro_point_local">아무것도 저장하거나 전송하지 않으며, 모든 것이 휴대전화에 남습니다.</string>
+    <string name="websites_intro_point_apps">이 옵션 사용 여부와 관계없이 앱은 이전처럼 차단됩니다.</string>
+    <string name="websites_intro_hint">설정에서 ‘%1$s’을(를) 켜세요.</string>
+    <string name="websites_intro_cta">설정 열기</string>
+    <string name="websites_intro_later">나중에</string>
+    <string name="websites_input_placeholder">example.com</string>
+    <string name="websites_add">웹사이트 추가</string>
+    <string name="websites_subdomains_hint">하위 도메인도 포함됩니다. youtube.com을 추가하면 m.youtube.com도 차단됩니다.</string>
+    <string name="websites_error_invalid">‘%1$s’은(는) 웹사이트 주소가 아닙니다. 예: youtube.com</string>
+    <string name="websites_error_duplicate">%1$s은(는) 이미 목록에 있습니다.</string>
+    <string name="websites_section_blocked">차단된 웹사이트</string>
+    <string name="websites_remove">%1$s 삭제</string>
+    <string name="websites_empty_title">아직 웹사이트가 없습니다</string>
+    <string name="websites_empty_body">위에 웹사이트 주소를 추가하세요. 이 프로필의 세션 동안 브라우저에서 차단됩니다.</string>
+    <string name="websites_status_on">주소 읽기 켜짐</string>
+    <string name="websites_status_manage">관리</string>
+    <string name="websites_banner_title">이 웹사이트들은 차단되지 않습니다</string>
+    <string name="websites_banner_body">접근성 설정에서 ‘%1$s’ 권한이 꺼져 있습니다.</string>
+    <string name="websites_banner_cta">설정에서 켜기</string>
+    <string name="permissions_websites_title">웹사이트(선택 사항)</string>
+    <string name="permissions_websites_subtitle">웹사이트를 차단하기 위해 브라우저 주소를 읽습니다</string>
+    <plurals name="websites_count">
+        <item quantity="other">웹사이트 %1$d개</item>
+    </plurals>
 </resources>

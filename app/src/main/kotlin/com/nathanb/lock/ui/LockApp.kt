@@ -51,6 +51,10 @@ import com.nathanb.lock.ui.screens.StatsScreen
 import com.nathanb.lock.ui.screens.settings.DataScreen
 import com.nathanb.lock.ui.screens.settings.PermissionsScreen
 import com.nathanb.lock.ui.screens.settings.SessionSettingsScreen
+import com.nathanb.lock.ui.screens.websites.WebsitesIntroScreen
+import com.nathanb.lock.ui.screens.websites.WebsitesScreen
+import com.nathanb.lock.util.PermissionHelper
+import androidx.compose.ui.platform.LocalContext
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 import android.content.res.Configuration
@@ -266,6 +270,49 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
                         onBack = { navController.popBackStack() },
                         onEditApps = { navController.navigate("app-picker/$it") },
                         onAssociateTag = { navController.navigate("nfc-tags?profileId=$it") },
+                        onEditWebsites = { profileId, withIntro ->
+                            navController.navigate(if (withIntro) "websites-intro/$profileId" else "websites/$profileId")
+                        },
+                    )
+                }
+
+                composable(
+                    "websites-intro/{profileId}",
+                    arguments = listOf(navArgument("profileId") { type = NavType.LongType }),
+                    enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(300)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(300)) },
+                ) { backStackEntry ->
+                    val profileId = backStackEntry.arguments?.getLong("profileId") ?: defaultProfileId
+                    val profileName = profilesForNav.find { it.id == profileId }?.name.orEmpty()
+                    val context = LocalContext.current
+                    // Both choices land on the list, replacing the explanation (back -> profile).
+                    val toList = {
+                        navController.navigate("websites/$profileId") {
+                            popUpTo("websites-intro/{profileId}") { inclusive = true }
+                        }
+                    }
+                    WebsitesIntroScreen(
+                        profileName = profileName,
+                        onBack = { navController.popBackStack() },
+                        onOpenSettings = {
+                            toList()
+                            PermissionHelper.openAccessibilitySettings(context)
+                        },
+                        onLater = toList,
+                    )
+                }
+
+                composable(
+                    "websites/{profileId}",
+                    arguments = listOf(navArgument("profileId") { type = NavType.LongType }),
+                    enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn(tween(300)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut(tween(300)) },
+                ) { backStackEntry ->
+                    val profileId = backStackEntry.arguments?.getLong("profileId") ?: defaultProfileId
+                    WebsitesScreen(
+                        viewModel = viewModel,
+                        profileId = profileId,
+                        onBack = { navController.popBackStack() },
                     )
                 }
 

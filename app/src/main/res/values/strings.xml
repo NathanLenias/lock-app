@@ -559,4 +559,39 @@
     <string name="duration_unit_hour">h</string>
     <string name="inapp_changelog_3_title">Reliability</string>
     <string name="inapp_changelog_3_body">Fix: automatic session end could run late while the phone was asleep. Fix: Lock no longer appears in Android\'s Active apps panel, where stopping it could silently disable blocking. Fix: rotating the phone during a session no longer toggles it.</string>
+
+    <!-- Website blocking -->
+    <string name="websites_title">Websites to block</string>
+    <string name="websites_row_optional">Optional</string>
+    <string name="websites_row_summary">%1$s: %2$s</string>
+    <string name="websites_row_permission_off">Permission withdrawn, websites not blocked</string>
+    <string name="websites_profile_label">%1$s profile</string>
+    <string name="websites_intro_title">Block websites in your browser</string>
+    <string name="websites_intro_body">To recognize a website, Lock reads the address shown in your browser. This requires a separate accessibility permission, which you can remove whenever you want.</string>
+    <string name="websites_intro_point_address">Lock only looks at the address of the open website.</string>
+    <string name="websites_intro_point_local">Nothing is saved or sent: everything stays on your phone.</string>
+    <string name="websites_intro_point_apps">Your apps stay blocked as before, with or without this option.</string>
+    <string name="websites_intro_hint">In the settings, turn on “%1$s”.</string>
+    <string name="websites_intro_cta">Open settings</string>
+    <string name="websites_intro_later">Not now</string>
+    <string name="websites_input_placeholder">example.com</string>
+    <string name="websites_add">Add website</string>
+    <string name="websites_subdomains_hint">Subdomains are included: youtube.com also blocks m.youtube.com.</string>
+    <string name="websites_error_invalid">“%1$s” is not a website address. Try for example youtube.com.</string>
+    <string name="websites_error_duplicate">%1$s is already in the list.</string>
+    <string name="websites_section_blocked">Blocked websites</string>
+    <string name="websites_remove">Remove %1$s</string>
+    <string name="websites_empty_title">No websites yet</string>
+    <string name="websites_empty_body">Add a website address above. It will be blocked in your browser during this profile\'s sessions.</string>
+    <string name="websites_status_on">Address reading on</string>
+    <string name="websites_status_manage">Manage</string>
+    <string name="websites_banner_title">These websites are not blocked</string>
+    <string name="websites_banner_body">The “%1$s” permission is turned off in the accessibility settings.</string>
+    <string name="websites_banner_cta">Turn on in settings</string>
+    <string name="permissions_websites_title">Websites (optional)</string>
+    <string name="permissions_websites_subtitle">Reads the browser address to block websites</string>
+    <plurals name="websites_count">
+        <item quantity="one">%1$d website</item>
+        <item quantity="other">%1$d websites</item>
+    </plurals>
 </resources>

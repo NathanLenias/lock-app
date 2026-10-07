@@ -23,10 +23,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Nfc
 import androidx.compose.material.icons.outlined.Timer
@@ -58,9 +60,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalConfiguration
@@ -76,6 +80,7 @@ import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.screens.profile.DURATION_OPTIONS_MS
 import com.nathanb.lock.ui.screens.profile.DurationPicker
 import com.nathanb.lock.ui.screens.profile.TypeCard
+import com.nathanb.lock.ui.screens.websites.rememberWebsiteServiceEnabled
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.viewmodel.LockViewModel
@@ -88,6 +93,8 @@ fun ProfileDetailScreen(
     onBack: () -> Unit,
     onEditApps: (Long) -> Unit,
     onAssociateTag: (Long) -> Unit,
+    /** withIntro: show the permission explanation first (service off, no website yet). */
+    onEditWebsites: (profileId: Long, withIntro: Boolean) -> Unit,
 ) {
     val colors = LockTheme.colors
     val profiles by viewModel.profilesSorted.collectAsStateWithLifecycle()
@@ -127,6 +134,8 @@ fun ProfileDetailScreen(
             accessibilityOk = PermissionHelper.isAccessibilityServiceEnabled(context)
         }
     }
+
+    val websitesServiceOn = rememberWebsiteServiceEnabled()
 
     val blockedDefaultMsg = stringResource(R.string.profile_delete_blocked_default)
     val blockedActiveMsg = stringResource(R.string.profile_delete_blocked_active)
@@ -290,6 +299,14 @@ fun ProfileDetailScreen(
                     }
                 }
             }
+
+            WebsitesRow(
+                domains = profile.blockedDomains,
+                serviceOn = websitesServiceOn,
+                onClick = {
+                    onEditWebsites(profileId, !websitesServiceOn && profile.blockedDomains.isEmpty())
+                },
+            )
 
             // Duration (no-escape only)
             if (isNoEscape) {
@@ -793,8 +810,71 @@ private fun AssociatedTagRow(name: String, onRemove: (() -> Unit)? = null) {
     }
 }
 
+/** Optional websites entry: "Optional", "3 websites: a.com, b.com…", or a permission warning. */
 @Composable
-private fun SectionLabel(text: String) {
+private fun WebsitesRow(domains: List<String>, serviceOn: Boolean, onClick: () -> Unit) {
+    val colors = LockTheme.colors
+    val warning = domains.isNotEmpty() && !serviceOn
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colors.cardContainer)
+            .clickable(onClick = onClick)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(if (warning) colors.warningContainer else colors.primary.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                Icons.Outlined.Language,
+                contentDescription = null,
+                tint = if (warning) colors.warning else colors.primary,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text(
+                text = stringResource(R.string.websites_title),
+                fontFamily = SatoshiFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = colors.onSurface,
+            )
+            Text(
+                text = when {
+                    warning -> stringResource(R.string.websites_row_permission_off)
+                    domains.isEmpty() -> stringResource(R.string.websites_row_optional)
+                    else -> stringResource(
+                        R.string.websites_row_summary,
+                        pluralStringResource(R.plurals.websites_count, domains.size, domains.size),
+                        domains.take(2).joinToString(", ") + if (domains.size > 2) "…" else "",
+                    )
+                },
+                fontFamily = SatoshiFamily,
+                fontSize = 13.sp,
+                color = if (warning) colors.warning else colors.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Icon(
+            Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+            tint = colors.onSurfaceVariant,
+            modifier = Modifier.size(22.dp),
+        )
+    }
+}
+
+@Composable
+internal fun SectionLabel(text: String) {
     Text(
         text = text.uppercase(LocalConfiguration.current.locales[0]),
         fontFamily = SatoshiFamily,

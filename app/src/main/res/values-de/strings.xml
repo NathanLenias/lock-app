@@ -559,4 +559,39 @@
     <string name="duration_unit_hour">Std.</string>
     <string name="inapp_changelog_3_title">Zuverlässigkeit</string>
     <string name="inapp_changelog_3_body">Korrektur: Das automatische Sitzungsende konnte sich verzögern, während das Telefon schlief. Korrektur: Lock erscheint nicht mehr unter „Aktive Apps“ in Android, wo ein Stopp die Blockierung unbemerkt aufheben konnte. Korrektur: Das Drehen des Telefons während einer Sitzung schaltet sie nicht mehr um.</string>
+
+    <!-- Website blocking -->
+    <string name="websites_title">Zu blockierende Websites</string>
+    <string name="websites_row_optional">Optional</string>
+    <string name="websites_row_summary">%1$s: %2$s</string>
+    <string name="websites_row_permission_off">Berechtigung entzogen, Websites nicht blockiert</string>
+    <string name="websites_profile_label">Profil %1$s</string>
+    <string name="websites_intro_title">Websites in Ihrem Browser blockieren</string>
+    <string name="websites_intro_body">Um eine Website zu erkennen, liest Lock die in Ihrem Browser angezeigte Adresse. Dafür ist eine separate Bedienungshilfen-Berechtigung nötig, die Sie jederzeit wieder entziehen können.</string>
+    <string name="websites_intro_point_address">Lock sieht sich nur die Adresse der geöffneten Website an.</string>
+    <string name="websites_intro_point_local">Nichts wird gespeichert oder gesendet: Alles bleibt auf Ihrem Telefon.</string>
+    <string name="websites_intro_point_apps">Ihre Apps bleiben wie bisher blockiert, mit oder ohne diese Option.</string>
+    <string name="websites_intro_hint">Aktivieren Sie in den Einstellungen „%1$s“.</string>
+    <string name="websites_intro_cta">Einstellungen öffnen</string>
+    <string name="websites_intro_later">Nicht jetzt</string>
+    <string name="websites_input_placeholder">beispiel.de</string>
+    <string name="websites_add">Website hinzufügen</string>
+    <string name="websites_subdomains_hint">Subdomains sind eingeschlossen: youtube.com blockiert auch m.youtube.com.</string>
+    <string name="websites_error_invalid">„%1$s“ ist keine Website-Adresse. Versuchen Sie es zum Beispiel mit youtube.com.</string>
+    <string name="websites_error_duplicate">%1$s ist bereits in der Liste.</string>
+    <string name="websites_section_blocked">Blockierte Websites</string>
+    <string name="websites_remove">%1$s entfernen</string>
+    <string name="websites_empty_title">Noch keine Websites</string>
+    <string name="websites_empty_body">Geben Sie oben die Adresse einer Website ein. Sie wird während der Sitzungen dieses Profils in Ihrem Browser blockiert.</string>
+    <string name="websites_status_on">Adresserkennung aktiv</string>
+    <string name="websites_status_manage">Verwalten</string>
+    <string name="websites_banner_title">Diese Websites werden nicht blockiert</string>
+    <string name="websites_banner_body">Die Berechtigung „%1$s“ ist in den Bedienungshilfen-Einstellungen deaktiviert.</string>
+    <string name="websites_banner_cta">In den Einstellungen aktivieren</string>
+    <string name="permissions_websites_title">Websites (optional)</string>
+    <string name="permissions_websites_subtitle">Liest die Browseradresse, um Websites zu blockieren</string>
+    <plurals name="websites_count">
+        <item quantity="one">%1$d Website</item>
+        <item quantity="other">%1$d Websites</item>
+    </plurals>
 </resources>

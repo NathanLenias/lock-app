@@ -21,7 +21,9 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Accessibility
 import androidx.compose.material.icons.outlined.BatterySaver
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,6 +48,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
+import com.nathanb.lock.ui.screens.websites.rememberWebsiteServiceEnabled
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.util.PermissionHelper
 
@@ -61,6 +64,7 @@ fun PermissionsScreen(
     var batteryOk by remember { mutableStateOf(PermissionHelper.isBatteryOptimizationIgnored(context)) }
     var overlayOk by remember { mutableStateOf(PermissionHelper.canDrawOverlays(context)) }
     var notificationsOk by remember { mutableStateOf(PermissionHelper.areNotificationsEnabled(context)) }
+    val websitesOk = rememberWebsiteServiceEnabled()
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -143,6 +147,18 @@ fun PermissionsScreen(
                 isGranted = overlayOk,
                 onClick = { PermissionHelper.openOverlaySettings(context) },
             )
+
+            SettingsDivider()
+
+            // Optional: only needed to block websites, so "off" is not shown as a problem.
+            PermissionRow(
+                icon = Icons.Outlined.Language,
+                title = stringResource(R.string.permissions_websites_title),
+                subtitle = stringResource(R.string.permissions_websites_subtitle),
+                isGranted = websitesOk,
+                optional = true,
+                onClick = { PermissionHelper.openAccessibilitySettings(context) },
+            )
         }
     }
 }
@@ -154,8 +170,11 @@ private fun PermissionRow(
     subtitle: String,
     isGranted: Boolean,
     onClick: () -> Unit,
+    optional: Boolean = false,
 ) {
     val colors = LockTheme.colors
+    // Missing optional permission: neutral badge, not the red warning of required ones.
+    val neutral = optional && !isGranted
 
     Row(
         modifier = Modifier
@@ -202,15 +221,26 @@ private fun PermissionRow(
                 .size(28.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .background(
-                    if (isGranted) colors.primary.copy(alpha = 0.09f)
-                    else colors.error.copy(alpha = 0.09f),
+                    when {
+                        isGranted -> colors.primary.copy(alpha = 0.09f)
+                        neutral -> colors.onSurfaceVariant.copy(alpha = 0.08f)
+                        else -> colors.error.copy(alpha = 0.09f)
+                    },
                 ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = if (isGranted) Icons.Outlined.CheckCircle else Icons.Outlined.Warning,
+                imageVector = when {
+                    isGranted -> Icons.Outlined.CheckCircle
+                    neutral -> Icons.Outlined.RadioButtonUnchecked
+                    else -> Icons.Outlined.Warning
+                },
                 contentDescription = null,
-                tint = if (isGranted) colors.primary else colors.error,
+                tint = when {
+                    isGranted -> colors.primary
+                    neutral -> colors.onSurfaceVariant
+                    else -> colors.error
+                },
                 modifier = Modifier.size(16.dp),
             )
         }

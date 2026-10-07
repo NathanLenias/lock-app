@@ -21,6 +21,10 @@ data class LockColors(
     val cardContainer: Color,
     val lockedContainer: Color,
     val lockedOnContainer: Color,
+    /** Something is configured but not working (e.g. a permission was withdrawn). */
+    val warning: Color,
+    val warningContainer: Color,
+    val onWarning: Color,
 )
 
 val DarkLockColors = LockColors(
@@ -38,6 +42,9 @@ val DarkLockColors = LockColors(
     lockedPrimary = Color(0xFFD32F2F),    // Tomato Jam
     lockedContainer = Color(0xFF2A0808),  // derived dark red
     lockedOnContainer = Color(0xFFF4CBC6), // Cotton Rose
+    warning = Color(0xFFFFB870),          // light amber, readable on dark
+    warningContainer = Color(0xFF33220E), // derived dark amber
+    onWarning = Color(0xFF2A1700),
 )
 
 val LightLockColors = LockColors(
@@ -55,4 +62,7 @@ val LightLockColors = LockColors(
     lockedPrimary = Color(0xFFD32F2F),    // Tomato Jam
     lockedContainer = Color(0xFFFCEAE7), // warm light pink
     lockedOnContainer = Color(0xFF110503), // Coffee Bean 2
+    warning = Color(0xFFC25E00),          // burnt orange
+    warningContainer = Color(0xFFFDF0E1), // warm light orange
+    onWarning = Color(0xFFFFFFFF),
 )

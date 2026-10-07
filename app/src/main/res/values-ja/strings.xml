@@ -555,4 +555,38 @@
     <string name="duration_unit_hour">時間</string>
     <string name="inapp_changelog_3_title">安定性の向上</string>
     <string name="inapp_changelog_3_body">修正：スマートフォンのスリープ中にセッションの自動終了が遅れることがある問題。修正：Android の「実行中のアプリ」パネルに Lock が表示されなくなりました。そこから停止すると、気づかないうちにブロックが無効になることがありました。修正：セッション中に画面を回転しても、セッションが切り替わらなくなりました。</string>
+
+    <!-- Website blocking -->
+    <string name="websites_title">ブロックするウェブサイト</string>
+    <string name="websites_row_optional">任意</string>
+    <string name="websites_row_summary">%1$s：%2$s</string>
+    <string name="websites_row_permission_off">許可が解除されているため、サイトはブロックされません</string>
+    <string name="websites_profile_label">プロフィール：%1$s</string>
+    <string name="websites_intro_title">ブラウザでサイトをブロック</string>
+    <string name="websites_intro_body">Lock はサイトを判別するため、ブラウザに表示されているアドレスを読み取ります。そのためには別のユーザー補助の許可が必要で、いつでも解除できます。</string>
+    <string name="websites_intro_point_address">Lock が確認するのは、開いているサイトのアドレスだけです。</string>
+    <string name="websites_intro_point_local">何も保存・送信されず、すべてスマートフォン内にとどまります。</string>
+    <string name="websites_intro_point_apps">このオプションの有無にかかわらず、アプリはこれまでどおりブロックされます。</string>
+    <string name="websites_intro_hint">設定で「%1$s」をオンにしてください。</string>
+    <string name="websites_intro_cta">設定を開く</string>
+    <string name="websites_intro_later">後で</string>
+    <string name="websites_input_placeholder">example.com</string>
+    <string name="websites_add">サイトを追加</string>
+    <string name="websites_subdomains_hint">サブドメインも含まれます。youtube.com を追加すると m.youtube.com もブロックされます。</string>
+    <string name="websites_error_invalid">「%1$s」はサイトのアドレスではありません。例：youtube.com</string>
+    <string name="websites_error_duplicate">%1$s はすでにリストにあります。</string>
+    <string name="websites_section_blocked">ブロック中のサイト</string>
+    <string name="websites_remove">%1$s を削除</string>
+    <string name="websites_empty_title">サイトはまだありません</string>
+    <string name="websites_empty_body">上にサイトのアドレスを追加してください。このプロフィールのセッション中、ブラウザでブロックされます。</string>
+    <string name="websites_status_on">アドレスの読み取り：オン</string>
+    <string name="websites_status_manage">管理</string>
+    <string name="websites_banner_title">これらのサイトはブロックされていません</string>
+    <string name="websites_banner_body">ユーザー補助の設定で「%1$s」がオフになっています。</string>
+    <string name="websites_banner_cta">設定でオンにする</string>
+    <string name="permissions_websites_title">ウェブサイト（任意）</string>
+    <string name="permissions_websites_subtitle">サイトをブロックするためにブラウザのアドレスを読み取ります</string>
+    <plurals name="websites_count">
+        <item quantity="other">%1$d件のサイト</item>
+    </plurals>
 </resources>
