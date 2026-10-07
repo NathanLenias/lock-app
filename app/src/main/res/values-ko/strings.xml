@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="accessibility_service_description">Lock은 이 서비스를 사용해 현재 사용 중인 앱을 감지하고, 집중 세션 중에는 선택한 앱을 차단합니다.</string>
+    <string name="website_service_label">Lock: 웹사이트</string>
+    <string name="website_service_description">Lock은 집중 세션 중 선택한 웹사이트를 차단하기 위해 지원되는 브라우저에 표시된 주소를 읽습니다. 아무것도 저장하거나 전송하지 않습니다.</string>
 
     <!-- Common -->
     <string name="action_cancel">취소</string>

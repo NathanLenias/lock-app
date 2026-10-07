@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="accessibility_service_description">Lock はこのサービスを使用して、使用中のアプリを検出し、集中セッション中に選択したアプリをブロックします。</string>
+    <string name="website_service_label">Lock: ウェブサイト</string>
+    <string name="website_service_description">Lock は、集中セッション中に選択したウェブサイトをブロックするため、対応ブラウザに表示されているアドレスを読み取ります。何も保存・送信しません。</string>
 
     <!-- Common -->
     <string name="action_cancel">キャンセル</string>

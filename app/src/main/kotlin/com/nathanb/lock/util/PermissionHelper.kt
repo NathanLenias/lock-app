@@ -12,7 +12,9 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
 import androidx.core.content.ContextCompat
+import android.accessibilityservice.AccessibilityService
 import com.nathanb.lock.service.AppBlockerService
+import com.nathanb.lock.service.WebsiteBlockerService
 
 object PermissionHelper {
 
@@ -29,18 +31,25 @@ object PermissionHelper {
         )
     }
 
-    fun isAccessibilityServiceEnabled(context: Context): Boolean {
+    fun isAccessibilityServiceEnabled(
+        context: Context,
+        service: Class<out AccessibilityService> = AppBlockerService::class.java,
+    ): Boolean {
         val am = context.getSystemService(AccessibilityManager::class.java)
         val enabledServices = am.getEnabledAccessibilityServiceList(
             AccessibilityServiceInfo.FEEDBACK_ALL_MASK
         )
-        val expectedComponent = ComponentName(context, AppBlockerService::class.java)
+        val expectedComponent = ComponentName(context, service)
         return enabledServices.any {
             it.resolveInfo.serviceInfo.let { info ->
                 ComponentName(info.packageName, info.name) == expectedComponent
             }
         }
     }
+
+    /** The optional "Lock: websites" service (address bar reading). */
+    fun isWebsiteServiceEnabled(context: Context): Boolean =
+        isAccessibilityServiceEnabled(context, WebsiteBlockerService::class.java)
 
     fun openAccessibilitySettings(context: Context) {
         context.startActivity(

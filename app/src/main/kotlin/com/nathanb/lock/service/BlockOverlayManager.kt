@@ -17,7 +17,7 @@ import android.widget.TextView
 import com.nathanb.lock.R
 
 /**
- * Manages a full-screen overlay displayed when the user opens a blocked app.
+ * Manages a full-screen overlay displayed when the user opens a blocked app or website.
  * Uses the standard Android View system (not Compose) because overlays run
  * from the Accessibility Service context which has no ComponentActivity.
  */
@@ -39,8 +39,16 @@ class BlockOverlayManager(private val context: Context) {
 
     fun show(packageName: String, isNoEscape: Boolean = false) {
         if (overlayView != null) return
+        showBlocked(resolveAppLabel(packageName), isNoEscape)
+    }
 
-        val appLabel = resolveAppLabel(packageName)
+    /** Same overlay for a blocked website: [host] replaces the app name. */
+    fun showWebsite(host: String, isNoEscape: Boolean = false) {
+        if (overlayView != null) return
+        showBlocked(host, isNoEscape)
+    }
+
+    private fun showBlocked(appLabel: String, isNoEscape: Boolean) {
 
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL

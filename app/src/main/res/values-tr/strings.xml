@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="accessibility_service_description">Lock, hangi uygulamaların kullanıldığını algılamak ve odaklanma oturumlarınız sırasında seçtiğiniz uygulamaları engellemek için bu hizmeti kullanır.</string>
+    <string name="website_service_label">Lock: web siteleri</string>
+    <string name="website_service_description">Lock, odaklanma oturumlarınız sırasında seçtiğiniz web sitelerini engellemek için desteklenen tarayıcılarda gösterilen adresi okur. Hiçbir şey kaydedilmez veya gönderilmez.</string>
 
     <!-- Common -->
     <string name="action_cancel">İptal</string>

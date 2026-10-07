@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="accessibility_service_description">Lock uses this service to detect which apps are in use and block the ones you selected during your focus sessions.</string>
+    <string name="website_service_label">Lock: websites</string>
+    <string name="website_service_description">Lock reads the address shown in supported browsers to block the websites you selected during your focus sessions. Nothing is saved or sent.</string>
 
     <!-- Common -->
     <string name="action_cancel">Cancel</string>

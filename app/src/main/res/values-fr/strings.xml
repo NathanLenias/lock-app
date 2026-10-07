@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Lock</string>
     <string name="accessibility_service_description">Lock utilise ce service pour détecter les apps en cours d\'utilisation et bloquer celles que vous avez sélectionnées pendant vos sessions de concentration.</string>
+    <string name="website_service_label">Lock : sites web</string>
+    <string name="website_service_description">Lock lit l\'adresse affichée dans les navigateurs pris en charge pour bloquer les sites que vous avez sélectionnés pendant vos sessions de concentration. Rien n\'est enregistré ni envoyé.</string>
 
     <!-- Common -->
     <string name="action_cancel">Annuler</string>
