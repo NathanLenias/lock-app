@@ -7,6 +7,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.core.net.toUri
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.LockApplication
+import com.nathanb.lock.util.AppPinning
 import com.nathanb.lock.util.DomainRules
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +48,7 @@ class WebsiteBlockerService : AccessibilityService() {
     private lateinit var overlayManager: BlockOverlayManager
     private var checkJob: Job? = null
     private var followUpJob: Job? = null
+    private var pinnedWatchJob: Job? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -104,9 +106,31 @@ class WebsiteBlockerService : AccessibilityService() {
 
     private fun block(pkg: String, host: String) {
         if (BuildConfig.DEBUG) Log.d(TAG, "Blocking $host in $pkg")
+        // The blank page and BACK stay inside the browser, so they work even when it's pinned.
         if (!openBlankPage(pkg)) performGlobalAction(GLOBAL_ACTION_BACK)
+        if (AppPinning.isActive(this)) {
+            blockPinned(pkg, host)
+            return
+        }
         overlayManager.showWebsite(host, isNoEscapeSession)
         scheduleFollowUps(pkg)
+    }
+
+    /**
+     * The browser is pinned: the HOME fallback is refused, so the overlay stays up (no OK
+     * button) until the user unpins it, the session ends or an emergency pause starts.
+     */
+    private fun blockPinned(pkg: String, host: String) {
+        overlayManager.showPinned(host)
+        if (pinnedWatchJob?.isActive == true) return
+        if (BuildConfig.DEBUG) Log.d(TAG, "Browser is pinned: $pkg")
+        pinnedWatchJob = scope.watchPinnedBlock(
+            isPinned = { AppPinning.isActive(this) },
+            blockingActive = { blockedDomains.isNotEmpty() && !isEmergencyPaused },
+            foregroundStillBlocked = { readBlockedHost(pkg) != null },
+            onDismiss = { overlayManager.dismiss() },
+            onBlockNormally = { readBlockedHost(pkg)?.let { block(pkg, it) } },
+        )
     }
 
     /**
@@ -147,6 +171,7 @@ class WebsiteBlockerService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         if (::overlayManager.isInitialized) overlayManager.dismiss()
+        pinnedWatchJob?.cancel()
         scope.cancel()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service destroyed")
     }

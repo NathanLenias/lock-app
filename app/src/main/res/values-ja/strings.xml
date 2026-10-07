@@ -370,6 +370,7 @@
     <string name="overlay_title">集中を続けましょう</string>
     <string name="overlay_subtitle">%s は現在ブロック中です。\n再び使用するには、タグで Lock を解除する必要があります。</string>
     <string name="overlay_subtitle_no_escape">%s はセッションが終了するまでブロックされます。\nどのタグでも解除できません。タイマーが終了したら戻ってきてください。</string>
+    <string name="overlay_subtitle_pinned">%1$s はブロック中ですが、このアプリが固定されているため Lock は閉じられません。\n固定を解除するには、上にスワイプしたまま押し続けるか、「戻る」と「最近」を長押ししてください。</string>
     <string name="overlay_button">OK</string>
 
     <!-- NFC Toasts -->

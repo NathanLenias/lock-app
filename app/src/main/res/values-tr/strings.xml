@@ -374,6 +374,7 @@
     <string name="overlay_title">Odaklanmaya devam!</string>
     <string name="overlay_subtitle">%s şu anda engelli!\nYeniden erişmek için Lock\'un bir etiketle kapatılması gerekir.</string>
     <string name="overlay_subtitle_no_escape">%s oturumunuz bitene kadar engelli.\nHiçbir etiket kilidi açamaz, sayaç bittiğinde geri gelin.</string>
+    <string name="overlay_subtitle_pinned">%1$s engelli, ancak bu uygulama sabitlendiği için Lock onu kapatamıyor.\nSabitlemeyi kaldırmak için yukarı kaydırıp basılı tutun veya Geri ve Genel Bakış düğmelerine basılı tutun.</string>
     <string name="overlay_button">Tamam</string>
 
     <!-- NFC Toasts -->

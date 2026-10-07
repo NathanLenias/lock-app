@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.LockApplication
+import com.nathanb.lock.util.AppPinning
 import com.nathanb.lock.util.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,10 @@ class AppBlockerService : AccessibilityService() {
     private lateinit var overlayManager: BlockOverlayManager
     private lateinit var homeTracker: HomeConfirmationTracker
     private var homeRetryJob: Job? = null
+    private var pinnedWatchJob: Job? = null
+
+    /** Package of the last window seen, to know what is on screen once an app is unpinned. */
+    private var lastWindowPackage: String? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -75,6 +80,7 @@ class AppBlockerService : AccessibilityService() {
         }
 
         val packageName = event.packageName?.toString() ?: return
+        lastWindowPackage = packageName
 
         if (homeTracker.onWindowEvent(packageName)) {
             if (BuildConfig.DEBUG) Log.d(TAG, "Home confirmed by launcher event")
@@ -93,11 +99,32 @@ class AppBlockerService : AccessibilityService() {
                 return
             }
             if (BuildConfig.DEBUG) Log.d(TAG, "Blocking: $packageName/${event.className}")
-            // HOME first (the real block), then overlay (visual feedback)
-            pressHome()
-            overlayManager.show(packageName, isNoEscapeSession)
-            scheduleHomeRetry()
+            if (AppPinning.isActive(this)) blockPinned(packageName) else block(packageName)
         }
+    }
+
+    private fun block(packageName: String) {
+        // HOME first (the real block), then overlay (visual feedback)
+        pressHome()
+        overlayManager.show(packageName, isNoEscapeSession)
+        scheduleHomeRetry()
+    }
+
+    /**
+     * The blocked app is pinned: Android refuses HOME, so the overlay stays up (no OK button)
+     * until the user unpins it, the session ends or an emergency pause starts.
+     */
+    private fun blockPinned(packageName: String) {
+        overlayManager.showPinnedApp(packageName)
+        if (pinnedWatchJob?.isActive == true) return
+        if (BuildConfig.DEBUG) Log.d(TAG, "Blocked app is pinned: $packageName")
+        pinnedWatchJob = scope.watchPinnedBlock(
+            isPinned = { AppPinning.isActive(this) },
+            blockingActive = { blockedPackages.isNotEmpty() && !isEmergencyPaused },
+            foregroundStillBlocked = { lastWindowPackage in blockedPackages },
+            onDismiss = { overlayManager.dismiss() },
+            onBlockNormally = { lastWindowPackage?.let { block(it) } },
+        )
     }
 
     /**
@@ -176,6 +203,7 @@ class AppBlockerService : AccessibilityService() {
         super.onDestroy()
         if (::overlayManager.isInitialized) overlayManager.dismiss()
         homeRetryJob?.cancel()
+        pinnedWatchJob?.cancel()
         scope.cancel()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service destroyed")
     }

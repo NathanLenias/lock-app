@@ -374,6 +374,7 @@
     <string name="overlay_title">Bleiben Sie fokussiert!</string>
     <string name="overlay_subtitle">%s ist derzeit blockiert!\nUm wieder darauf zuzugreifen, muss Lock mit einem Tag deaktiviert werden.</string>
     <string name="overlay_subtitle_no_escape">%s ist bis zum Ende Ihrer Sitzung blockiert.\nKein Tag kann es entsperren, kommen Sie zurück, wenn der Timer abgelaufen ist.</string>
+    <string name="overlay_subtitle_pinned">%1$s ist blockiert, aber diese App ist fixiert, daher kann Lock sie nicht schließen.\nZum Lösen nach oben wischen und halten oder „Zurück“ und „Übersicht“ gedrückt halten.</string>
     <string name="overlay_button">Ok</string>
 
     <!-- NFC Toasts -->

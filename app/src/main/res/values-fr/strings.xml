@@ -376,6 +376,7 @@
     <string name="overlay_title">Allez, on reste concentré !</string>
     <string name="overlay_subtitle">%s est actuellement bloqué !\nPour y accéder de nouveau, Lock doit être désactivé grâce à un tag.</string>
     <string name="overlay_subtitle_no_escape">%s est bloqué jusqu\'à la fin de votre session.\nAucun tag ne peut débloquer, revenez quand le minuteur sera terminé.</string>
+    <string name="overlay_subtitle_pinned">%1$s est bloqué, mais cette app est épinglée : Lock ne peut pas la fermer.\nPour la désépingler, balayez vers le haut et maintenez, ou maintenez Retour et Aperçu.</string>
     <string name="overlay_button">Ok</string>
 
     <!-- NFC Toasts -->

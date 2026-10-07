@@ -374,6 +374,7 @@
     <string name="overlay_title">Stay focused!</string>
     <string name="overlay_subtitle">%s is currently blocked!\nTo access it again, Lock must be deactivated with a tag.</string>
     <string name="overlay_subtitle_no_escape">%s is blocked until your session ends.\nNo tag can unlock it, come back when the timer is done.</string>
+    <string name="overlay_subtitle_pinned">%1$s is blocked, but this app is pinned, so Lock can\'t close it.\nTo unpin it, swipe up and hold, or touch and hold Back and Overview.</string>
     <string name="overlay_button">Ok</string>
 
     <!-- NFC Toasts -->

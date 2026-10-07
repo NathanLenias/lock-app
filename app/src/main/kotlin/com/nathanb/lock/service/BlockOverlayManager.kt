@@ -48,7 +48,20 @@ class BlockOverlayManager(private val context: Context) {
         showBlocked(host, isNoEscape)
     }
 
-    private fun showBlocked(appLabel: String, isNoEscape: Boolean) {
+    fun showPinnedApp(packageName: String) = showPinned(resolveAppLabel(packageName))
+
+    /**
+     * Variant for a pinned app (Android app pinning): Lock can't leave it, so there is no
+     * OK button (it would hand the app back) and the text explains how to unpin.
+     * Replaces a regular overlay already on screen.
+     */
+    fun showPinned(label: String) {
+        if (isPinnedVariant) return
+        dismiss()
+        showBlocked(label, isNoEscape = false, pinned = true)
+    }
+
+    private fun showBlocked(appLabel: String, isNoEscape: Boolean, pinned: Boolean = false) {
 
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -91,7 +104,11 @@ class BlockOverlayManager(private val context: Context) {
         layout.addView(title)
 
         // Subtitle — no-escape sessions can't be unlocked with a tag
-        val subtitleRes = if (isNoEscape) R.string.overlay_subtitle_no_escape else R.string.overlay_subtitle
+        val subtitleRes = when {
+            pinned -> R.string.overlay_subtitle_pinned
+            isNoEscape -> R.string.overlay_subtitle_no_escape
+            else -> R.string.overlay_subtitle
+        }
         val subtitle = TextView(context).apply {
             text = localizedContext.getString(subtitleRes, appLabel)
             setTextColor(0xFFAAAAAA.toInt())
@@ -101,6 +118,13 @@ class BlockOverlayManager(private val context: Context) {
             setLineSpacing(dp(4).toFloat(), 1f)
         }
         layout.addView(subtitle)
+
+        if (pinned) {
+            isPinnedVariant = true
+            overlayView = layout
+            windowManager.addView(layout, layoutParams)
+            return
+        }
 
         // OK button
         val button = Button(context).apply {
@@ -142,9 +166,14 @@ class BlockOverlayManager(private val context: Context) {
             } catch (_: Exception) {}
             overlayView = null
         }
+        isPinnedVariant = false
     }
 
     val isShowing: Boolean get() = overlayView != null
+
+    /** True while the no-button overlay for a pinned app is on screen. */
+    var isPinnedVariant: Boolean = false
+        private set
 
     private fun resolveAppLabel(packageName: String): String {
         return try {
