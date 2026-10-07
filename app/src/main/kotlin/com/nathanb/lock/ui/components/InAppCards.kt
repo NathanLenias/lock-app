@@ -13,14 +13,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -68,6 +71,8 @@ fun InAppCardDialog(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
                     .background(colors.surfaceContainer)
+                    // Scrolls on short screens instead of pushing the button off-screen.
+                    .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -222,6 +227,8 @@ fun ChangelogCard(
         ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
         Spacer(Modifier.height(14.dp))
         ChangelogRow(Icons.Outlined.Shield, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
+        Spacer(Modifier.height(14.dp))
+        ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_4_title, R.string.inapp_changelog_4_body)
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = onDiscover,

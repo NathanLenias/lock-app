@@ -203,6 +203,11 @@
     <string name="session_unlimited_warning_title">Unbegrenzte Dauer</string>
     <string name="session_unlimited_warning_body">Wenn Sie unbegrenzt wählen, endet Ihre Sitzung nie, falls Sie das Tag verlieren. Die einzige Option ist dann, Lock zu deinstallieren.</string>
     <string name="session_unlimited_confirm">Verstanden, aktivieren</string>
+    <string name="session_custom_title">Benutzerdefinierte Dauer</string>
+    <plurals name="session_timeout_hours">
+        <item quantity="one">%1$d Stunde</item>
+        <item quantity="other">%1$d Stunden</item>
+    </plurals>
 
     <!-- Data Screen -->
     <string name="data_title">Daten</string>
@@ -560,6 +565,8 @@
     <string name="duration_unit_hour">Std.</string>
     <string name="inapp_changelog_3_title">Optional</string>
     <string name="inapp_changelog_3_body">Dafür ist eine separate Berechtigung nötig, die Sie nur aktivieren, wenn Sie Websites blockieren. Für Ihre Apps ändert sich nichts.</string>
+    <string name="inapp_changelog_4_title">Sitzungsdauer</string>
+    <string name="inapp_changelog_4_body">Neu: eine benutzerdefinierte maximale Sitzungsdauer von 1 bis 24 Stunden, unter Einstellungen > Sitzung.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Zu blockierende Websites</string>

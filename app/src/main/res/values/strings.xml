@@ -203,6 +203,11 @@
     <string name="session_unlimited_warning_title">Unlimited duration</string>
     <string name="session_unlimited_warning_body">By selecting unlimited, your session will never end if you lose the tag. The only option will be to uninstall Lock.</string>
     <string name="session_unlimited_confirm">I understand, activate</string>
+    <string name="session_custom_title">Custom duration</string>
+    <plurals name="session_timeout_hours">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
 
     <!-- Data Screen -->
     <string name="data_title">Data</string>
@@ -560,6 +565,8 @@
     <string name="duration_unit_hour">h</string>
     <string name="inapp_changelog_3_title">Optional</string>
     <string name="inapp_changelog_3_body">It needs a separate permission, which you only turn on if you block websites. Nothing changes for your apps.</string>
+    <string name="inapp_changelog_4_title">Session duration</string>
+    <string name="inapp_changelog_4_body">New: a custom maximum session duration, from 1 to 24 hours, in Settings > Session.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Websites to block</string>

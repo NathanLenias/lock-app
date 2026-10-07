@@ -203,6 +203,11 @@
     <string name="session_unlimited_warning_title">Sınırsız süre</string>
     <string name="session_unlimited_warning_body">Sınırsız seçeneğinde, etiketinizi kaybederseniz oturumunuz hiç bitmez. Tek çıkış yolu Lock\'u kaldırmak olur.</string>
     <string name="session_unlimited_confirm">Anladım, etkinleştir</string>
+    <string name="session_custom_title">Özel süre</string>
+    <plurals name="session_timeout_hours">
+        <item quantity="one">%1$d saat</item>
+        <item quantity="other">%1$d saat</item>
+    </plurals>
 
     <!-- Data Screen -->
     <string name="data_title">Veriler</string>
@@ -560,6 +565,8 @@
     <string name="duration_unit_hour">sa</string>
     <string name="inapp_changelog_3_title">İsteğe bağlı</string>
     <string name="inapp_changelog_3_body">Ayrı bir izin gerekir; bu izni yalnızca site engelliyorsanız açarsınız. Uygulamalarınız için hiçbir şey değişmez.</string>
+    <string name="inapp_changelog_4_title">Oturum süresi</string>
+    <string name="inapp_changelog_4_body">Yeni: Ayarlar > Oturum bölümünde 1 ile 24 saat arasında özel bir maksimum oturum süresi.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Engellenecek web siteleri</string>

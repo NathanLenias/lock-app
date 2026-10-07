@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Remove
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,9 +44,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
+import com.nathanb.lock.ui.screens.profile.StepperButton
+import com.nathanb.lock.ui.theme.SatoshiFamily
 import com.nathanb.lock.ui.theme.LockTheme
 import com.nathanb.lock.ui.viewmodel.LockViewModel
 
@@ -58,6 +65,7 @@ fun SessionSettingsScreen(
     val emergencyDurationMs by viewModel.emergencyUnlockDurationMs.collectAsStateWithLifecycle()
     val timeoutDurationMs by viewModel.timeoutDurationMs.collectAsStateWithLifecycle()
     var showUnlimitedWarning by remember { mutableStateOf(false) }
+    var showCustomTimeout by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -206,13 +214,84 @@ fun SessionSettingsScreen(
                         }
                     },
                 )
-                if (index < timeoutOptions.lastIndex) {
-                    SettingsDivider()
-                }
+                SettingsDivider()
             }
+            // Custom duration (1-24 h): any value outside the presets above.
+            val isCustomTimeout = timeoutDurationMs !in timeoutOptions.map { it.first }
+            val customHours = (timeoutDurationMs / HOUR_MS).toInt()
+            RadioRow(
+                label = if (isCustomTimeout) {
+                    stringResource(R.string.profile_duration_custom) + " · " +
+                        pluralStringResource(R.plurals.session_timeout_hours, customHours, customHours)
+                } else {
+                    stringResource(R.string.profile_duration_custom)
+                },
+                selected = isCustomTimeout,
+                onClick = { showCustomTimeout = true },
+            )
         }
 
         Spacer(Modifier.height(100.dp))
+    }
+
+    if (showCustomTimeout) {
+        val isCustom = timeoutDurationMs > 0 && timeoutDurationMs % HOUR_MS == 0L &&
+            timeoutDurationMs / HOUR_MS in CUSTOM_TIMEOUT_HOURS
+        var hours by remember {
+            mutableIntStateOf(if (isCustom) (timeoutDurationMs / HOUR_MS).toInt() else DEFAULT_CUSTOM_TIMEOUT_HOURS)
+        }
+        LockBottomSheet(
+            onDismiss = { showCustomTimeout = false },
+            icon = Icons.Outlined.Timer,
+            title = stringResource(R.string.session_custom_title),
+            body = stringResource(R.string.session_max_duration_tooltip),
+            actions = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    StepperButton(
+                        icon = Icons.Outlined.Remove,
+                        contentDescription = stringResource(R.string.profile_duration_decrease),
+                        background = colors.onSurfaceVariant.copy(alpha = 0.08f),
+                        tint = colors.onSurface,
+                        enabled = hours > CUSTOM_TIMEOUT_HOURS.first,
+                        onClick = { hours = (hours - 1).coerceAtLeast(CUSTOM_TIMEOUT_HOURS.first) },
+                    )
+                    Text(
+                        text = pluralStringResource(R.plurals.session_timeout_hours, hours, hours),
+                        fontFamily = SatoshiFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        color = colors.onSurface,
+                    )
+                    StepperButton(
+                        icon = Icons.Outlined.Add,
+                        contentDescription = stringResource(R.string.profile_duration_increase),
+                        background = colors.primary,
+                        tint = Color.White,
+                        enabled = hours < CUSTOM_TIMEOUT_HOURS.last,
+                        onClick = { hours = (hours + 1).coerceAtMost(CUSTOM_TIMEOUT_HOURS.last) },
+                    )
+                }
+                Spacer(Modifier.height(12.dp))
+                Button(
+                    onClick = {
+                        viewModel.setTimeoutDurationMs(hours * HOUR_MS)
+                        showCustomTimeout = false
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primary, contentColor = Color.White),
+                ) {
+                    Text(stringResource(R.string.action_save))
+                }
+                Spacer(Modifier.height(8.dp))
+                TextButton(onClick = { showCustomTimeout = false }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.action_cancel), color = colors.onSurfaceVariant)
+                }
+            },
+        )
     }
 
     if (showUnlimitedWarning) {
@@ -341,3 +420,7 @@ private fun RadioRow(
         }
     }
 }
+
+private const val HOUR_MS = 60 * 60 * 1000L
+private val CUSTOM_TIMEOUT_HOURS = 1..24
+private const val DEFAULT_CUSTOM_TIMEOUT_HOURS = 12

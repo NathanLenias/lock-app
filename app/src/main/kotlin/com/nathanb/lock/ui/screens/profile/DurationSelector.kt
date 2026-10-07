@@ -191,7 +191,7 @@ fun DurationChip(
 }
 
 @Composable
-private fun StepperButton(
+internal fun StepperButton(
     icon: ImageVector,
     contentDescription: String,
     background: Color,

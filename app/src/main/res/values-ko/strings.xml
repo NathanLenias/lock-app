@@ -200,6 +200,10 @@
     <string name="session_unlimited_warning_title">무제한 시간</string>
     <string name="session_unlimited_warning_body">무제한을 선택하면 태그를 잃어버렸을 때 세션이 끝나지 않습니다. 그때는 Lock을 삭제하는 것만이 유일한 방법입니다.</string>
     <string name="session_unlimited_confirm">이해했습니다, 사용</string>
+    <string name="session_custom_title">직접 설정</string>
+    <plurals name="session_timeout_hours">
+        <item quantity="other">%1$d시간</item>
+    </plurals>
 
     <!-- Data Screen -->
     <string name="data_title">데이터</string>
@@ -556,6 +560,8 @@
     <string name="duration_unit_hour">시간</string>
     <string name="inapp_changelog_3_title">선택 사항</string>
     <string name="inapp_changelog_3_body">별도의 권한이 필요하며, 웹사이트를 차단할 때만 켜면 됩니다. 앱 차단은 그대로입니다.</string>
+    <string name="inapp_changelog_4_title">세션 시간</string>
+    <string name="inapp_changelog_4_body">새 기능: 설정 > 세션에서 최대 세션 시간을 1~24시간 사이로 직접 설정할 수 있습니다.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">차단할 웹사이트</string>

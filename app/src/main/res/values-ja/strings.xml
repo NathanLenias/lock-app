@@ -200,6 +200,10 @@
     <string name="session_unlimited_warning_title">無制限の時間</string>
     <string name="session_unlimited_warning_body">無制限を選択すると、タグを紛失した場合にセッションが終了しなくなります。その場合、Lock をアンインストールする以外に方法はありません。</string>
     <string name="session_unlimited_confirm">理解したうえで有効にする</string>
+    <string name="session_custom_title">カスタム時間</string>
+    <plurals name="session_timeout_hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
 
     <!-- Data Screen -->
     <string name="data_title">データ</string>
@@ -556,6 +560,8 @@
     <string name="duration_unit_hour">時間</string>
     <string name="inapp_changelog_3_title">任意</string>
     <string name="inapp_changelog_3_body">別の許可が必要ですが、オンにするのはサイトをブロックする場合だけです。アプリのブロックはこれまでどおりです。</string>
+    <string name="inapp_changelog_4_title">セッション時間</string>
+    <string name="inapp_changelog_4_body">新機能：設定 > セッション で、最大セッション時間を 1〜24 時間の間で自由に設定できます。</string>
 
     <!-- Website blocking -->
     <string name="websites_title">ブロックするウェブサイト</string>
