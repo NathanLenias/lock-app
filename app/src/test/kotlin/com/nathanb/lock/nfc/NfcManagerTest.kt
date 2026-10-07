@@ -127,6 +127,17 @@ class NfcManagerTest {
     }
 
     @Test
+    fun `profile blocking websites only starts a session`() = testScope.runTest {
+        val p = repository.createProfile("Web", emptyList(), blockedDomains = listOf("youtube.com"))
+        repository.addNfcTag("U1", "Tag", p)
+
+        val result = nfc.processKnownTag("U1")
+
+        assertTrue(result is NfcResult.Started)
+        assertTrue(repository.getLockState().isLocked)
+    }
+
+    @Test
     fun `master tag falling back to an empty default profile returns Error and does not lock`() = testScope.runTest {
         repository.createProfile("Std", emptyList())
         repository.addNfcTag("U1", "Tag") // no profile bound (onboarding master switch)

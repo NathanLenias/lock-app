@@ -279,9 +279,10 @@ class NfcManager(
             val profile = profileId?.let { repository.getProfile(it) }
             when {
                 profile == null -> NfcResult.Error(R.string.toast_error_no_profile)
-                // Profile exists but has no apps yet (onboarding app picker skipped):
+                // Profile exists but blocks nothing yet (onboarding app picker skipped):
                 // starting a session would lock nothing and confuse the user.
-                profile.blockedPackages.isEmpty() -> NfcResult.Error(R.string.toast_error_no_apps)
+                profile.blockedPackages.isEmpty() && profile.blockedDomains.isEmpty() ->
+                    NfcResult.Error(R.string.toast_error_no_apps)
                 else -> {
                     repository.startLockSession(profile.id)
                     val isNoEscape = ProfileType.fromValue(profile.type) == ProfileType.NO_ESCAPE

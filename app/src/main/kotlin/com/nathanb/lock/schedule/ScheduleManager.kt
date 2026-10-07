@@ -108,13 +108,15 @@ class ScheduleManager(
         val profilesById = repository.profiles.first().associateBy { it.id }
         val occurrences = ScheduleWindowCalculator.coveringOccurrences(schedules, now)
         val union = ScheduleWindowCalculator.activePackages(occurrences, consumed, links, profilesById)
+        val domainUnion = ScheduleWindowCalculator.activeDomains(occurrences, consumed, links, profilesById)
 
         // A running pause suspends every scheduled block; the resume alarm below brings it
         // back. Stateless like everything else: an expired pausedUntil is simply inert.
         val nowMs = now.toInstant().toEpochMilli()
         val pausedUntil = repository.getSchedulePausedUntil()
         val pauseActive = pausedUntil > nowMs
-        val effectiveUnion = if (pauseActive) emptySet() else union
+        // Something to block = apps or websites (a profile may block websites only).
+        val effectiveUnion = if (pauseActive) emptySet() else union + domainUnion
 
         val state = repository.getLockState()
         when {
@@ -133,13 +135,13 @@ class ScheduleManager(
                     it.scheduleId in activeIds && profilesById.containsKey(it.profileId)
                 }?.profileId
                 if (firstProfileId != null) {
-                    repository.startScheduledSession(firstProfileId, union)
+                    repository.startScheduledSession(firstProfileId, union, domainUnion)
                     effects.startSessionNotifier()
                 }
             }
             effectiveUnion.isNotEmpty() && state.isLocked && state.isScheduleOrigin -> {
                 // Overlap changed while a scheduled session runs: refresh the union.
-                repository.updateScheduledPackages(union)
+                repository.updateScheduledPackages(union, domainUnion)
             }
             // union non-empty + manual/NFC session active: window is ignored (spec).
             // union empty + not locked, or + manual session: nothing to do.

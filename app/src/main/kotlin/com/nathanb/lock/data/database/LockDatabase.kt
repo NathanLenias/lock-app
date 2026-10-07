@@ -92,9 +92,16 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
     }
 }
 
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Website blocking (default must match @ColumnInfo default in Models.kt)
+        db.execSQL("ALTER TABLE `profiles` ADD COLUMN `blockedDomains` TEXT NOT NULL DEFAULT '[]'")
+    }
+}
+
 @Database(
     entities = [Profile::class, Session::class, NfcTag::class, Schedule::class, ScheduleProfileLink::class],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

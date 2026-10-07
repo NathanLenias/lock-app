@@ -88,6 +88,7 @@ class LockRepository(
         val IS_NO_ESCAPE = booleanPreferencesKey("is_no_escape")
         // Schedules (recurring auto-lock windows)
         val SCHEDULED_PACKAGES = stringPreferencesKey("scheduled_packages")
+        val SCHEDULED_DOMAINS = stringPreferencesKey("scheduled_domains")
         val IS_SCHEDULE_ORIGIN = booleanPreferencesKey("is_schedule_origin")
         val CONSUMED_WINDOWS = stringPreferencesKey("consumed_windows")
         val PAUSED_UNTIL = longPreferencesKey("schedule_paused_until")
@@ -111,6 +112,10 @@ class LockRepository(
     // Blocked packages — observed by the Accessibility Service
     private val _blockedPackages = MutableStateFlow<Set<String>>(emptySet())
     val blockedPackages: StateFlow<Set<String>> = _blockedPackages.asStateFlow()
+
+    // Blocked website hosts — observed by WebsiteBlockerService (same lifecycle as packages)
+    private val _blockedDomains = MutableStateFlow<Set<String>>(emptySet())
+    val blockedDomains: StateFlow<Set<String>> = _blockedDomains.asStateFlow()
 
     // Emergency pause — when true, blocking is temporarily suspended
     private val _emergencyPause = MutableStateFlow(false)
@@ -140,6 +145,11 @@ class LockRepository(
         .map { prefs -> decodeStringSet(prefs[Keys.SCHEDULED_PACKAGES]) }
         .distinctUntilChanged()
 
+    /** Union of website hosts blocked by the currently covering scheduled windows. */
+    private val scheduledDomainsFlow: Flow<Set<String>> = dataStore.data
+        .map { prefs -> decodeStringSet(prefs[Keys.SCHEDULED_DOMAINS]) }
+        .distinctUntilChanged()
+
     val isSetupCompleted: Flow<Boolean> = dataStore.data.map { prefs ->
         prefs[Keys.SETUP_COMPLETED] ?: false
     }
@@ -151,20 +161,19 @@ class LockRepository(
     val profiles: Flow<List<Profile>> = profileDao.getAll()
 
     init {
-        // Keep blocked packages in sync with current state:
-        // active profile's packages ∪ scheduled-window packages (both empty when unlocked).
+        // Keep blocked packages and domains in sync with current state:
+        // active profile's targets ∪ scheduled-window targets (all empty when unlocked).
         scope.launch {
-            combine(lockStateFlow, scheduledPackagesFlow) { state, scheduled ->
-                state to scheduled
-            }.collect { (state, scheduled) ->
-                _blockedPackages.value = if (state.isLocked) {
-                    val profilePackages = state.activeProfileId
-                        ?.let { profileDao.getById(it)?.blockedPackages }
-                        ?.toSet()
-                        .orEmpty()
-                    profilePackages + scheduled
+            combine(lockStateFlow, scheduledPackagesFlow, scheduledDomainsFlow) { state, packages, domains ->
+                Triple(state, packages, domains)
+            }.collect { (state, scheduledPackages, scheduledDomains) ->
+                if (state.isLocked) {
+                    val profile = state.activeProfileId?.let { profileDao.getById(it) }
+                    _blockedPackages.value = profile?.blockedPackages.orEmpty().toSet() + scheduledPackages
+                    _blockedDomains.value = profile?.blockedDomains.orEmpty().toSet() + scheduledDomains
                 } else {
-                    emptySet()
+                    _blockedPackages.value = emptySet()
+                    _blockedDomains.value = emptySet()
                 }
             }
         }
@@ -258,6 +267,7 @@ class LockRepository(
             it.remove(Keys.IS_NO_ESCAPE)
             it.remove(Keys.LOCK_DURATION_MS)
             it.remove(Keys.SCHEDULED_PACKAGES)
+            it.remove(Keys.SCHEDULED_DOMAINS)
             it.remove(Keys.IS_SCHEDULE_ORIGIN)
             if (consumedToAdd.isNotEmpty()) {
                 val current = decodeStringSet(it[Keys.CONSUMED_WINDOWS])
@@ -308,11 +318,15 @@ class LockRepository(
 
     /**
      * Starts a session for a scheduled window. [profileId] is the first attached profile
-     * (stats attribution); [packages] is the union of all covering windows' packages.
+     * (stats attribution); [packages] and [domains] are the unions of all covering windows' targets.
      * Never sets LOCK_DURATION_MS: the window-end alarm is the natural bound, and the
      * foreground service exempts schedule-origin sessions from the global timeout.
      */
-    suspend fun startScheduledSession(profileId: Long, packages: Set<String>) {
+    suspend fun startScheduledSession(
+        profileId: Long,
+        packages: Set<String>,
+        domains: Set<String> = emptySet(),
+    ) {
         val now = System.currentTimeMillis()
         val sessionId = sessionDao.insert(
             Session(profileId = profileId, startTime = now)
@@ -325,6 +339,7 @@ class LockRepository(
             prefs[Keys.IS_NO_ESCAPE] = false
             prefs[Keys.IS_SCHEDULE_ORIGIN] = true
             prefs[Keys.SCHEDULED_PACKAGES] = encodeStringSet(packages)
+            prefs[Keys.SCHEDULED_DOMAINS] = encodeStringSet(domains)
             prefs.remove(Keys.LOCK_DURATION_MS)
             prefs[Keys.EMERGENCY_UNLOCKS] =
                 prefs[Keys.MAX_EMERGENCY_UNLOCKS_SETTING] ?: Constants.DEFAULT_MAX_EMERGENCY_UNLOCKS
@@ -332,9 +347,10 @@ class LockRepository(
     }
 
     /** Refreshes the blocked union of an active schedule-origin session (overlap changes). */
-    suspend fun updateScheduledPackages(packages: Set<String>) {
+    suspend fun updateScheduledPackages(packages: Set<String>, domains: Set<String> = emptySet()) {
         dataStore.edit { prefs ->
             prefs[Keys.SCHEDULED_PACKAGES] = encodeStringSet(packages)
+            prefs[Keys.SCHEDULED_DOMAINS] = encodeStringSet(domains)
         }
     }
 
@@ -438,6 +454,7 @@ class LockRepository(
         blockedPackages: List<String>,
         type: ProfileType = ProfileType.STANDARD,
         durationMs: Long? = null,
+        blockedDomains: List<String> = emptyList(),
     ): Long {
         val isFirst = profileDao.getAllOnce().isEmpty()
         return profileDao.insert(
@@ -448,6 +465,7 @@ class LockRepository(
                 // First profile (always standard via onboarding) becomes the default.
                 isDefault = isFirst && type == ProfileType.STANDARD,
                 durationMs = durationMs,
+                blockedDomains = blockedDomains,
             )
         )
     }
@@ -614,6 +632,11 @@ class LockRepository(
     suspend fun setProfileContinuity(profileId: Long, enabled: Boolean) {
         val profile = profileDao.getById(profileId) ?: return
         profileDao.update(profile.copy(continuity = enabled))
+    }
+
+    suspend fun setProfileDomains(profileId: Long, domains: List<String>) {
+        val profile = profileDao.getById(profileId) ?: return
+        profileDao.update(profile.copy(blockedDomains = domains))
     }
 
     /**

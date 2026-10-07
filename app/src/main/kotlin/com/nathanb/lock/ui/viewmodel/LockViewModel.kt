@@ -733,6 +733,10 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun updateProfileDomains(profileId: Long, domains: List<String>) {
+        viewModelScope.launch { repository.setProfileDomains(profileId, domains) }
+    }
+
     fun updateProfileApps(profileId: Long, blockedPackages: List<String>) {
         viewModelScope.launch {
             val profile = repository.getProfile(profileId)
@@ -786,10 +790,11 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         type: ProfileType,
         durationMs: Long?,
         apps: List<String>,
+        domains: List<String>,
         makeDefault: Boolean,
     ) {
         viewModelScope.launch {
-            val id = repository.createProfile(name, apps, type, durationMs)
+            val id = repository.createProfile(name, apps, type, durationMs, domains)
             if (makeDefault && type == ProfileType.STANDARD) {
                 repository.setDefaultProfile(id)
             }

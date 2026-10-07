@@ -765,6 +765,74 @@ class LockRepositoryTest {
         assertTrue(repository.blockedPackages.value.isEmpty())
     }
 
+    // --- Blocked domains sync ---
+
+    @Test
+    fun `blockedDomains follow the active profile and clear when the session ends`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(
+                name = "Web",
+                blockedPackages = emptyList(),
+                blockedDomains = listOf("youtube.com", "reddit.com"),
+            )
+        )
+        assertTrue(repository.blockedDomains.value.isEmpty())
+
+        repository.startLockSession(profileId)
+        testScope.testScheduler.advanceUntilIdle()
+        assertEquals(setOf("youtube.com", "reddit.com"), repository.blockedDomains.value)
+
+        repository.endLockSession(EndReason.NFC.value)
+        testScope.testScheduler.advanceUntilIdle()
+        assertTrue(repository.blockedDomains.value.isEmpty())
+    }
+
+    @Test
+    fun `scheduled session blocks the domain union and refreshes it`() = testScope.runTest {
+        val profileId = profileDao.insert(
+            com.nathanb.lock.data.model.Profile(name = "A", blockedPackages = listOf("com.a"))
+        )
+        repository.startScheduledSession(profileId, setOf("com.a"), setOf("youtube.com"))
+        assertEquals(setOf("youtube.com"), repository.blockedDomains.value)
+
+        repository.updateScheduledPackages(setOf("com.a"), setOf("youtube.com", "lemonde.fr"))
+        assertEquals(setOf("youtube.com", "lemonde.fr"), repository.blockedDomains.value)
+
+        repository.endLockSession(EndReason.SCHEDULE.value, reevaluate = false)
+        assertTrue(repository.blockedDomains.value.isEmpty())
+    }
+
+    @Test
+    fun `setProfileDomains replaces the profile's websites`() = testScope.runTest {
+        val profileId = repository.createProfile("A", listOf("com.a"), blockedDomains = listOf("x.com"))
+
+        repository.setProfileDomains(profileId, listOf("youtube.com"))
+
+        assertEquals(listOf("youtube.com"), repository.getProfile(profileId)!!.blockedDomains)
+    }
+
+    @Test
+    fun `restoreBackupData keeps profile websites`() = testScope.runTest {
+        val data = com.nathanb.lock.data.backup.BackupData(
+            profiles = listOf(
+                com.nathanb.lock.data.model.Profile(
+                    id = 3, name = "Web", blockedPackages = emptyList(),
+                    blockedDomains = listOf("youtube.com"),
+                ),
+                // Pre-v4 backups have no websites: the field defaults to an empty list.
+                com.nathanb.lock.data.model.Profile(id = 4, name = "Old", blockedPackages = listOf("com.a")),
+            ),
+            nfcTags = emptyList(),
+            sessions = emptyList(),
+        )
+
+        repository.restoreBackupData(data)
+
+        val profiles = profileDao.getAllOnce()
+        assertEquals(listOf("youtube.com"), profiles.first { it.name == "Web" }.blockedDomains)
+        assertTrue(profiles.first { it.name == "Old" }.blockedDomains.isEmpty())
+    }
+
     // --- Session stats ---
 
     @Test

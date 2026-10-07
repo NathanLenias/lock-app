@@ -25,6 +25,8 @@ data class Profile(
     val durationMs: Long? = null,
     /** No-escape only: when the timer ends, keep blocking until the next tag scan. */
     @ColumnInfo(defaultValue = "0") val continuity: Boolean = false,
+    /** Website hosts blocked in browsers (subdomains included), read by WebsiteBlockerService. */
+    @ColumnInfo(defaultValue = "[]") val blockedDomains: List<String> = emptyList(),
 )
 
 @Entity(tableName = "sessions", indices = [Index("startTime")])

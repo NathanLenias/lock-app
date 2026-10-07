@@ -72,6 +72,22 @@ object ScheduleWindowCalculator {
         consumedKeys: Set<String>,
         links: List<ScheduleProfileLink>,
         profilesById: Map<Long, Profile>,
+    ): Set<String> = activeTargets(occurrences, consumedKeys, links, profilesById) { it.blockedPackages }
+
+    /** Website hosts counterpart of [activePackages], same window and profile rules. */
+    fun activeDomains(
+        occurrences: List<Occurrence>,
+        consumedKeys: Set<String>,
+        links: List<ScheduleProfileLink>,
+        profilesById: Map<Long, Profile>,
+    ): Set<String> = activeTargets(occurrences, consumedKeys, links, profilesById) { it.blockedDomains }
+
+    private fun activeTargets(
+        occurrences: List<Occurrence>,
+        consumedKeys: Set<String>,
+        links: List<ScheduleProfileLink>,
+        profilesById: Map<Long, Profile>,
+        targets: (Profile) -> List<String>,
     ): Set<String> {
         val activeScheduleIds = occurrences
             .filter { it.consumptionKey !in consumedKeys }
@@ -81,7 +97,7 @@ object ScheduleWindowCalculator {
             .filter { it.scheduleId in activeScheduleIds }
             .mapNotNull { profilesById[it.profileId] }
             .filter { ProfileType.fromValue(it.type) == ProfileType.STANDARD }
-            .flatMap { it.blockedPackages }
+            .flatMap(targets)
             .toSet()
     }
 

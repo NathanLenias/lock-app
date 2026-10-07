@@ -115,6 +115,12 @@ fun NewProfileWizardScreen(
     } else {
         profiles.find { it.id == copyFromId }?.blockedPackages.orEmpty()
     }
+    // Websites have no wizard step: a copied profile brings its own, a new one starts empty.
+    val finalDomains: List<String> = if (fromScratch) {
+        emptyList()
+    } else {
+        profiles.find { it.id == copyFromId }?.blockedDomains.orEmpty()
+    }
 
     fun goNext() {
         if (safeIndex < steps.lastIndex) stepIndex = safeIndex + 1
@@ -124,6 +130,7 @@ fun NewProfileWizardScreen(
                 type = type,
                 durationMs = if (isNoEscape) durationMs else null,
                 apps = finalApps,
+                domains = finalDomains,
                 makeDefault = makeDefault && type == ProfileType.STANDARD,
             )
             onCreated()

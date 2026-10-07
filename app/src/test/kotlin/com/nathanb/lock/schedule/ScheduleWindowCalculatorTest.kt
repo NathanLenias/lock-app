@@ -3,6 +3,7 @@ package com.nathanb.lock.schedule
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.Schedule
 import com.nathanb.lock.data.model.ScheduleProfileLink
+import com.nathanb.lock.schedule.ScheduleWindowCalculator.activeDomains
 import com.nathanb.lock.schedule.ScheduleWindowCalculator.activePackages
 import com.nathanb.lock.schedule.ScheduleWindowCalculator.coveringOccurrences
 import com.nathanb.lock.schedule.ScheduleWindowCalculator.nextBoundary
@@ -123,6 +124,26 @@ class ScheduleWindowCalculatorTest {
         )
 
         assertEquals(setOf("com.a", "com.b", "com.shared"), packages)
+    }
+
+    @Test
+    fun `domain union follows the same windows as packages`() {
+        val web = Profile(id = 40, name = "Web", blockedPackages = emptyList(), blockedDomains = listOf("youtube.com"))
+        val webNoEscape = Profile(
+            id = 50, name = "WebNE", blockedPackages = emptyList(),
+            blockedDomains = listOf("reddit.com"), type = "no_escape",
+        )
+        val s1 = schedule(id = 1, start = 9 * 60, end = 17 * 60)
+        val occurrences = coveringOccurrences(listOf(s1), at(monday, 13))
+
+        val domains = activeDomains(
+            occurrences,
+            consumedKeys = emptySet(),
+            links = listOf(ScheduleProfileLink(1, 40), ScheduleProfileLink(1, 50)),
+            profilesById = mapOf(40L to web, 50L to webNoEscape),
+        )
+
+        assertEquals(setOf("youtube.com"), domains)
     }
 
     @Test

@@ -25,7 +25,7 @@ data class BackupData(
 
 object BackupManager {
 
-    private const val BACKUP_VERSION = 3
+    private const val BACKUP_VERSION = 4
     private val FILE_NAME_FORMAT = DateTimeFormatter.ofPattern("ddMMyyyyHHmm")
 
     fun suggestFileName(): String {
@@ -89,6 +89,9 @@ object BackupManager {
                     put("isDefault", profile.isDefault)
                     if (profile.durationMs != null) put("durationMs", profile.durationMs)
                     if (profile.continuity) put("continuity", true)
+                    if (profile.blockedDomains.isNotEmpty()) {
+                        put("blockedDomains", JSONArray(profile.blockedDomains))
+                    }
                 })
             }
         }
@@ -155,6 +158,8 @@ object BackupManager {
         return (0 until array.length()).map { i ->
             val obj = array.getJSONObject(i)
             val packages = obj.getJSONArray("blockedPackages")
+            // Absent before v4 backups — default to no website
+            val domains = obj.optJSONArray("blockedDomains") ?: JSONArray()
             Profile(
                 id = obj.optLong("id", 0L),
                 name = obj.getString("name"),
@@ -163,6 +168,7 @@ object BackupManager {
                 isDefault = obj.optBoolean("isDefault", false),
                 durationMs = if (obj.has("durationMs")) obj.getLong("durationMs") else null,
                 continuity = obj.optBoolean("continuity", false),
+                blockedDomains = (0 until domains.length()).map { domains.getString(it) },
             )
         }
     }
