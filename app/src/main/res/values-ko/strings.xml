@@ -474,10 +474,10 @@
     <string name="inapp_changelog_version">버전 %s</string>
     <string name="inapp_changelog_title">Lock의 새로운 기능</string>
     <string name="inapp_changelog_cta">살펴보기</string>
-    <string name="inapp_changelog_1_title">일정</string>
-    <string name="inapp_changelog_1_body">신규: 종일 일정, 그리고 스캔 시 동작 선택(차단 해제 또는 자동으로 끝나는 일시중지).</string>
-    <string name="inapp_changelog_2_title">시간제 프로필</string>
-    <string name="inapp_changelog_2_body">신규: 최대 2시간까지 시간 직접 설정, 그리고 차단 유지: 타이머가 끝나도 다음 스캔까지 차단이 이어집니다.</string>
+    <string name="inapp_changelog_1_title">웹사이트</string>
+    <string name="inapp_changelog_1_body">새 기능: youtube.com, reddit.com 같은 웹사이트도 브라우저에서 차단할 수 있습니다. 하위 도메인을 포함해 사이트 전체가 차단됩니다.</string>
+    <string name="inapp_changelog_2_title">프로필별 설정</string>
+    <string name="inapp_changelog_2_body">프로필마다 웹사이트 목록이 따로 있으며, 일정에서도 차단됩니다. 웹사이트만 차단하는 프로필도 만들 수 있습니다.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">일정</string>
@@ -553,8 +553,8 @@
     <string name="schedule_scan_pause_hint">정해진 시간 동안 차단을 해제한 뒤 자동으로 재개합니다.</string>
     <string name="schedule_pause_duration_label">일시중지 시간</string>
     <string name="duration_unit_hour">시간</string>
-    <string name="inapp_changelog_3_title">안정성</string>
-    <string name="inapp_changelog_3_body">수정: 휴대전화가 절전 상태일 때 세션 자동 종료가 늦어질 수 있던 문제. 수정: Lock이 더 이상 Android의 활성 앱 패널에 표시되지 않습니다(여기서 중지하면 차단이 조용히 꺼질 수 있었습니다). 수정: 세션 중 화면을 회전해도 더 이상 세션이 전환되지 않습니다.</string>
+    <string name="inapp_changelog_3_title">선택 사항</string>
+    <string name="inapp_changelog_3_body">별도의 권한이 필요하며, 웹사이트를 차단할 때만 켜면 됩니다. 앱 차단은 그대로입니다.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">차단할 웹사이트</string>

@@ -478,10 +478,10 @@
     <string name="inapp_changelog_version">SÜRÜM %s</string>
     <string name="inapp_changelog_title">Lock\'ta yenilikler</string>
     <string name="inapp_changelog_cta">Keşfet</string>
-    <string name="inapp_changelog_1_title">Zamanlamalar</string>
-    <string name="inapp_changelog_1_body">Yeni: tüm gün süren zamanlamalar ve okutmanın ne yapacağını seçme: engellemeyi kaldırma ya da kendiliğinden biten bir mola.</string>
-    <string name="inapp_changelog_2_title">Süreli profiller</string>
-    <string name="inapp_changelog_2_body">Yeni: 2 saate kadar özel süre ve engelleme sürekliliği: sayaç bittiğinde bir sonraki okutmaya kadar engelli kalın.</string>
+    <string name="inapp_changelog_1_title">Web siteleri</string>
+    <string name="inapp_changelog_1_body">Yeni: youtube.com veya reddit.com gibi siteleri tarayıcınızda da engelleyin. Alt alan adları dahil sitenin tamamı engellenir.</string>
+    <string name="inapp_changelog_2_title">Profillerinizde</string>
+    <string name="inapp_changelog_2_body">Her profilin kendi site listesi vardır ve zamanlamalarınız da bu siteleri engeller. Bir profil yalnızca siteleri de engelleyebilir.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Zamanlamalar</string>
@@ -557,8 +557,8 @@
     <string name="schedule_scan_pause_hint">Sınırlı bir süre için engellemeyi kaldırır, ardından engelleme otomatik olarak devam eder.</string>
     <string name="schedule_pause_duration_label">Mola süresi</string>
     <string name="duration_unit_hour">sa</string>
-    <string name="inapp_changelog_3_title">Güvenilirlik</string>
-    <string name="inapp_changelog_3_body">Düzeltme: telefon uyku modundayken oturumun otomatik bitişi gecikebiliyordu. Düzeltme: Lock artık Android\'in Etkin uygulamalar panelinde görünmüyor; oradan durdurulması engellemeyi sessizce devre dışı bırakabiliyordu. Düzeltme: oturum sırasında telefonu döndürmek artık oturumu açıp kapatmıyor.</string>
+    <string name="inapp_changelog_3_title">İsteğe bağlı</string>
+    <string name="inapp_changelog_3_body">Ayrı bir izin gerekir; bu izni yalnızca site engelliyorsanız açarsınız. Uygulamalarınız için hiçbir şey değişmez.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Engellenecek web siteleri</string>

@@ -478,10 +478,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Neu in Lock</string>
     <string name="inapp_changelog_cta">Entdecken</string>
-    <string name="inapp_changelog_1_title">Zeitpläne</string>
-    <string name="inapp_changelog_1_body">Neu: ganztägige Zeitpläne und die Wahl, was ein Scan bewirkt: entsperren oder eine Pause, die von selbst endet.</string>
-    <string name="inapp_changelog_2_title">Zeitprofile</string>
-    <string name="inapp_changelog_2_body">Neu: benutzerdefinierte Dauer bis 2 Std. und fortlaufende Blockierung: Nach Ablauf des Timers bleibt alles bis zum nächsten Scan blockiert.</string>
+    <string name="inapp_changelog_1_title">Websites</string>
+    <string name="inapp_changelog_1_body">Neu: Blockieren Sie auch Websites in Ihrem Browser, etwa youtube.com oder reddit.com. Die gesamte Website wird blockiert, Subdomains eingeschlossen.</string>
+    <string name="inapp_changelog_2_title">In Ihren Profilen</string>
+    <string name="inapp_changelog_2_body">Jedes Profil hat seine eigene Liste von Websites, und Ihre Zeitpläne blockieren sie ebenfalls. Ein Profil kann sogar nur Websites blockieren.</string>
 
     <!-- Zeitpläne -->
     <string name="schedule_settings_entry">Zeitpläne</string>
@@ -557,8 +557,8 @@
     <string name="schedule_scan_pause_hint">Entsperrt für begrenzte Zeit, danach wird die Blockierung automatisch fortgesetzt.</string>
     <string name="schedule_pause_duration_label">Pausendauer</string>
     <string name="duration_unit_hour">Std.</string>
-    <string name="inapp_changelog_3_title">Zuverlässigkeit</string>
-    <string name="inapp_changelog_3_body">Korrektur: Das automatische Sitzungsende konnte sich verzögern, während das Telefon schlief. Korrektur: Lock erscheint nicht mehr unter „Aktive Apps“ in Android, wo ein Stopp die Blockierung unbemerkt aufheben konnte. Korrektur: Das Drehen des Telefons während einer Sitzung schaltet sie nicht mehr um.</string>
+    <string name="inapp_changelog_3_title">Optional</string>
+    <string name="inapp_changelog_3_body">Dafür ist eine separate Berechtigung nötig, die Sie nur aktivieren, wenn Sie Websites blockieren. Für Ihre Apps ändert sich nichts.</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Zu blockierende Websites</string>

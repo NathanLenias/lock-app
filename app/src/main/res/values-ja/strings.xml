@@ -474,10 +474,10 @@
     <string name="inapp_changelog_version">バージョン %s</string>
     <string name="inapp_changelog_title">Lock の新機能</string>
     <string name="inapp_changelog_cta">見てみる</string>
-    <string name="inapp_changelog_1_title">スケジュール</string>
-    <string name="inapp_changelog_1_body">新機能：終日スケジュールに対応。スキャン時の動作も選べます（解除、または自動的に終わる一時停止）。</string>
-    <string name="inapp_changelog_2_title">時間指定プロフィール</string>
-    <string name="inapp_changelog_2_body">新機能：最大 2 時間までのカスタム時間に対応。また、ブロックの継続機能により、タイマー終了後も次のスキャンまでブロックを維持できます。</string>
+    <string name="inapp_changelog_1_title">ウェブサイト</string>
+    <string name="inapp_changelog_1_body">新機能：youtube.com や reddit.com などのサイトもブラウザでブロックできます。サブドメインを含め、サイト全体がブロックされます。</string>
+    <string name="inapp_changelog_2_title">プロフィールごとに</string>
+    <string name="inapp_changelog_2_body">プロフィールごとにサイトのリストがあり、スケジュールでもブロックされます。サイトだけをブロックするプロフィールも作れます。</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">スケジュール</string>
@@ -553,8 +553,8 @@
     <string name="schedule_scan_pause_hint">一定時間だけ解除し、その後自動的にブロックを再開します。</string>
     <string name="schedule_pause_duration_label">一時停止の時間</string>
     <string name="duration_unit_hour">時間</string>
-    <string name="inapp_changelog_3_title">安定性の向上</string>
-    <string name="inapp_changelog_3_body">修正：スマートフォンのスリープ中にセッションの自動終了が遅れることがある問題。修正：Android の「実行中のアプリ」パネルに Lock が表示されなくなりました。そこから停止すると、気づかないうちにブロックが無効になることがありました。修正：セッション中に画面を回転しても、セッションが切り替わらなくなりました。</string>
+    <string name="inapp_changelog_3_title">任意</string>
+    <string name="inapp_changelog_3_body">別の許可が必要ですが、オンにするのはサイトをブロックする場合だけです。アプリのブロックはこれまでどおりです。</string>
 
     <!-- Website blocking -->
     <string name="websites_title">ブロックするウェブサイト</string>
