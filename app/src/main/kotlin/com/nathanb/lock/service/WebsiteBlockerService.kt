@@ -105,13 +105,15 @@ class WebsiteBlockerService : AccessibilityService() {
     }
 
     private fun block(pkg: String, host: String) {
+        if (pinnedWatchJob?.isActive == true) return // pinned overlay already up
         if (BuildConfig.DEBUG) Log.d(TAG, "Blocking $host in $pkg")
-        // The blank page and BACK stay inside the browser, so they work even when it's pinned.
-        if (!openBlankPage(pkg)) performGlobalAction(GLOBAL_ACTION_BACK)
         if (AppPinning.isActive(this)) {
+            // Pinned: the blank page is a new task, refused by Android. BACK stays in the app.
+            performGlobalAction(GLOBAL_ACTION_BACK)
             blockPinned(pkg, host)
             return
         }
+        if (!openBlankPage(pkg)) performGlobalAction(GLOBAL_ACTION_BACK)
         overlayManager.showWebsite(host, isNoEscapeSession)
         scheduleFollowUps(pkg)
     }
