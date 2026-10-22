@@ -43,6 +43,12 @@ class AppBlockerService : AccessibilityService() {
     /** Package of the last window seen, to know what is on screen once an app is unpinned. */
     private var lastWindowPackage: String? = null
 
+    /**
+     * Package of the last real screen (Activity) seen, tracked even while blocking is off.
+     * Popups, the notification shade and the keyboard don't replace it.
+     */
+    private var foregroundActivityPackage: String? = null
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service connected")
@@ -57,12 +63,16 @@ class AppBlockerService : AccessibilityService() {
             app.repository.blockedPackages.collect { packages ->
                 blockedPackages = packages
                 if (BuildConfig.DEBUG) Log.d(TAG, "Blocked packages updated: ${packages.size} apps")
+                // A schedule window starting while the user is in a newly blocked app.
+                blockForegroundIfNeeded()
             }
         }
         scope.launch {
             app.repository.emergencyPause.collect { paused ->
+                val resumed = isEmergencyPaused && !paused
                 isEmergencyPaused = paused
                 if (BuildConfig.DEBUG) Log.d(TAG, "Emergency pause: $paused")
+                if (resumed) blockForegroundIfNeeded()
             }
         }
         scope.launch {
@@ -74,12 +84,15 @@ class AppBlockerService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
+        val packageName = event.packageName?.toString() ?: return
+        val isScreen = isActivity(packageName, event.className)
+        if (isScreen) foregroundActivityPackage = packageName
+
         if (isEmergencyPaused) {
             if (overlayManager.isShowing) overlayManager.dismiss()
             return
         }
 
-        val packageName = event.packageName?.toString() ?: return
         lastWindowPackage = packageName
 
         if (homeTracker.onWindowEvent(packageName)) {
@@ -94,13 +107,27 @@ class AppBlockerService : AccessibilityService() {
             // Only react to real screens. Blocked apps also emit window events for popups,
             // menus and banners, sometimes while already in the background (Gmail shows
             // one ~1 s after launch), and those must not re-trigger the overlay.
-            if (!isActivity(packageName, event.className)) {
+            if (!isScreen) {
                 if (BuildConfig.DEBUG) Log.d(TAG, "Ignoring non-activity window: $packageName/${event.className}")
                 return
             }
             if (BuildConfig.DEBUG) Log.d(TAG, "Blocking: $packageName/${event.className}")
             if (AppPinning.isActive(this)) blockPinned(packageName) else block(packageName)
         }
+    }
+
+    /**
+     * Blocking only reacts to windows opening. When it starts again while a blocked app is
+     * already on screen (end of an emergency pause, a schedule window starting), no window
+     * opens, so the app in front is checked here or the user could stay in it.
+     */
+    private fun blockForegroundIfNeeded() {
+        if (isEmergencyPaused) return
+        val packageName = foregroundActivityPackage ?: return
+        if (packageName in Constants.WHITELISTED_PACKAGES || packageName !in blockedPackages) return
+        if (BuildConfig.DEBUG) Log.d(TAG, "Blocking app already on screen: $packageName")
+        lastWindowPackage = packageName
+        if (AppPinning.isActive(this)) blockPinned(packageName) else block(packageName)
     }
 
     private fun block(packageName: String) {
@@ -206,10 +233,5 @@ class AppBlockerService : AccessibilityService() {
         pinnedWatchJob?.cancel()
         scope.cancel()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service destroyed")
-    }
-
-    fun setEmergencyPause(paused: Boolean) {
-        isEmergencyPaused = paused
-        if (BuildConfig.DEBUG) Log.d(TAG, "Emergency pause: $paused")
     }
 }

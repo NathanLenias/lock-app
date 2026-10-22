@@ -35,7 +35,9 @@ import com.nathanb.lock.util.SupportPrompt
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -117,13 +119,53 @@ class LockRepository(
     private val _blockedDomains = MutableStateFlow<Set<String>>(emptySet())
     val blockedDomains: StateFlow<Set<String>> = _blockedDomains.asStateFlow()
 
-    // Emergency pause — when true, blocking is temporarily suspended
+    // Emergency pause: blocking suspended for a limited time while the session goes on.
+    // Owned here and not by a screen: a ViewModel timer died with the activity when Lock
+    // was swiped from recents, while the accessibility service kept the process (and the
+    // pause) alive, so blocking never came back. In memory on purpose: if the process
+    // dies, the pause dies with it and blocking resumes, which is the safe side.
     private val _emergencyPause = MutableStateFlow(false)
     val emergencyPause: StateFlow<Boolean> = _emergencyPause.asStateFlow()
 
-    fun setEmergencyPause(paused: Boolean) {
-        _emergencyPause.value = paused
+    private val _emergencyPauseEndsAt = MutableStateFlow(0L)
+
+    /** Epoch millis at which the running emergency pause ends; 0 when none. */
+    val emergencyPauseEndsAt: StateFlow<Long> = _emergencyPauseEndsAt.asStateFlow()
+
+    private var emergencyPauseJob: Job? = null
+
+    /**
+     * Spends one emergency unlock and pauses blocking for the configured duration.
+     * Returns false when the session is not locked or the budget is spent.
+     */
+    suspend fun startEmergencyPause(): Boolean {
+        val state = getLockState()
+        if (!state.isLocked || state.emergencyUnlocksRemaining <= 0) return false
+        useEmergencyUnlock()
+        val endsAt = nowMillis() + emergencyUnlockDurationMs.first()
+        emergencyPauseJob?.cancel()
+        _emergencyPauseEndsAt.value = endsAt
+        _emergencyPause.value = true
+        emergencyPauseJob = scope.launch {
+            // Wall clock checked every second: delay counts on the uptime clock, which
+            // stops in deep sleep, so one long delay would stretch the pause by the time
+            // the phone spent asleep.
+            while (nowMillis() < endsAt) delay(minOf(endsAt - nowMillis(), 1_000L))
+            // A newer pause may have replaced this one in the meantime: leave it alone.
+            if (_emergencyPauseEndsAt.compareAndSet(endsAt, 0L)) _emergencyPause.value = false
+        }
+        return true
     }
+
+    /** Ends the emergency pause now (early end, session end). No-op when none runs. */
+    fun endEmergencyPause() {
+        emergencyPauseJob?.cancel()
+        emergencyPauseJob = null
+        _emergencyPauseEndsAt.value = 0L
+        _emergencyPause.value = false
+    }
+
+    private fun nowMillis(): Long = zonedNow().toInstant().toEpochMilli()
 
     // Lock state as Flow
     val lockStateFlow: Flow<LockState> = dataStore.data.map { prefs ->
@@ -229,6 +271,7 @@ class LockRepository(
      * hook from inside would deadlock its run guard (the "frozen engine" ANR).
      */
     suspend fun endLockSession(reason: String, reevaluate: Boolean = true): Long? {
+        endEmergencyPause()
         val now = System.currentTimeMillis()
         val prefs = dataStore.data.first()
         val sessionId = prefs[Keys.ACTIVE_SESSION_ID]

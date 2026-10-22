@@ -184,19 +184,6 @@ class LockRepositoryTest {
         assertEquals(2, state.emergencyUnlocksRemaining) // default value
     }
 
-    // --- Emergency pause ---
-
-    @Test
-    fun `setEmergencyPause toggles pause state`() = testScope.runTest {
-        assertFalse(repository.emergencyPause.value)
-
-        repository.setEmergencyPause(true)
-        assertTrue(repository.emergencyPause.value)
-
-        repository.setEmergencyPause(false)
-        assertFalse(repository.emergencyPause.value)
-    }
-
     // --- NFC tags ---
 
     @Test

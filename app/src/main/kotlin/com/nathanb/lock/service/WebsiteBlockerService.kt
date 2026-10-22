@@ -62,10 +62,15 @@ class WebsiteBlockerService : AccessibilityService() {
             app.repository.blockedDomains.collect { domains ->
                 blockedDomains = domains
                 if (BuildConfig.DEBUG) Log.d(TAG, "Blocked domains updated: ${domains.size}")
+                checkForegroundBrowser()
             }
         }
         scope.launch {
-            app.repository.emergencyPause.collect { paused -> isEmergencyPaused = paused }
+            app.repository.emergencyPause.collect { paused ->
+                val resumed = isEmergencyPaused && !paused
+                isEmergencyPaused = paused
+                if (resumed) checkForegroundBrowser()
+            }
         }
         scope.launch {
             app.repository.lockStateFlow.collect { state -> isNoEscapeSession = state.isNoEscape }
@@ -81,8 +86,22 @@ class WebsiteBlockerService : AccessibilityService() {
         }
         val pkg = event?.packageName?.toString() ?: return
         if (!BrowserUrlBars.isSupported(pkg)) return
-        if (checkJob?.isActive == true) return
+        scheduleCheck(pkg)
+    }
 
+    /**
+     * Blocking only reacts to browser events. When it starts again while a blocked site is
+     * already on screen (end of an emergency pause, a schedule window starting), the page
+     * may stay still, so the browser in front is checked here.
+     */
+    private fun checkForegroundBrowser() {
+        if (blockedDomains.isEmpty() || isEmergencyPaused) return
+        val pkg = rootInActiveWindow?.packageName?.toString() ?: return
+        if (BrowserUrlBars.isSupported(pkg)) scheduleCheck(pkg)
+    }
+
+    private fun scheduleCheck(pkg: String) {
+        if (checkJob?.isActive == true) return
         checkJob = scope.launch {
             delay(FIRST_READ_DELAY_MS)
             val host = readBlockedHost(pkg) ?: return@launch

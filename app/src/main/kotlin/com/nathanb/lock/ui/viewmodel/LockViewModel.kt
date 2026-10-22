@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -362,8 +363,8 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     private val _nfcEvents = MutableSharedFlow<NfcResult>()
     val nfcEvents = _nfcEvents.asSharedFlow()
 
-    private val _isEmergencyActive = MutableStateFlow(false)
-    val isEmergencyActive: StateFlow<Boolean> = _isEmergencyActive.asStateFlow()
+    // The pause itself lives in the repository; the screen only shows it.
+    val isEmergencyActive: StateFlow<Boolean> = repository.emergencyPause
 
     // Visual lock state — lags behind real lock state to wait for animation
     private val _visualLocked = MutableStateFlow(false)
@@ -384,7 +385,6 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     val graceTimeRemaining: StateFlow<Long> = _graceTimeRemaining.asStateFlow()
 
     private var graceJob: kotlinx.coroutines.Job? = null
-    private var emergencyJob: kotlinx.coroutines.Job? = null
 
     // Session settings (exposed for UI)
     val gracePeriodMs: StateFlow<Long> = repository.gracePeriodMs
@@ -453,47 +453,31 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun emergencyUnlock() {
-        emergencyJob?.cancel()
-        emergencyJob = viewModelScope.launch {
-            val state = repository.getLockState()
-            if (state.emergencyUnlocksRemaining <= 0) return@launch
-
-            repository.useEmergencyUnlock()
-            _isEmergencyActive.value = true
-
-            // Pause blocking in the Accessibility Service
-            repository.setEmergencyPause(true)
-
-            // Countdown using absolute time
-            val endTime = System.currentTimeMillis() + emergencyUnlockDurationMs.value
-            while (true) {
-                val remaining = endTime - System.currentTimeMillis()
-                if (remaining <= 0) break
-                _emergencyTimeRemaining.value = remaining
-                delay(1000)
+    init {
+        // Display countdown only, rebuilt from the repository deadline: a screen created
+        // during a pause (Lock reopened after being swiped away) shows the real one.
+        viewModelScope.launch {
+            repository.emergencyPauseEndsAt.collectLatest { endsAt ->
+                while (true) {
+                    val remaining = (endsAt - System.currentTimeMillis()).coerceAtLeast(0L)
+                    _emergencyTimeRemaining.value = if (endsAt > 0L) remaining else 0L
+                    if (remaining == 0L) break
+                    delay(1000)
+                }
             }
-
-            // Resume blocking
-            repository.setEmergencyPause(false)
-            _isEmergencyActive.value = false
-            _emergencyTimeRemaining.value = 0
         }
     }
 
+    fun emergencyUnlock() {
+        viewModelScope.launch { repository.startEmergencyPause() }
+    }
+
     fun endEmergencyEarly() {
-        emergencyJob?.cancel()
-        repository.setEmergencyPause(false)
-        _isEmergencyActive.value = false
-        _emergencyTimeRemaining.value = 0
+        repository.endEmergencyPause()
     }
 
     private fun cancelEmergency() {
-        emergencyJob?.cancel()
-        emergencyJob = null
-        repository.setEmergencyPause(false)
-        _isEmergencyActive.value = false
-        _emergencyTimeRemaining.value = 0
+        repository.endEmergencyPause()
     }
 
     /** Shared session start: persists, posts the notification + timeout, and grace-period unless no-escape. */
