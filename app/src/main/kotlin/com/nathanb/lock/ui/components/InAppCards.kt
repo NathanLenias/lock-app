@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Language
@@ -189,6 +190,7 @@ fun SupportCard(
 @Composable
 fun ChangelogCard(
     versionName: String,
+    showFeatures: Boolean,
     onDiscover: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -222,13 +224,17 @@ fun ChangelogCard(
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-        ChangelogRow(Icons.Outlined.Language, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
-        Spacer(Modifier.height(14.dp))
-        ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
-        Spacer(Modifier.height(14.dp))
-        ChangelogRow(Icons.Outlined.Shield, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
-        Spacer(Modifier.height(14.dp))
-        ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_4_title, R.string.inapp_changelog_4_body)
+        if (showFeatures) {
+            ChangelogRow(Icons.Outlined.Language, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
+            Spacer(Modifier.height(14.dp))
+            ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
+            Spacer(Modifier.height(14.dp))
+            ChangelogRow(Icons.Outlined.Shield, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
+            Spacer(Modifier.height(14.dp))
+            ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_4_title, R.string.inapp_changelog_4_body)
+            Spacer(Modifier.height(14.dp))
+        }
+        ChangelogRow(Icons.Outlined.Build, R.string.inapp_changelog_fixes_title, R.string.inapp_changelog_fixes_body)
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = onDiscover,
@@ -237,7 +243,8 @@ fun ChangelogCard(
             colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
         ) {
             Text(
-                text = stringResource(R.string.inapp_changelog_cta),
+                // Fixes alone have nothing to discover: a plain acknowledgment.
+                text = stringResource(if (showFeatures) R.string.inapp_changelog_cta else R.string.inapp_changelog_ok),
                 fontFamily = SatoshiFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,

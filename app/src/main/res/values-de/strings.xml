@@ -567,6 +567,9 @@
     <string name="inapp_changelog_3_body">Dafür ist eine separate Berechtigung nötig, die Sie nur aktivieren, wenn Sie Websites blockieren. Für Ihre Apps ändert sich nichts.</string>
     <string name="inapp_changelog_4_title">Sitzungsdauer</string>
     <string name="inapp_changelog_4_body">Neu: eine benutzerdefinierte maximale Sitzungsdauer von 1 bis 24 Stunden, unter Einstellungen > Sitzung.</string>
+    <string name="inapp_changelog_fixes_title">Korrekturen</string>
+    <string name="inapp_changelog_fixes_body">Kleinere Fehlerbehebungen.</string>
+    <string name="inapp_changelog_ok">Verstanden</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Zu blockierende Websites</string>

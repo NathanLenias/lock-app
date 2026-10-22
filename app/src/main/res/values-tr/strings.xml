@@ -567,6 +567,9 @@
     <string name="inapp_changelog_3_body">Ayrı bir izin gerekir; bu izni yalnızca site engelliyorsanız açarsınız. Uygulamalarınız için hiçbir şey değişmez.</string>
     <string name="inapp_changelog_4_title">Oturum süresi</string>
     <string name="inapp_changelog_4_body">Yeni: Ayarlar > Oturum bölümünde 1 ile 24 saat arasında özel bir maksimum oturum süresi.</string>
+    <string name="inapp_changelog_fixes_title">Düzeltmeler</string>
+    <string name="inapp_changelog_fixes_body">Küçük hata düzeltmeleri.</string>
+    <string name="inapp_changelog_ok">Anladım</string>
 
     <!-- Website blocking -->
     <string name="websites_title">Engellenecek web siteleri</string>

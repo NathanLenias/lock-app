@@ -43,11 +43,17 @@ object Constants {
     )
 
     /**
-     * The in-app "What's new" card describes changes since this versionCode (1.4.1 = 23).
+     * The in-app "What's new" card describes changes since this versionCode (1.4.2 = 24).
      * It only shows to users whose last seen version is older; a release that ships no
      * user-facing news keeps it, a release with new content raises it.
      */
-    const val CHANGELOG_SINCE_VERSION_CODE = 23
+    const val CHANGELOG_SINCE_VERSION_CODE = 24
+
+    /**
+     * The card's feature rows (websites, session duration) describe 1.4.0 and 1.4.1 (= 23).
+     * Users who already saw them only get the fixes row of a later bug-fix release.
+     */
+    const val CHANGELOG_FEATURES_SINCE_VERSION_CODE = 23
 
     const val NOTIFICATION_CHANNEL_ID = "lock_session"
     const val NOTIFICATION_ID = 1

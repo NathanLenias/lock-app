@@ -255,6 +255,7 @@ fun HomeScreen(
         if (changelogPending) {
             ChangelogCard(
                 versionName = com.nathanb.lock.BuildConfig.VERSION_NAME,
+                showFeatures = lastSeenVersionCode < Constants.CHANGELOG_FEATURES_SINCE_VERSION_CODE,
                 onDiscover = { viewModel.markVersionSeen(com.nathanb.lock.BuildConfig.VERSION_CODE) },
                 onDismiss = { viewModel.markVersionSeen(com.nathanb.lock.BuildConfig.VERSION_CODE) },
             )
