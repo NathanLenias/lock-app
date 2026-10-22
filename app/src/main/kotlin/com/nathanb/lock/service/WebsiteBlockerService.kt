@@ -46,6 +46,7 @@ class WebsiteBlockerService : AccessibilityService() {
     private var isEmergencyPaused = false
     private var isNoEscapeSession = false
     private lateinit var overlayManager: BlockOverlayManager
+    private lateinit var unlockDeferral: UnlockDeferral
     private var checkJob: Job? = null
     private var followUpJob: Job? = null
     private var pinnedWatchJob: Job? = null
@@ -54,6 +55,7 @@ class WebsiteBlockerService : AccessibilityService() {
         super.onServiceConnected()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service connected")
         overlayManager = BlockOverlayManager(this)
+        unlockDeferral = UnlockDeferral(this) { checkForegroundBrowser() }.also { it.register() }
         // Restrict events to supported browsers (single source of truth: BrowserUrlBars).
         serviceInfo = serviceInfo.apply { packageNames = BrowserUrlBars.packages.toTypedArray() }
 
@@ -96,6 +98,7 @@ class WebsiteBlockerService : AccessibilityService() {
      */
     private fun checkForegroundBrowser() {
         if (blockedDomains.isEmpty() || isEmergencyPaused) return
+        if (!unlockDeferral.userIsPresent()) return
         val pkg = rootInActiveWindow?.packageName?.toString() ?: return
         if (BrowserUrlBars.isSupported(pkg)) scheduleCheck(pkg)
     }
@@ -192,6 +195,7 @@ class WebsiteBlockerService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         if (::overlayManager.isInitialized) overlayManager.dismiss()
+        if (::unlockDeferral.isInitialized) unlockDeferral.unregister()
         pinnedWatchJob?.cancel()
         scope.cancel()
         if (BuildConfig.DEBUG) Log.d(TAG, "Service destroyed")

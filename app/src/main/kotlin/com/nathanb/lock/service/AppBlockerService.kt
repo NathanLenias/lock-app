@@ -37,6 +37,7 @@ class AppBlockerService : AccessibilityService() {
     private var isNoEscapeSession = false
     private lateinit var overlayManager: BlockOverlayManager
     private lateinit var homeTracker: HomeConfirmationTracker
+    private lateinit var unlockDeferral: UnlockDeferral
     private var homeRetryJob: Job? = null
     private var pinnedWatchJob: Job? = null
 
@@ -57,6 +58,7 @@ class AppBlockerService : AccessibilityService() {
             launcherPackages = resolveLauncherPackages(),
             ownPackage = packageName,
         )
+        unlockDeferral = UnlockDeferral(this) { blockForegroundIfNeeded() }.also { it.register() }
 
         val app = application as LockApplication
         scope.launch {
@@ -125,6 +127,10 @@ class AppBlockerService : AccessibilityService() {
         if (isEmergencyPaused) return
         val packageName = foregroundActivityPackage ?: return
         if (packageName in Constants.WHITELISTED_PACKAGES || packageName !in blockedPackages) return
+        if (!unlockDeferral.userIsPresent()) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Screen off or locked, check deferred to unlock: $packageName")
+            return
+        }
         if (BuildConfig.DEBUG) Log.d(TAG, "Blocking app already on screen: $packageName")
         lastWindowPackage = packageName
         if (AppPinning.isActive(this)) blockPinned(packageName) else block(packageName)
@@ -229,6 +235,7 @@ class AppBlockerService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         if (::overlayManager.isInitialized) overlayManager.dismiss()
+        if (::unlockDeferral.isInitialized) unlockDeferral.unregister()
         homeRetryJob?.cancel()
         pinnedWatchJob?.cancel()
         scope.cancel()

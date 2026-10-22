@@ -28,6 +28,13 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+        <!-- Home apps (Pixel, Samsung, ... launchers have no LAUNCHER icon). Without this,
+             AppBlockerService can't tell the home screen is a real screen and keeps the
+             last blocked app as "on screen", then blocks it when a session starts. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
     </queries>
 
     <application
