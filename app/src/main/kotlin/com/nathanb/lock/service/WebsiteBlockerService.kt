@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.net.toUri
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.LockApplication
@@ -39,6 +40,9 @@ class WebsiteBlockerService : AccessibilityService() {
 
         private const val FOLLOW_UP_FIRST_MS = 650L
         private const val FOLLOW_UP_FINAL_MS = 1_250L
+
+        /** Upper bound on the nodes visited when looking for a Compose address bar. */
+        private const val COMPOSE_SEARCH_MAX_NODES = 200
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -120,8 +124,29 @@ class WebsiteBlockerService : AccessibilityService() {
         val root = rootInActiveWindow ?: return null
         if (root.packageName?.toString() != pkg) return null
         for (id in BrowserUrlBars.idsFor(pkg)) {
-            val bar = root.findAccessibilityNodeInfosByViewId(id).firstOrNull() ?: continue
-            return blockedHostFromAddressBar(bar.text?.toString(), bar.isFocused, blockedDomains)
+            val bar = findAddressBar(root, pkg, id) ?: continue
+            val content = addressBarContent(bar.text?.toString(), bar.contentDescription?.toString())
+            return blockedHostFromAddressBar(content, bar.isFocused, blockedDomains)
+        }
+        return null
+    }
+
+    private fun findAddressBar(root: AccessibilityNodeInfo, pkg: String, id: String): AccessibilityNodeInfo? {
+        if (!BrowserUrlBars.isComposeTag(id)) return root.findAccessibilityNodeInfosByViewId(id).firstOrNull()
+        // Start from the toolbar's host view so the page content is never walked.
+        val start = root.findAccessibilityNodeInfosByViewId(BrowserUrlBars.composeToolbarId(pkg)).firstOrNull() ?: root
+        return findByComposeTag(start, id)
+    }
+
+    /** Breadth-first search for the node whose resource name is the Compose test tag [tag]. */
+    private fun findByComposeTag(start: AccessibilityNodeInfo, tag: String): AccessibilityNodeInfo? {
+        val queue = ArrayDeque<AccessibilityNodeInfo>().apply { add(start) }
+        var visited = 0
+        while (queue.isNotEmpty() && visited < COMPOSE_SEARCH_MAX_NODES) {
+            val node = queue.removeFirst()
+            visited++
+            if (node.viewIdResourceName == tag) return node
+            for (i in 0 until node.childCount) node.getChild(i)?.let(queue::add)
         }
         return null
     }
@@ -201,6 +226,20 @@ class WebsiteBlockerService : AccessibilityService() {
         if (BuildConfig.DEBUG) Log.d(TAG, "Service destroyed")
     }
 }
+
+/**
+ * What an address bar node shows. Classic bars carry the address in their text. Compose
+ * bars leave it empty and describe themselves instead ("example.org/page. Search or
+ * address", hint localized): the address is the first word of that description, minus the
+ * full stop that ends the sentence.
+ */
+internal fun addressBarContent(text: String?, description: String?): String? {
+    if (!text.isNullOrBlank()) return text
+    val firstWord = description?.trim()?.split(WHITESPACE, limit = 2)?.firstOrNull()
+    return firstWord?.removeSuffix(".")?.takeIf { it.isNotEmpty() }
+}
+
+private val WHITESPACE = Regex("\\s+")
 
 /**
  * Decides from an address bar's content whether a blocked website is on screen.
