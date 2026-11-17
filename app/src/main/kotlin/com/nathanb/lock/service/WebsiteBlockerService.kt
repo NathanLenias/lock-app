@@ -49,6 +49,8 @@ class WebsiteBlockerService : AccessibilityService() {
     private var blockedDomains: Set<String> = emptySet()
     private var isEmergencyPaused = false
     private var isNoEscapeSession = false
+    private var sessionStartTime: Long? = null
+    private val attemptCounter = BlockAttemptCounter()
     private lateinit var overlayManager: BlockOverlayManager
     private lateinit var unlockDeferral: UnlockDeferral
     private var checkJob: Job? = null
@@ -79,7 +81,10 @@ class WebsiteBlockerService : AccessibilityService() {
             }
         }
         scope.launch {
-            app.repository.lockStateFlow.collect { state -> isNoEscapeSession = state.isNoEscape }
+            app.repository.lockStateFlow.collect { state ->
+                isNoEscapeSession = state.isNoEscape
+                sessionStartTime = state.sessionStartTime
+            }
         }
     }
 
@@ -161,7 +166,7 @@ class WebsiteBlockerService : AccessibilityService() {
             return
         }
         if (!openBlankPage(pkg)) performGlobalAction(GLOBAL_ACTION_BACK)
-        overlayManager.showWebsite(host, isNoEscapeSession)
+        overlayManager.showWebsite(host, isNoEscapeSession, attemptCounter.record(sessionStartTime, host))
         scheduleFollowUps(pkg)
     }
 

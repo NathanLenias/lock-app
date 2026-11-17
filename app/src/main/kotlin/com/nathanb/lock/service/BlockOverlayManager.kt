@@ -37,15 +37,16 @@ class BlockOverlayManager(private val context: Context) {
         PixelFormat.TRANSLUCENT,
     )
 
-    fun show(packageName: String, isNoEscape: Boolean = false) {
+    /** [attempts]: times this app was opened during the session; the line is hidden at 0. */
+    fun show(packageName: String, isNoEscape: Boolean = false, attempts: Int = 0) {
         if (overlayView != null) return
-        showBlocked(resolveAppLabel(packageName), isNoEscape)
+        showBlocked(resolveAppLabel(packageName), isNoEscape, attempts = attempts)
     }
 
     /** Same overlay for a blocked website: [host] replaces the app name. */
-    fun showWebsite(host: String, isNoEscape: Boolean = false) {
+    fun showWebsite(host: String, isNoEscape: Boolean = false, attempts: Int = 0) {
         if (overlayView != null) return
-        showBlocked(host, isNoEscape)
+        showBlocked(host, isNoEscape, attempts = attempts)
     }
 
     fun showPinnedApp(packageName: String) = showPinned(resolveAppLabel(packageName))
@@ -61,7 +62,8 @@ class BlockOverlayManager(private val context: Context) {
         showBlocked(label, isNoEscape = false, pinned = true)
     }
 
-    private fun showBlocked(appLabel: String, isNoEscape: Boolean, pinned: Boolean = false) {
+    private fun showBlocked(appLabel: String, isNoEscape: Boolean, pinned: Boolean = false, attempts: Int = 0) {
+        val showAttempts = attempts > 0 && !pinned
 
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -114,10 +116,26 @@ class BlockOverlayManager(private val context: Context) {
             setTextColor(0xFFAAAAAA.toInt())
             textSize = 15f
             gravity = Gravity.CENTER
-            setPadding(dp(16), 0, dp(16), dp(48))
+            setPadding(dp(16), 0, dp(16), if (showAttempts) dp(20) else dp(48))
             setLineSpacing(dp(4).toFloat(), 1f)
         }
         layout.addView(subtitle)
+
+        // Attempts this session, between the explanation and the button
+        if (showAttempts) {
+            val attemptsLine = TextView(context).apply {
+                text = localizedContext.resources.getQuantityString(
+                    R.plurals.overlay_attempts, attempts, appLabel, attempts,
+                )
+                setTextColor(0xFFFFFFFF.toInt())
+                textSize = 15f
+                typeface = Typeface.create(Typeface.DEFAULT, 500, false)
+                gravity = Gravity.CENTER
+                setPadding(dp(16), 0, dp(16), dp(48))
+                setLineSpacing(dp(4).toFloat(), 1f)
+            }
+            layout.addView(attemptsLine)
+        }
 
         if (pinned) {
             isPinnedVariant = true

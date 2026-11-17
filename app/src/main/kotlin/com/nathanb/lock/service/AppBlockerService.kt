@@ -36,6 +36,8 @@ class AppBlockerService : AccessibilityService() {
     private var blockedPackages: Set<String> = emptySet()
     private var isEmergencyPaused = false
     private var isNoEscapeSession = false
+    private var sessionStartTime: Long? = null
+    private val attemptCounter = BlockAttemptCounter()
     private lateinit var overlayManager: BlockOverlayManager
     private lateinit var homeTracker: HomeConfirmationTracker
     private lateinit var unlockDeferral: UnlockDeferral
@@ -81,6 +83,7 @@ class AppBlockerService : AccessibilityService() {
         scope.launch {
             app.repository.lockStateFlow.collect { state ->
                 isNoEscapeSession = state.isNoEscape
+                sessionStartTime = state.sessionStartTime
             }
         }
     }
@@ -143,12 +146,13 @@ class AppBlockerService : AccessibilityService() {
         // a double tap on the home button, which OEM gestures react to.
         if (homeTracker.isDuplicateRequest(packageName, SystemClock.uptimeMillis())) {
             if (BuildConfig.DEBUG) Log.d(TAG, "HOME already requested, not pressing again: $packageName")
-            overlayManager.show(packageName, isNoEscapeSession)
+            // Same arrival: not a new attempt.
+            overlayManager.show(packageName, isNoEscapeSession, attemptCounter.current(sessionStartTime, packageName))
             return
         }
         // HOME first (the real block), then overlay (visual feedback)
         pressHome()
-        overlayManager.show(packageName, isNoEscapeSession)
+        overlayManager.show(packageName, isNoEscapeSession, attemptCounter.record(sessionStartTime, packageName))
         scheduleHomeRetry(packageName)
     }
 
