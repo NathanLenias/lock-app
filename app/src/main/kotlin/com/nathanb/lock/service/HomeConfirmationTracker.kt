@@ -17,9 +17,26 @@ class HomeConfirmationTracker(
     var awaitingConfirmation: Boolean = false
         private set
 
-    /** A blocked app was detected and HOME was requested. */
-    fun onHomeRequested() {
+    private var lastRequestPackage: String? = null
+    private var lastRequestAtMs: Long = 0L
+
+    /** A blocked app was detected and HOME was requested for [packageName] at [nowMs]. */
+    fun onHomeRequested(packageName: String, nowMs: Long) {
         awaitingConfirmation = true
+        lastRequestPackage = packageName
+        lastRequestAtMs = nowMs
+    }
+
+    /**
+     * True when HOME was already requested for this arrival of [packageName], so a second
+     * press must be skipped. An app coming to the front emits two screen events 60-200 ms
+     * apart (measured on a Pixel), and a launcher event can "confirm" HOME in between, so
+     * the pending confirmation alone is not enough: the same package is also held back
+     * for [DUPLICATE_WINDOW_MS]. Nobody reopens an app that fast by hand.
+     */
+    fun isDuplicateRequest(packageName: String, nowMs: Long): Boolean {
+        if (awaitingConfirmation) return true
+        return packageName == lastRequestPackage && nowMs - lastRequestAtMs in 0 until DUPLICATE_WINDOW_MS
     }
 
     /**
@@ -41,5 +58,9 @@ class HomeConfirmationTracker(
 
     fun reset() {
         awaitingConfirmation = false
+    }
+
+    private companion object {
+        const val DUPLICATE_WINDOW_MS = 400L
     }
 }

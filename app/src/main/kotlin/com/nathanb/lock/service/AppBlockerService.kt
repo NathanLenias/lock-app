@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.SystemClock
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.nathanb.lock.BuildConfig
@@ -137,10 +138,18 @@ class AppBlockerService : AccessibilityService() {
     }
 
     private fun block(packageName: String) {
+        // An app coming to the front often emits two screen events, and every event reaches
+        // us (notificationTimeout is 0). One HOME per arrival: a second press would read as
+        // a double tap on the home button, which OEM gestures react to.
+        if (homeTracker.isDuplicateRequest(packageName, SystemClock.uptimeMillis())) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "HOME already requested, not pressing again: $packageName")
+            overlayManager.show(packageName, isNoEscapeSession)
+            return
+        }
         // HOME first (the real block), then overlay (visual feedback)
         pressHome()
         overlayManager.show(packageName, isNoEscapeSession)
-        scheduleHomeRetry()
+        scheduleHomeRetry(packageName)
     }
 
     /**
@@ -189,8 +198,8 @@ class AppBlockerService : AccessibilityService() {
     }
 
     /** Launches the home screen if the launcher has not come to the front in time. */
-    private fun scheduleHomeRetry() {
-        homeTracker.onHomeRequested()
+    private fun scheduleHomeRetry(packageName: String) {
+        homeTracker.onHomeRequested(packageName, SystemClock.uptimeMillis())
         homeRetryJob?.cancel()
         homeRetryJob = scope.launch {
             delay(HOME_CONFIRMATION_TIMEOUT_MS)
