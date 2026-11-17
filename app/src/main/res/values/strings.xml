@@ -572,7 +572,7 @@
     <string name="inapp_changelog_4_title">Session duration</string>
     <string name="inapp_changelog_4_body">New: a custom maximum session duration, from 1 to 24 hours, in Settings > Session.</string>
     <string name="inapp_changelog_fixes_title">Fixes</string>
-    <string name="inapp_changelog_fixes_body">Minor bug fixes.</string>
+    <string name="inapp_changelog_fixes_body">Websites are blocked in Firefox again, and an app reopened from the app drawer is now reliably blocked. New: the block screen shows how many times you tried to open the app this session.</string>
     <string name="inapp_changelog_ok">Got it</string>
 
     <!-- Website blocking -->

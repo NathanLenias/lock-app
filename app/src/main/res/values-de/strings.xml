@@ -572,7 +572,7 @@
     <string name="inapp_changelog_4_title">Sitzungsdauer</string>
     <string name="inapp_changelog_4_body">Neu: eine benutzerdefinierte maximale Sitzungsdauer von 1 bis 24 Stunden, unter Einstellungen > Sitzung.</string>
     <string name="inapp_changelog_fixes_title">Korrekturen</string>
-    <string name="inapp_changelog_fixes_body">Kleinere Fehlerbehebungen.</string>
+    <string name="inapp_changelog_fixes_body">Websites werden in Firefox wieder blockiert, und eine aus der App-Liste erneut geöffnete App wird jetzt zuverlässig blockiert. Neu: Der Blockierbildschirm zeigt, wie oft Sie in dieser Sitzung versucht haben, die App zu öffnen.</string>
     <string name="inapp_changelog_ok">Verstanden</string>
 
     <!-- Website blocking -->

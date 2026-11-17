@@ -566,7 +566,7 @@
     <string name="inapp_changelog_4_title">セッション時間</string>
     <string name="inapp_changelog_4_body">新機能：設定 > セッション で、最大セッション時間を 1〜24 時間の間で自由に設定できます。</string>
     <string name="inapp_changelog_fixes_title">修正</string>
-    <string name="inapp_changelog_fixes_body">軽微な不具合を修正しました。</string>
+    <string name="inapp_changelog_fixes_body">Firefox でサイトが再びブロックされるようになり、アプリ一覧から開き直したアプリも確実にブロックされます。新機能：ブロック画面に、このセッションでアプリを開こうとした回数が表示されます。</string>
     <string name="inapp_changelog_ok">OK</string>
 
     <!-- Website blocking -->
