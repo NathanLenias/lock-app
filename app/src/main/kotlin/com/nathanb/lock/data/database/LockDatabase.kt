@@ -5,6 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.nathanb.lock.data.model.GardenPlot
+import com.nathanb.lock.data.model.GardenState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.Schedule
@@ -99,9 +101,34 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
     }
 }
 
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Garden: two new tables, nothing existing is touched.
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `garden_plots` (" +
+                "`cellA` INTEGER NOT NULL, " +
+                "`cellB` INTEGER NOT NULL, " +
+                "`plant` TEXT NOT NULL, " +
+                "`stage` INTEGER NOT NULL, " +
+                "`plantedAt` INTEGER NOT NULL, " +
+                "PRIMARY KEY(`cellA`, `cellB`))"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `garden_state` (" +
+                "`id` INTEGER NOT NULL, " +
+                "`createdAt` INTEGER NOT NULL, " +
+                "`dropsSpent` INTEGER NOT NULL, " +
+                "PRIMARY KEY(`id`))"
+        )
+    }
+}
+
 @Database(
-    entities = [Profile::class, Session::class, NfcTag::class, Schedule::class, ScheduleProfileLink::class],
-    version = 8,
+    entities = [
+        Profile::class, Session::class, NfcTag::class, Schedule::class, ScheduleProfileLink::class,
+        GardenPlot::class, GardenState::class,
+    ],
+    version = 9,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -111,4 +138,5 @@ abstract class LockDatabase : RoomDatabase() {
     abstract fun nfcTagDao(): NfcTagDao
     abstract fun scheduleDao(): ScheduleDao
     abstract fun scheduleProfileDao(): ScheduleProfileDao
+    abstract fun gardenDao(): GardenDao
 }

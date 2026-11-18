@@ -1,10 +1,13 @@
 package com.nathanb.lock.fake
 
+import com.nathanb.lock.data.database.GardenDao
 import com.nathanb.lock.data.database.NfcTagDao
 import com.nathanb.lock.data.database.ProfileDao
 import com.nathanb.lock.data.database.ScheduleDao
 import com.nathanb.lock.data.database.ScheduleProfileDao
 import com.nathanb.lock.data.database.SessionDao
+import com.nathanb.lock.data.model.GardenPlot
+import com.nathanb.lock.data.model.GardenState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.Schedule
@@ -188,5 +191,35 @@ class FakeNfcTagDao : NfcTagDao {
 
     override suspend fun deleteAll() {
         tags.value = emptyList()
+    }
+}
+
+class FakeGardenDao : GardenDao {
+    private val state = MutableStateFlow<GardenState?>(null)
+    private val plots = MutableStateFlow<List<GardenPlot>>(emptyList())
+
+    override fun observeState(): Flow<GardenState?> = state
+
+    override suspend fun getState(): GardenState? = state.value
+
+    override suspend fun insertStateIfAbsent(state: GardenState) {
+        this.state.update { it ?: state }
+    }
+
+    override suspend fun addDropsSpent(drops: Int) {
+        state.update { it?.copy(dropsSpent = it.dropsSpent + drops) }
+    }
+
+    override fun observePlots(): Flow<List<GardenPlot>> = plots
+
+    override suspend fun getPlot(a: Int, b: Int): GardenPlot? =
+        plots.value.find { it.cellA == a && it.cellB == b }
+
+    override suspend fun upsertPlot(plot: GardenPlot) {
+        plots.update { list -> list.filterNot { it.cellA == plot.cellA && it.cellB == plot.cellB } + plot }
+    }
+
+    override suspend fun deletePlot(a: Int, b: Int) {
+        plots.update { list -> list.filterNot { it.cellA == a && it.cellB == b } }
     }
 }

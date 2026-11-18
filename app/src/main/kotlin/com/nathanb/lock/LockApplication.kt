@@ -10,7 +10,10 @@ import com.nathanb.lock.data.database.MIGRATION_4_5
 import com.nathanb.lock.data.database.MIGRATION_5_6
 import com.nathanb.lock.data.database.MIGRATION_6_7
 import com.nathanb.lock.data.database.MIGRATION_7_8
+import com.nathanb.lock.data.database.MIGRATION_8_9
+import com.nathanb.lock.data.repository.GardenRepository
 import com.nathanb.lock.data.repository.LockRepository
+import androidx.room.withTransaction
 import com.nathanb.lock.schedule.AndroidScheduleEffects
 import com.nathanb.lock.schedule.ScheduleManager
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +29,9 @@ class LockApplication : Application() {
     lateinit var repository: LockRepository
         private set
 
+    lateinit var gardenRepository: GardenRepository
+        private set
+
     lateinit var scheduleManager: ScheduleManager
         private set
 
@@ -39,7 +45,7 @@ class LockApplication : Application() {
             LockDatabase::class.java,
             "lock.db",
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
             .build()
 
         repository = LockRepository(
@@ -51,6 +57,14 @@ class LockApplication : Application() {
             scheduleProfileDao = database.scheduleProfileDao(),
             database = database,
         )
+
+        gardenRepository = GardenRepository(
+            gardenDao = database.gardenDao(),
+            sessionDao = database.sessionDao(),
+            transact = { block -> database.withTransaction { block() } },
+        )
+        // The garden is born on the first launch that knows about it.
+        appScope.launch { gardenRepository.ensureCreated() }
 
         scheduleManager = ScheduleManager(repository, AndroidScheduleEffects(this))
         // Any session end (NFC, manual, timeout alarm...) re-evaluates the windows.

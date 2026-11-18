@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.nathanb.lock.data.model.GardenPlot
+import com.nathanb.lock.data.model.GardenState
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.Schedule
@@ -155,4 +157,31 @@ interface NfcTagDao {
 
     @Query("DELETE FROM nfc_tags")
     suspend fun deleteAll()
+}
+
+@Dao
+interface GardenDao {
+    @Query("SELECT * FROM garden_state WHERE id = 0")
+    fun observeState(): Flow<GardenState?>
+
+    @Query("SELECT * FROM garden_state WHERE id = 0")
+    suspend fun getState(): GardenState?
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertStateIfAbsent(state: GardenState)
+
+    @Query("UPDATE garden_state SET dropsSpent = dropsSpent + :drops WHERE id = 0")
+    suspend fun addDropsSpent(drops: Int)
+
+    @Query("SELECT * FROM garden_plots")
+    fun observePlots(): Flow<List<GardenPlot>>
+
+    @Query("SELECT * FROM garden_plots WHERE cellA = :a AND cellB = :b")
+    suspend fun getPlot(a: Int, b: Int): GardenPlot?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertPlot(plot: GardenPlot)
+
+    @Query("DELETE FROM garden_plots WHERE cellA = :a AND cellB = :b")
+    suspend fun deletePlot(a: Int, b: Int)
 }

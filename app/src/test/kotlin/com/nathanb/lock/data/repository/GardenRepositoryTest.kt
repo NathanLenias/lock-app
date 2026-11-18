@@ -1,0 +1,181 @@
+package com.nathanb.lock.data.repository
+
+import com.nathanb.lock.data.garden.PlantKind
+import com.nathanb.lock.data.model.GardenPlot
+import com.nathanb.lock.data.model.Session
+import com.nathanb.lock.fake.FakeGardenDao
+import com.nathanb.lock.fake.FakeSessionDao
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import java.time.ZoneId
+
+class GardenRepositoryTest {
+
+    private val hour = 60 * 60 * 1000L
+    private val day = 24 * hour
+    private val born = 20_000 * day
+
+    private var now = born
+    private lateinit var gardenDao: FakeGardenDao
+    private lateinit var sessionDao: FakeSessionDao
+    private lateinit var repository: GardenRepository
+
+    @Before
+    fun setUp() {
+        now = born
+        gardenDao = FakeGardenDao()
+        sessionDao = FakeSessionDao()
+        repository = GardenRepository(gardenDao, sessionDao, now = { now }, zone = { ZoneId.of("UTC") })
+    }
+
+    /** Adds finished sessions worth [drops] drops (3 a day) after the birth of the garden. */
+    private suspend fun earn(drops: Int) {
+        var left = drops
+        var dayIndex = 0
+        while (left > 0) {
+            val today = minOf(3, left)
+            val start = born + dayIndex * day + hour
+            sessionDao.insert(Session(profileId = 1, startTime = start, endTime = start + today * hour))
+            left -= today
+            dayIndex++
+        }
+    }
+
+    private suspend fun garden() = repository.garden.first()!!
+
+    @Test
+    fun `no garden before it is created, then one cell and the welcome drop`() = runTest {
+        assertNull(repository.garden.first())
+
+        repository.ensureCreated()
+
+        val garden = garden()
+        assertEquals(1, garden.size)
+        assertEquals(1, garden.drops)
+        assertTrue(garden.plants.isEmpty())
+        assertEquals(15, garden.daysUntilNextSize)
+    }
+
+    @Test
+    fun `creating twice keeps the first birth date`() = runTest {
+        repository.ensureCreated()
+        now = born + 40 * day
+        repository.ensureCreated()
+
+        assertEquals(born, gardenDao.getState()!!.createdAt)
+        assertEquals(2, garden().size)
+    }
+
+    @Test
+    fun `returning user gets three drops and the 2x2 terrain`() = runTest {
+        val old = born - 45 * day
+        sessionDao.insert(Session(profileId = 1, startTime = old, endTime = old + 4 * hour))
+        repository.ensureCreated()
+
+        assertEquals(3, garden().drops)
+        assertEquals(2, garden().size)
+    }
+
+    @Test
+    fun `planting costs one step and puts a sprout`() = runTest {
+        repository.ensureCreated()
+
+        assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.FLOWERS))
+
+        val garden = garden()
+        assertEquals(Planted(PlantKind.FLOWERS, 1), garden.plants[0 to 0])
+        assertEquals(0, garden.drops)
+    }
+
+    @Test
+    fun `planting is refused without enough drops, and nothing changes`() = runTest {
+        repository.ensureCreated()
+
+        assertEquals(GardenActionResult.NOT_ENOUGH_DROPS, repository.plant(0, 0, PlantKind.CHERRY))
+
+        assertTrue(garden().plants.isEmpty())
+        assertEquals(1, garden().drops)
+        assertEquals(0, gardenDao.getState()!!.dropsSpent)
+    }
+
+    @Test
+    fun `planting is refused outside the terrain and on a taken cell`() = runTest {
+        repository.ensureCreated()
+        earn(6)
+
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.plant(1, 0, PlantKind.FLOWERS))
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.plant(-1, 0, PlantKind.FLOWERS))
+        assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.FLOWERS))
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.plant(0, 0, PlantKind.TULIPS_MIX))
+        assertEquals(6, garden().drops)
+    }
+
+    @Test
+    fun `growing goes one stage at a time up to the last one`() = runTest {
+        repository.ensureCreated()
+        earn(44)
+
+        assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.APPLE))
+        assertEquals(GardenActionResult.DONE, repository.grow(0, 0))
+        assertEquals(GardenActionResult.DONE, repository.grow(0, 0))
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.grow(0, 0))
+
+        val garden = garden()
+        assertEquals(Planted(PlantKind.APPLE, 3), garden.plants[0 to 0])
+        assertTrue(garden.plants.getValue(0 to 0).isFullyGrown)
+        assertEquals(0, garden.drops)
+    }
+
+    @Test
+    fun `growing is refused without enough drops or without a plant`() = runTest {
+        repository.ensureCreated()
+        earn(4)
+
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.grow(0, 0))
+        assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.BUSH))
+        assertEquals(GardenActionResult.NOT_ENOUGH_DROPS, repository.grow(0, 0))
+        assertEquals(Planted(PlantKind.BUSH, 1), garden().plants[0 to 0])
+    }
+
+    @Test
+    fun `removing frees the cell and does not refund`() = runTest {
+        repository.ensureCreated()
+        earn(2)
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        repository.grow(0, 0)
+
+        assertEquals(GardenActionResult.DONE, repository.remove(0, 0))
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.remove(0, 0))
+
+        assertTrue(garden().plants.isEmpty())
+        assertEquals(1, garden().drops)
+        assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.TULIPS_RED_YELLOW))
+    }
+
+    @Test
+    fun `an unknown plant shows as an empty cell`() = runTest {
+        repository.ensureCreated()
+        gardenDao.upsertPlot(GardenPlot(cellA = 0, cellB = 0, plant = "baobab", stage = 2, plantedAt = born))
+
+        assertTrue(garden().plants.isEmpty())
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.grow(0, 0))
+    }
+
+    @Test
+    fun `losing sessions lowers the balance without touching the plants`() = runTest {
+        repository.ensureCreated()
+        earn(3)
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        repository.grow(0, 0)
+
+        sessionDao.deleteAll() // what a backup import with fewer sessions does
+
+        assertEquals(0, garden().drops)
+        assertEquals(Planted(PlantKind.FLOWERS, 2), garden().plants[0 to 0])
+    }
+}

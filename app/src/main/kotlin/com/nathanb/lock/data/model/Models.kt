@@ -129,3 +129,28 @@ enum class EndReason(val value: String) {
     /** A scheduled window reached its end time. */
     SCHEDULE("schedule"),
 }
+
+/**
+ * A plant on a garden cell. [plant] is a PlantKind key, [stage] starts at 1 (sprout).
+ * Cells are numbered from 0 on both axes of the square terrain.
+ */
+@Entity(tableName = "garden_plots", primaryKeys = ["cellA", "cellB"])
+data class GardenPlot(
+    val cellA: Int,
+    val cellB: Int,
+    val plant: String,
+    val stage: Int,
+    val plantedAt: Long,
+)
+
+/**
+ * Single row (id 0). [createdAt] is when the garden was born: drops and terrain growth are
+ * counted from there. Earned drops are recomputed from the sessions, only the spent ones
+ * are stored.
+ */
+@Entity(tableName = "garden_state")
+data class GardenState(
+    @PrimaryKey val id: Int = 0,
+    val createdAt: Long,
+    val dropsSpent: Int,
+)
