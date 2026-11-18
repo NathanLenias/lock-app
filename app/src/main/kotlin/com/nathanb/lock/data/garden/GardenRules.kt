@@ -38,7 +38,7 @@ object GardenRules {
     const val MOVE_COST = 3
 
     /** How long a fresh planting can be undone, drops refunded (a slip of the finger). */
-    const val UNDO_PLANT_WINDOW_MS = 10_000L
+    const val UNDO_PLANT_WINDOW_MS = 2 * 60 * 1000L
 
     private const val HOUR_MS = 60 * 60 * 1000L
     private const val DAY_MS = 24 * HOUR_MS
@@ -46,8 +46,8 @@ object GardenRules {
     /** A first session at least this old when the garden is created makes a returning user. */
     private const val RETURNING_AFTER_MS = 30 * DAY_MS
 
-    /** Garden age (days) at which the terrain becomes 2x2, 3x3 and 4x4. */
-    private val TERRAIN_THRESHOLD_DAYS = listOf(15, 90, 180)
+    /** Day of the garden (the first one is day 1) on which the terrain becomes 2x2, 3x3 and 4x4. */
+    val TERRAIN_THRESHOLD_DAYS = listOf(15, 90, 180)
 
     /** Returning users are given the 2x2 terrain from day one; later sizes come at the same age. */
     private const val RETURNING_MIN_SIZE = 2
@@ -88,24 +88,25 @@ object GardenRules {
         return first <= createdAt - RETURNING_AFTER_MS
     }
 
-    /** Full days since the garden was born (0 on the first day). */
-    fun gardenAgeDays(createdAt: Long, now: Long): Long = (now - createdAt).coerceAtLeast(0L) / DAY_MS
+    /** Day of the garden as shown to the user: 1 on the day it is born. */
+    fun dayNumber(createdAt: Long, now: Long): Int =
+        ((now - createdAt).coerceAtLeast(0L) / DAY_MS).toInt() + 1
 
-    /** Side of the terrain a garden of [age] days has earned by its age alone. */
-    private fun sizeAtAge(age: Long): Int = 1 + TERRAIN_THRESHOLD_DAYS.count { age >= it }
+    /** Side of the terrain a garden has earned by its age alone on day [day]. */
+    private fun sizeOnDay(day: Int): Int = 1 + TERRAIN_THRESHOLD_DAYS.count { day >= it }
 
     /** Side of the square terrain: 1 at first, up to [MAX_TERRAIN_SIZE]. */
     fun terrainSize(createdAt: Long, now: Long, returning: Boolean): Int {
-        val size = sizeAtAge(gardenAgeDays(createdAt, now))
+        val size = sizeOnDay(dayNumber(createdAt, now))
         return if (returning) maxOf(size, RETURNING_MIN_SIZE) else size
     }
 
     /** Days left before the terrain grows again, or null once it is at its largest. */
     fun daysUntilNextSize(createdAt: Long, now: Long, returning: Boolean): Int? {
-        val age = gardenAgeDays(createdAt, now)
+        val day = dayNumber(createdAt, now)
         val current = terrainSize(createdAt, now, returning)
         // A size already given (the 2x2 of a returning user) is not announced again.
-        val next = TERRAIN_THRESHOLD_DAYS.firstOrNull { sizeAtAge(it.toLong()) > current } ?: return null
-        return (next - age).toInt()
+        val next = TERRAIN_THRESHOLD_DAYS.firstOrNull { sizeOnDay(it) > current } ?: return null
+        return next - day
     }
 }

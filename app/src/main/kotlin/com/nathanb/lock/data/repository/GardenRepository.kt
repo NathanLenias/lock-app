@@ -22,6 +22,12 @@ data class Garden(
     val drops: Int,
     /** Null once the terrain is at its largest. */
     val daysUntilNextSize: Int?,
+    /** 1 on the day the garden is born. */
+    val day: Int = 1,
+    /** True when the 2x2 terrain was given at birth (Lock already used for a month). */
+    val startedLarger: Boolean = false,
+    /** When each plant was put in the ground, for the undo countdown. */
+    val plantedAt: Map<Pair<Int, Int>, Long> = emptyMap(),
 )
 
 enum class GardenActionResult { DONE, NOT_ENOUGH_DROPS, NOT_ALLOWED }
@@ -61,6 +67,9 @@ class GardenRepository(
                 .toMap(),
             drops = GardenRules.balance(sessions, state.createdAt, state.dropsSpent, zone()),
             daysUntilNextSize = GardenRules.daysUntilNextSize(state.createdAt, now(), returning),
+            day = GardenRules.dayNumber(state.createdAt, now()),
+            startedLarger = returning,
+            plantedAt = plots.associate { (it.cellA to it.cellB) to it.plantedAt },
         )
     }
 

@@ -92,17 +92,27 @@ class GardenRulesTest {
     }
 
     @Test
-    fun `terrain grows at 15, 90 and 180 days`() {
+    fun `the garden starts on day 1`() {
+        assertEquals(1, GardenRules.dayNumber(born, born))
+        assertEquals(1, GardenRules.dayNumber(born, born + day - 1))
+        assertEquals(2, GardenRules.dayNumber(born, born + day))
+        assertEquals(120, GardenRules.dayNumber(born, born + 119 * day))
+        assertEquals(1, GardenRules.dayNumber(born, born - 5 * day))
+    }
+
+    @Test
+    fun `terrain grows on day 15, 90 and 180`() {
         fun size(days: Int, returning: Boolean = false) =
             GardenRules.terrainSize(born, born + days * day, returning)
 
+        // size(n) is n days after the birth, so day n + 1 of the garden.
         assertEquals(1, size(0))
-        assertEquals(1, size(14))
-        assertEquals(2, size(15))
-        assertEquals(2, size(89))
-        assertEquals(3, size(90))
-        assertEquals(3, size(179))
-        assertEquals(4, size(180))
+        assertEquals(1, size(13))
+        assertEquals(2, size(14))
+        assertEquals(2, size(88))
+        assertEquals(3, size(89))
+        assertEquals(3, size(178))
+        assertEquals(4, size(179))
         assertEquals(4, size(2000))
         // A clock set back never shrinks below the starting terrain.
         assertEquals(1, GardenRules.terrainSize(born, born - 5 * day, false))
@@ -111,22 +121,24 @@ class GardenRulesTest {
     @Test
     fun `returning user is given the 2x2 terrain, later sizes come at the same age`() {
         assertEquals(2, GardenRules.terrainSize(born, born, true))
-        assertEquals(2, GardenRules.terrainSize(born, born + 89 * day, true))
-        assertEquals(3, GardenRules.terrainSize(born, born + 90 * day, true))
-        assertEquals(4, GardenRules.terrainSize(born, born + 180 * day, true))
-        // The 2x2 is already there: the next size announced is the 3x3, at day 90.
-        assertEquals(90, GardenRules.daysUntilNextSize(born, born, true))
-        assertEquals(80, GardenRules.daysUntilNextSize(born, born + 10 * day, true))
-        assertEquals(90, GardenRules.daysUntilNextSize(born, born + 90 * day, true))
-        assertNull(GardenRules.daysUntilNextSize(born, born + 180 * day, true))
+        assertEquals(2, GardenRules.terrainSize(born, born + 88 * day, true))
+        assertEquals(3, GardenRules.terrainSize(born, born + 89 * day, true))
+        assertEquals(4, GardenRules.terrainSize(born, born + 179 * day, true))
+        // The 2x2 is already there: the next size announced is the 3x3, on day 90.
+        assertEquals(89, GardenRules.daysUntilNextSize(born, born, true))
+        assertEquals(79, GardenRules.daysUntilNextSize(born, born + 10 * day, true))
+        assertEquals(90, GardenRules.daysUntilNextSize(born, born + 89 * day, true))
+        assertNull(GardenRules.daysUntilNextSize(born, born + 179 * day, true))
     }
 
     @Test
     fun `days until the next terrain size`() {
-        assertEquals(15, GardenRules.daysUntilNextSize(born, born, false))
-        assertEquals(1, GardenRules.daysUntilNextSize(born, born + 14 * day, false))
-        assertEquals(75, GardenRules.daysUntilNextSize(born, born + 15 * day, false))
-        assertNull(GardenRules.daysUntilNextSize(born, born + 180 * day, false))
+        assertEquals(14, GardenRules.daysUntilNextSize(born, born, false))
+        assertEquals(1, GardenRules.daysUntilNextSize(born, born + 13 * day, false))
+        assertEquals(75, GardenRules.daysUntilNextSize(born, born + 14 * day, false))
+        // Day 120 of the mock-up: the 4x4 comes in 60 days.
+        assertEquals(60, GardenRules.daysUntilNextSize(born, born + 119 * day, false))
+        assertNull(GardenRules.daysUntilNextSize(born, born + 179 * day, false))
     }
 
     @Test

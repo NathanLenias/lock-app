@@ -58,7 +58,9 @@ class GardenRepositoryTest {
         assertEquals(1, garden.size)
         assertEquals(1, garden.drops)
         assertTrue(garden.plants.isEmpty())
-        assertEquals(15, garden.daysUntilNextSize)
+        assertEquals(14, garden.daysUntilNextSize)
+        assertEquals(1, garden.day)
+        assertEquals(false, garden.startedLarger)
     }
 
     @Test
@@ -79,6 +81,8 @@ class GardenRepositoryTest {
 
         assertEquals(3, garden().drops)
         assertEquals(2, garden().size)
+        assertEquals(true, garden().startedLarger)
+        assertEquals(89, garden().daysUntilNextSize)
     }
 
     @Test
@@ -163,7 +167,7 @@ class GardenRepositoryTest {
         earn(14)
         repository.plant(0, 0, PlantKind.CHERRY)
         assertEquals(0, garden().drops)
-        now += 9_000
+        now += 119_000
 
         assertEquals(GardenActionResult.DONE, repository.undoPlant(0, 0))
 
@@ -184,7 +188,7 @@ class GardenRepositoryTest {
         repository.remove(0, 0)
 
         repository.plant(0, 0, PlantKind.FLOWERS)
-        now += 10_001
+        now += 120_001
         assertEquals(GardenActionResult.NOT_ALLOWED, repository.undoPlant(0, 0))
 
         assertEquals(Planted(PlantKind.FLOWERS, 1), garden().plants[0 to 0])
