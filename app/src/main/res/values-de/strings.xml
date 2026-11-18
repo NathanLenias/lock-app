@@ -166,6 +166,21 @@
     </plurals>
     <string name="garden_tier_size">%1$d × %1$d</string>
     <string name="garden_tier_offered">Geschenkt</string>
+    <string name="garden_tier_title">Gelände %1$d × %1$d</string>
+    <string name="garden_tier_start">Hier hat Ihr Garten begonnen.</string>
+    <string name="garden_tier_unlocked">Freigeschaltet an Tag %d.</string>
+    <string name="garden_tier_offered_body">Bei der Erstellung Ihres Gartens geschenkt, weil Sie Lock bereits seit mehr als 30 Tagen nutzten.</string>
+    <string name="garden_tier_current">Das ist Ihr aktuelles Gelände.</string>
+    <plurals name="garden_tier_count">
+        <item quantity="one">Es hat %d Feld.</item>
+        <item quantity="other">Es hat %d Felder.</item>
+    </plurals>
+    <string name="garden_tier_grew">Damit wuchs Ihr Garten von %1$d auf %2$d Felder.</string>
+    <plurals name="garden_tier_ahead">
+        <item quantity="one">Es öffnet sich an Tag %1$d, in %2$d Tag, wenn Lock bis dahin installiert bleibt.</item>
+        <item quantity="other">Es öffnet sich an Tag %1$d, in %2$d Tagen, wenn Lock bis dahin installiert bleibt.</item>
+    </plurals>
+    <string name="garden_tier_will_grow">Ihr Garten wächst von %1$d auf %2$d Felder.</string>
     <string name="garden_hint_touch">Tippen Sie auf ein Feld, um zu pflanzen oder wachsen zu lassen.</string>
     <string name="garden_hint_earn">Eine Stunde Sitzung bringt einen Tropfen zum Pflanzen.</string>
     <string name="garden_info_title">Wozu dient der Garten?</string>
@@ -176,10 +191,6 @@
     <string name="garden_drops_title">Tropfen</string>
     <string name="garden_drops_body_earn">Sie erhalten 1 Tropfen pro Stunde Sitzung, höchstens 3 Tropfen pro Tag.</string>
     <string name="garden_drops_body_use">Damit pflanzen Sie und lassen Ihren Garten wachsen.</string>
-    <string name="garden_intro_title">Ihr Garten beginnt mit 2 × 2</string>
-    <string name="garden_intro_body">Sie nutzen Lock bereits seit mehr als 30 Tagen, deshalb beginnt Ihr Garten mit 4 Feldern statt einem!</string>
-    <string name="garden_intro_body_next">Er wächst dann an Tag 90 und noch einmal an Tag 180.</string>
-    <string name="garden_intro_action">Garten entdecken</string>
     <string name="garden_plant_title">Was hier pflanzen?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">%1$d Tropfen pro Stufe. %2$d Stufen, insgesamt %3$d Tropfen.</item>

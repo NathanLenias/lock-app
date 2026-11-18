@@ -161,6 +161,19 @@
     </plurals>
     <string name="garden_tier_size">%1$d × %1$d</string>
     <string name="garden_tier_offered">プレゼント</string>
+    <string name="garden_tier_title">%1$d × %1$dの土地</string>
+    <string name="garden_tier_start">庭が最初に始まった土地です。</string>
+    <string name="garden_tier_unlocked">%d日目に解放されました。</string>
+    <string name="garden_tier_offered_body">すでに30日以上Lockをお使いだったため、庭を作ったときにプレゼントされました。</string>
+    <string name="garden_tier_current">現在の土地です。</string>
+    <plurals name="garden_tier_count">
+        <item quantity="other">全部で%dマスあります。</item>
+    </plurals>
+    <string name="garden_tier_grew">庭が%1$dマスから%2$dマスに広がりました。</string>
+    <plurals name="garden_tier_ahead">
+        <item quantity="other">それまでLockをインストールしたままにすると、%2$d日後の%1$d日目に解放されます。</item>
+    </plurals>
+    <string name="garden_tier_will_grow">庭が%1$dマスから%2$dマスに広がります。</string>
     <string name="garden_hint_touch">マスをタップして植えたり育てたりしましょう。</string>
     <string name="garden_hint_earn">セッション1時間につき、植えるためのしずくが1個もらえます。</string>
     <string name="garden_info_title">庭は何のためにあるの？</string>
@@ -171,10 +184,6 @@
     <string name="garden_drops_title">しずく</string>
     <string name="garden_drops_body_earn">セッション1時間につきしずくが1個もらえます（1日3個まで）。</string>
     <string name="garden_drops_body_use">庭に植えたり育てたりするのに使います。</string>
-    <string name="garden_intro_title">庭は2 × 2から始まります</string>
-    <string name="garden_intro_body">すでに30日以上Lockをお使いのため、庭は1マスではなく4マスから始まります！</string>
-    <string name="garden_intro_body_next">その後、90日目と180日目に広がります。</string>
-    <string name="garden_intro_action">庭を見てみる</string>
     <string name="garden_plant_title">ここに何を植えますか？</string>
     <plurals name="garden_plant_cost">
         <item quantity="other">1段階につきしずく%1$d個。全%2$d段階で合計%3$d個。</item>

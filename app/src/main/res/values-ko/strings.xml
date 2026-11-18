@@ -161,6 +161,19 @@
     </plurals>
     <string name="garden_tier_size">%1$d × %1$d</string>
     <string name="garden_tier_offered">선물</string>
+    <string name="garden_tier_title">%1$d × %1$d 땅</string>
+    <string name="garden_tier_start">정원이 처음 시작된 땅입니다.</string>
+    <string name="garden_tier_unlocked">%d일째에 열렸습니다.</string>
+    <string name="garden_tier_offered_body">Lock을 이미 30일 넘게 사용하셨기 때문에 정원을 만들 때 선물로 드렸습니다.</string>
+    <string name="garden_tier_current">현재 사용 중인 땅입니다.</string>
+    <plurals name="garden_tier_count">
+        <item quantity="other">모두 %d칸입니다.</item>
+    </plurals>
+    <string name="garden_tier_grew">정원이 %1$d칸에서 %2$d칸으로 넓어졌습니다.</string>
+    <plurals name="garden_tier_ahead">
+        <item quantity="other">그때까지 Lock을 삭제하지 않으면 %2$d일 후인 %1$d일째에 열립니다.</item>
+    </plurals>
+    <string name="garden_tier_will_grow">정원이 %1$d칸에서 %2$d칸으로 넓어집니다.</string>
     <string name="garden_hint_touch">칸을 눌러 심거나 키워 보세요.</string>
     <string name="garden_hint_earn">세션 한 시간마다 심는 데 쓸 물방울 하나를 얻습니다.</string>
     <string name="garden_info_title">정원은 무엇을 위한 것인가요?</string>
@@ -171,10 +184,6 @@
     <string name="garden_drops_title">물방울</string>
     <string name="garden_drops_body_earn">세션 한 시간마다 물방울 1개를 얻으며, 하루 최대 3개까지입니다.</string>
     <string name="garden_drops_body_use">정원에 심고 키우는 데 사용합니다.</string>
-    <string name="garden_intro_title">정원이 2 × 2로 시작합니다</string>
-    <string name="garden_intro_body">Lock을 이미 30일 넘게 사용하셨기 때문에 정원이 한 칸이 아닌 네 칸으로 시작합니다!</string>
-    <string name="garden_intro_body_next">이후 90일째와 180일째에 더 넓어집니다.</string>
-    <string name="garden_intro_action">정원 둘러보기</string>
     <string name="garden_plant_title">여기에 무엇을 심을까요?</string>
     <plurals name="garden_plant_cost">
         <item quantity="other">단계당 물방울 %1$d개. 총 %2$d단계, 모두 %3$d개.</item>

@@ -70,7 +70,10 @@ import com.nathanb.lock.data.garden.GardenRules
 import com.nathanb.lock.data.repository.Garden
 import com.nathanb.lock.ui.screens.garden.DropsInfoSheet
 import com.nathanb.lock.ui.screens.garden.GardenInfoSheet
-import com.nathanb.lock.ui.screens.garden.GardenIntroSheet
+import com.nathanb.lock.ui.screens.garden.TerrainMiniature
+import com.nathanb.lock.ui.screens.garden.TerrainTierSheet
+import com.nathanb.lock.ui.screens.garden.TierState
+import com.nathanb.lock.ui.screens.garden.tierColor
 import com.nathanb.lock.ui.screens.garden.GardenLayout
 import com.nathanb.lock.ui.screens.garden.GardenLayout.Cell
 import com.nathanb.lock.ui.screens.garden.PlantPickerSheet
@@ -92,7 +95,6 @@ private const val HIDDEN_PLANT_ALPHA = 0.25f
 fun GardenScreen(viewModel: LockViewModel) {
     val colors = LockTheme.colors
     val garden by viewModel.garden.collectAsStateWithLifecycle()
-    val introSeen by viewModel.gardenIntroSeen.collectAsStateWithLifecycle()
 
     // Tile whose sheet is open, and whether the delete confirmation replaced it.
     var selected by remember { mutableStateOf<Cell?>(null) }
@@ -105,6 +107,8 @@ fun GardenScreen(viewModel: LockViewModel) {
     var destination by remember { mutableStateOf<Cell?>(null) }
     var showGardenInfo by remember { mutableStateOf(false) }
     var showDropsInfo by remember { mutableStateOf(false) }
+    // Terrain size whose explanation is open.
+    var tierInfo by remember { mutableStateOf<Int?>(null) }
     val cancelMove = {
         moving = null
         destination = null
@@ -201,7 +205,7 @@ fun GardenScreen(viewModel: LockViewModel) {
                 },
             )
         } else {
-            TerrainSummary(garden = current, onInfo = { showGardenInfo = true })
+            TerrainSummary(garden = current, onInfo = { showGardenInfo = true }, onTier = { tierInfo = it })
             Text(
                 text = stringResource(
                     if (current.drops == 0) R.string.garden_hint_earn else R.string.garden_hint_touch,
@@ -226,9 +230,17 @@ fun GardenScreen(viewModel: LockViewModel) {
     when {
         showGardenInfo -> GardenInfoSheet(onDismiss = { showGardenInfo = false })
         showDropsInfo -> DropsInfoSheet(onDismiss = { showDropsInfo = false })
-        // Long-time users are told once why they start with four tiles.
-        current.startedLarger && introSeen == false ->
-            GardenIntroSheet(onDismiss = viewModel::markGardenIntroSeen)
+        tierInfo != null -> tierInfo?.let { size ->
+            TerrainTierSheet(
+                size = size,
+                state = tierState(size, current.size),
+                unlockDay = GardenRules.TERRAIN_THRESHOLD_DAYS.getOrNull(size - 2)
+                    ?.takeUnless { size == 2 && current.startedLarger },
+                wasOffered = size == 2 && current.startedLarger,
+                currentDay = current.day,
+                onDismiss = { tierInfo = null },
+            )
+        }
         cell == null -> Unit
         planted == null -> PlantPickerSheet(
             drops = current.drops,
@@ -277,7 +289,7 @@ fun GardenScreen(viewModel: LockViewModel) {
 
 /** Day of the garden, when the terrain grows next, and the four terrain sizes. */
 @Composable
-private fun TerrainSummary(garden: Garden, onInfo: () -> Unit) {
+private fun TerrainSummary(garden: Garden, onInfo: () -> Unit, onTier: (Int) -> Unit) {
     val colors = LockTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(
@@ -335,11 +347,8 @@ private fun TerrainSummary(garden: Garden, onInfo: () -> Unit) {
                 TerrainTier(
                     size = size,
                     label = label,
-                    state = when {
-                        size == garden.size -> TierState.CURRENT
-                        size < garden.size -> TierState.REACHED
-                        else -> TierState.AHEAD
-                    },
+                    state = tierState(size, garden.size),
+                    onClick = { onTier(size) },
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -347,17 +356,22 @@ private fun TerrainSummary(garden: Garden, onInfo: () -> Unit) {
     }
 }
 
-private enum class TierState { REACHED, CURRENT, AHEAD }
+private fun tierState(size: Int, current: Int): TierState = when {
+    size == current -> TierState.CURRENT
+    size < current -> TierState.REACHED
+    else -> TierState.AHEAD
+}
 
 @Composable
-private fun TerrainTier(size: Int, label: String, state: TierState, modifier: Modifier = Modifier) {
+private fun TerrainTier(
+    size: Int,
+    label: String,
+    state: TierState,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val colors = LockTheme.colors
     val shape = RoundedCornerShape(14.dp)
-    val tileColor = when (state) {
-        TierState.REACHED -> colors.primary.copy(alpha = 0.45f)
-        TierState.CURRENT -> colors.primary
-        TierState.AHEAD -> colors.onSurfaceVariant.copy(alpha = 0.25f)
-    }
     val textColor = if (state == TierState.AHEAD) colors.onSurfaceVariant.copy(alpha = 0.7f) else colors.onSurface
     Column(
         modifier = modifier
@@ -369,27 +383,12 @@ private fun TerrainTier(size: Int, label: String, state: TierState, modifier: Mo
                     Modifier
                 },
             )
-            .padding(vertical = 12.dp)
-            .semantics(mergeDescendants = true) {},
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // Miniature of the terrain: size x size squares.
-        Canvas(modifier = Modifier.size(32.dp)) {
-            val gap = 2.dp.toPx()
-            val side = (this.size.width - gap * (size - 1)) / size
-            val radius = CornerRadius(if (size == 1) 3.dp.toPx() else 2.dp.toPx())
-            for (row in 0 until size) {
-                for (col in 0 until size) {
-                    drawRoundRect(
-                        color = tileColor,
-                        topLeft = Offset(col * (side + gap), row * (side + gap)),
-                        size = Size(side, side),
-                        cornerRadius = radius,
-                    )
-                }
-            }
-        }
+        TerrainMiniature(size = size, color = tierColor(state), modifier = Modifier.size(32.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
                 text = stringResource(R.string.garden_tier_size, size),

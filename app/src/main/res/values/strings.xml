@@ -166,6 +166,21 @@
     </plurals>
     <string name="garden_tier_size">%1$d × %1$d</string>
     <string name="garden_tier_offered">Gift</string>
+    <string name="garden_tier_title">%1$d × %1$d terrain</string>
+    <string name="garden_tier_start">This is where your garden started.</string>
+    <string name="garden_tier_unlocked">Unlocked on day %d.</string>
+    <string name="garden_tier_offered_body">Given when your garden was created, because you had already used Lock for more than 30 days.</string>
+    <string name="garden_tier_current">This is your current terrain.</string>
+    <plurals name="garden_tier_count">
+        <item quantity="one">It has %d tile.</item>
+        <item quantity="other">It has %d tiles.</item>
+    </plurals>
+    <string name="garden_tier_grew">It took your garden from %1$d to %2$d tiles.</string>
+    <plurals name="garden_tier_ahead">
+        <item quantity="one">It will open on day %1$d, in %2$d day, if Lock stays installed until then.</item>
+        <item quantity="other">It will open on day %1$d, in %2$d days, if Lock stays installed until then.</item>
+    </plurals>
+    <string name="garden_tier_will_grow">Your garden will go from %1$d to %2$d tiles.</string>
     <string name="garden_hint_touch">Tap a tile to plant or grow.</string>
     <string name="garden_hint_earn">One hour of session earns one drop to plant with.</string>
     <string name="garden_info_title">What is the garden for?</string>
@@ -176,10 +191,6 @@
     <string name="garden_drops_title">Drops</string>
     <string name="garden_drops_body_earn">You earn 1 drop per hour of session, up to 3 drops a day.</string>
     <string name="garden_drops_body_use">They are used to plant and grow your garden.</string>
-    <string name="garden_intro_title">Your garden starts at 2 × 2</string>
-    <string name="garden_intro_body">You have already used Lock for more than 30 days, so your garden starts with 4 tiles instead of one!</string>
-    <string name="garden_intro_body_next">It will then grow on day 90, and again on day 180.</string>
-    <string name="garden_intro_action">Discover the garden</string>
     <string name="garden_plant_title">What to plant here?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">%1$d drop per step. %2$d steps, %3$d drops in all.</item>

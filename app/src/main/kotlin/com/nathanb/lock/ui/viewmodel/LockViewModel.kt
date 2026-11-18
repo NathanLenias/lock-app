@@ -141,15 +141,6 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     val garden: StateFlow<Garden?> = gardenRepository.garden
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    /** Null while the preference is loading, so the one-time sheet never flashes. */
-    val gardenIntroSeen: StateFlow<Boolean?> = repository.gardenIntroSeen
-        .map<Boolean, Boolean?> { it }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-
-    fun markGardenIntroSeen() {
-        viewModelScope.launch { repository.setGardenIntroSeen() }
-    }
-
     fun plantInGarden(a: Int, b: Int, kind: PlantKind) {
         viewModelScope.launch { gardenRepository.plant(a, b, kind) }
     }

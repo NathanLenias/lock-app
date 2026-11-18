@@ -166,6 +166,21 @@
     </plurals>
     <string name="garden_tier_size">%1$d × %1$d</string>
     <string name="garden_tier_offered">Hediye</string>
+    <string name="garden_tier_title">%1$d × %1$d alan</string>
+    <string name="garden_tier_start">Bahçeniz burada başladı.</string>
+    <string name="garden_tier_unlocked">%d. günde açıldı.</string>
+    <string name="garden_tier_offered_body">Lock\'u 30 günden uzun süredir kullandığınız için bahçeniz oluşturulurken hediye edildi.</string>
+    <string name="garden_tier_current">Bu, şu anki alanınız.</string>
+    <plurals name="garden_tier_count">
+        <item quantity="one">%d karesi var.</item>
+        <item quantity="other">%d karesi var.</item>
+    </plurals>
+    <string name="garden_tier_grew">Bahçenizi %1$d kareden %2$d kareye çıkardı.</string>
+    <plurals name="garden_tier_ahead">
+        <item quantity="one">Lock o zamana kadar yüklü kalırsa %1$d. günde, %2$d gün sonra açılacak.</item>
+        <item quantity="other">Lock o zamana kadar yüklü kalırsa %1$d. günde, %2$d gün sonra açılacak.</item>
+    </plurals>
+    <string name="garden_tier_will_grow">Bahçeniz %1$d kareden %2$d kareye çıkacak.</string>
     <string name="garden_hint_touch">Dikmek veya büyütmek için bir kareye dokunun.</string>
     <string name="garden_hint_earn">Bir saatlik oturum, dikmek için bir damla kazandırır.</string>
     <string name="garden_info_title">Bahçe ne işe yarar?</string>
@@ -176,10 +191,6 @@
     <string name="garden_drops_title">Damlalar</string>
     <string name="garden_drops_body_earn">Her oturum saati için 1 damla kazanırsınız, günde en fazla 3 damla.</string>
     <string name="garden_drops_body_use">Bahçenizde dikim yapmak ve bitkileri büyütmek için kullanılır.</string>
-    <string name="garden_intro_title">Bahçeniz 2 × 2 olarak başlıyor</string>
-    <string name="garden_intro_body">Lock\'u 30 günden uzun süredir kullanıyorsunuz, bu yüzden bahçeniz bir yerine 4 kareyle başlıyor!</string>
-    <string name="garden_intro_body_next">Ardından 90. günde, sonra 180. günde büyüyecek.</string>
-    <string name="garden_intro_action">Bahçeyi keşfet</string>
     <string name="garden_plant_title">Buraya ne dikilsin?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">Aşama başına %1$d damla. %2$d aşama, toplam %3$d damla.</item>

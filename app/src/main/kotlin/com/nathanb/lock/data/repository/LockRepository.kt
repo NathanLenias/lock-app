@@ -94,7 +94,6 @@ class LockRepository(
         val IS_SCHEDULE_ORIGIN = booleanPreferencesKey("is_schedule_origin")
         val CONSUMED_WINDOWS = stringPreferencesKey("consumed_windows")
         val PAUSED_UNTIL = longPreferencesKey("schedule_paused_until")
-        val GARDEN_INTRO_SEEN = booleanPreferencesKey("garden_intro_seen")
     }
 
     /** Reasons that mean the USER ended the session: covering windows get consumed for the day. */
@@ -742,15 +741,6 @@ class LockRepository(
         dataStore.edit { prefs ->
             prefs[Keys.THEME_MODE] = mode.name
         }
-    }
-
-    // Garden: the one-time explanation of the terrain given to long-time users
-    val gardenIntroSeen: Flow<Boolean> = dataStore.data.map { prefs ->
-        prefs[Keys.GARDEN_INTRO_SEEN] ?: false
-    }.distinctUntilChanged()
-
-    suspend fun setGardenIntroSeen() {
-        dataStore.edit { prefs -> prefs[Keys.GARDEN_INTRO_SEEN] = true }
     }
 
     // Notification preference

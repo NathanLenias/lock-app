@@ -1,6 +1,9 @@
 package com.nathanb.lock.ui.screens.garden
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,23 +16,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CardGiftcard
 import androidx.compose.material.icons.outlined.EventAvailable
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.Smartphone
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material.icons.outlined.Yard
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +44,6 @@ import com.nathanb.lock.R
 import com.nathanb.lock.ui.components.LockBottomSheet
 import com.nathanb.lock.ui.components.LockSheetFrame
 import com.nathanb.lock.ui.theme.LockTheme
-import com.nathanb.lock.ui.theme.SatoshiFamily
 
 /** What the garden is for, and what happens to it on a reinstall or a new phone. */
 @Composable
@@ -112,30 +116,141 @@ fun DropsInfoSheet(onDismiss: () -> Unit) {
     )
 }
 
-/** Shown once to long-time users: why their garden starts with four tiles. */
+/** State of a terrain size compared with the garden's current one. */
+enum class TierState { REACHED, CURRENT, AHEAD }
+
+/** Miniature of a terrain: [size] x [size] squares. */
 @Composable
-fun GardenIntroSheet(onDismiss: () -> Unit) {
-    val colors = LockTheme.colors
-    LockBottomSheet(
-        onDismiss = onDismiss,
-        icon = Icons.Outlined.CardGiftcard,
-        title = stringResource(R.string.garden_intro_title),
-        body = stringResource(R.string.garden_intro_body) + "\n\n" +
-            stringResource(R.string.garden_intro_body_next),
-        actions = {
-            Button(
-                onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
-            ) {
-                Text(
-                    text = stringResource(R.string.garden_intro_action),
-                    fontFamily = SatoshiFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
+fun TerrainMiniature(size: Int, color: Color, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val gap = this.size.width / 16f
+        val side = (this.size.width - gap * (size - 1)) / size
+        val radius = CornerRadius(gap * if (size == 1) 1.5f else 1f)
+        for (row in 0 until size) {
+            for (col in 0 until size) {
+                drawRoundRect(
+                    color = color,
+                    topLeft = Offset(col * (side + gap), row * (side + gap)),
+                    size = Size(side, side),
+                    cornerRadius = radius,
                 )
             }
-        },
-    )
+        }
+    }
+}
+
+@Composable
+fun tierColor(state: TierState): Color {
+    val colors = LockTheme.colors
+    return when (state) {
+        TierState.REACHED -> colors.primary.copy(alpha = 0.45f)
+        TierState.CURRENT -> colors.primary
+        TierState.AHEAD -> colors.onSurfaceVariant.copy(alpha = 0.25f)
+    }
+}
+
+/**
+ * What a terrain size is: when it was or will be unlocked, and what it changes.
+ * [unlockDay] is null for the starting terrain and for a size that was given.
+ */
+@Composable
+fun TerrainTierSheet(
+    size: Int,
+    state: TierState,
+    unlockDay: Int?,
+    wasOffered: Boolean,
+    currentDay: Int,
+    onDismiss: () -> Unit,
+) {
+    val colors = LockTheme.colors
+    val tiles = size * size
+    val before = (size - 1) * (size - 1)
+    val origin = when {
+        wasOffered -> stringResource(R.string.garden_tier_offered_body)
+        unlockDay != null -> stringResource(R.string.garden_tier_unlocked, unlockDay)
+        else -> stringResource(R.string.garden_tier_start)
+    }
+    val paragraphs: List<String> = when (state) {
+        TierState.REACHED -> listOfNotNull(
+            origin,
+            if (size > 1) stringResource(R.string.garden_tier_grew, before, tiles) else null,
+        )
+        TierState.CURRENT -> listOf(
+            stringResource(R.string.garden_tier_current) + " " + origin,
+            pluralStringResource(R.plurals.garden_tier_count, tiles, tiles),
+        )
+        TierState.AHEAD -> {
+            val day = unlockDay ?: currentDay
+            val left = (day - currentDay).coerceAtLeast(0)
+            listOf(
+                pluralStringResource(R.plurals.garden_tier_ahead, left, day, left),
+                stringResource(R.string.garden_tier_will_grow, before, tiles),
+            )
+        }
+    }
+
+    LockSheetFrame(onDismiss = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(top = 8.dp, bottom = 32.dp)
+                .navigationBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TerrainMiniature(size = size, color = tierColor(state), modifier = Modifier.size(44.dp))
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.garden_tier_title, size),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = colors.onSurface,
+                textAlign = TextAlign.Center,
+            )
+            paragraphs.forEach { paragraph ->
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = paragraph,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 21.sp,
+                )
+            }
+            if (state == TierState.AHEAD && unlockDay != null) {
+                Spacer(Modifier.height(20.dp))
+                val fraction = (currentDay.toFloat() / unlockDay).coerceIn(0f, 1f)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(colors.onSurfaceVariant.copy(alpha = 0.2f)),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(colors.primary),
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = stringResource(R.string.garden_day, currentDay),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.onSurface,
+                    )
+                    Text(
+                        text = stringResource(R.string.garden_day, unlockDay),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = colors.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
 }
