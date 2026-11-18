@@ -187,6 +187,14 @@
         <item quantity="one">Büyüt (%d damla)</item>
         <item quantity="other">Büyüt (%d damla)</item>
     </plurals>
+    <plurals name="garden_move_action">
+        <item quantity="one">Taşı (%d damla)</item>
+        <item quantity="other">Taşı (%d damla)</item>
+    </plurals>
+    <string name="garden_move_hint">Hedef kareye dokunun.</string>
+    <string name="garden_hide_action">Gizle</string>
+    <string name="garden_show_action">Göster</string>
+    <string name="garden_show_all">Tümünü göster</string>
     <string name="garden_replace_action">Değiştir</string>
     <string name="garden_remove_confirm_title">Bu bitki kaldırılsın mı?</string>
     <string name="garden_remove_confirm_body">Kare başka bir bitki için boşalacak. Bu bitkiye harcanan damlalar geri verilmez.</string>

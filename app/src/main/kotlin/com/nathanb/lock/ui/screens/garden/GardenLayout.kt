@@ -72,6 +72,10 @@ object GardenLayout {
     private const val TALL_PLANT_REACH = 0.34f
     private const val PLANT_HALF_WIDTH = 0.17f
 
+    /** Centre of the soil of [cell], in the same coordinates as [center]. */
+    fun soilCenter(cell: Cell, frame: Float): Point =
+        center(cell, frame).let { Point(it.x, it.y + GROUND_Y * frame) }
+
     /**
      * Cell under a touch at ([x], [y]), relative to the frame centre of cell (0, 0).
      * A plant in front wins over the ground behind it: [lowPlants] and [tallPlants] are

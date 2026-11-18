@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.LockApplication
 import com.nathanb.lock.data.model.LockState
 import com.nathanb.lock.data.model.EndReason
@@ -146,6 +147,15 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     fun growInGarden(a: Int, b: Int) {
         viewModelScope.launch { gardenRepository.grow(a, b) }
+    }
+
+    fun moveInGarden(fromA: Int, fromB: Int, toA: Int, toB: Int) {
+        viewModelScope.launch { gardenRepository.move(fromA, fromB, toA, toB) }
+    }
+
+    /** Debug builds only: see the drops badge of the garden screen. */
+    fun debugGrantGardenDrops() {
+        if (BuildConfig.DEBUG) viewModelScope.launch { gardenRepository.debugGrantDrops(100) }
     }
 
     fun removeFromGarden(a: Int, b: Int) {

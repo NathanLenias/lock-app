@@ -157,6 +157,60 @@ class GardenRepositoryTest {
         assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.TULIPS_RED_YELLOW))
     }
 
+    /** Garden old enough for the 2x2 terrain, with [drops] drops to spend. */
+    private suspend fun bigGarden(drops: Int) {
+        repository.ensureCreated()
+        earn(drops - 1) // the welcome drop makes the count
+        now = born + 20 * day
+    }
+
+    @Test
+    fun `moving to an empty tile costs three drops and keeps the stage`() = runTest {
+        bigGarden(drops = 5)
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        repository.grow(0, 0)
+
+        assertEquals(GardenActionResult.DONE, repository.move(0, 0, 1, 1))
+
+        val garden = garden()
+        assertEquals(mapOf((1 to 1) to Planted(PlantKind.FLOWERS, 2)), garden.plants)
+        assertEquals(0, garden.drops)
+    }
+
+    @Test
+    fun `moving onto a plant swaps the two, paid once`() = runTest {
+        bigGarden(drops = 6)
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        repository.grow(0, 0)
+        repository.plant(1, 0, PlantKind.TULIPS_MIX)
+
+        assertEquals(GardenActionResult.DONE, repository.move(0, 0, 1, 0))
+
+        val garden = garden()
+        assertEquals(Planted(PlantKind.TULIPS_MIX, 1), garden.plants[0 to 0])
+        assertEquals(Planted(PlantKind.FLOWERS, 2), garden.plants[1 to 0])
+        assertEquals(2, garden.plants.size)
+        assertEquals(0, garden.drops)
+    }
+
+    @Test
+    fun `a refused move changes nothing`() = runTest {
+        bigGarden(drops = 3)
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        val before = garden()
+
+        // Two drops left: not enough.
+        assertEquals(GardenActionResult.NOT_ENOUGH_DROPS, repository.move(0, 0, 1, 1))
+        assertEquals(before, garden())
+
+        earn(9)
+        val rich = garden()
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.move(0, 0, 0, 0)) // same tile
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.move(0, 0, 2, 0)) // off the terrain
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.move(1, 1, 0, 1)) // nothing to move
+        assertEquals(rich, garden())
+    }
+
     @Test
     fun `an unknown plant shows as an empty cell`() = runTest {
         repository.ensureCreated()

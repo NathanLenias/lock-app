@@ -198,6 +198,15 @@
         <item quantity="other">Faire grandir (%d gouttes)</item>
         <item quantity="many">Faire grandir (%d gouttes)</item>
     </plurals>
+    <plurals name="garden_move_action">
+        <item quantity="one">Déplacer (%d goutte)</item>
+        <item quantity="other">Déplacer (%d gouttes)</item>
+        <item quantity="many">Déplacer (%d gouttes)</item>
+    </plurals>
+    <string name="garden_move_hint">Touchez la case de destination.</string>
+    <string name="garden_hide_action">Masquer</string>
+    <string name="garden_show_action">Afficher</string>
+    <string name="garden_show_all">Tout afficher</string>
     <string name="garden_replace_action">Remplacer</string>
     <string name="garden_remove_confirm_title">Retirer cette plante ?</string>
     <string name="garden_remove_confirm_body">La case sera libre pour autre chose. Les gouttes dépensées pour cette plante ne seront pas rendues.</string>

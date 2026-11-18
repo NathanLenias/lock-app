@@ -34,6 +34,9 @@ object GardenRules {
     const val WELCOME_DROPS_RETURNING = 3
     const val MAX_TERRAIN_SIZE = 4
 
+    /** Price of moving a plant to another tile (or swapping two plants). */
+    const val MOVE_COST = 3
+
     private const val HOUR_MS = 60 * 60 * 1000L
     private const val DAY_MS = 24 * HOUR_MS
 

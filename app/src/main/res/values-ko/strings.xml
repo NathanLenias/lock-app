@@ -179,6 +179,13 @@
     <plurals name="garden_grow_action">
         <item quantity="other">키우기 (물방울 %d개)</item>
     </plurals>
+    <plurals name="garden_move_action">
+        <item quantity="other">옮기기 (물방울 %d개)</item>
+    </plurals>
+    <string name="garden_move_hint">옮길 칸을 누르세요.</string>
+    <string name="garden_hide_action">숨기기</string>
+    <string name="garden_show_action">보이기</string>
+    <string name="garden_show_all">모두 보이기</string>
     <string name="garden_replace_action">바꾸기</string>
     <string name="garden_remove_confirm_title">이 식물을 뽑을까요?</string>
     <string name="garden_remove_confirm_body">칸이 비워져 다른 것을 심을 수 있습니다. 이 식물에 쓴 물방울은 돌려받지 못합니다.</string>

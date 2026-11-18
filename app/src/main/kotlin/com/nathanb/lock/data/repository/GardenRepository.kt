@@ -94,6 +94,28 @@ class GardenRepository(
         GardenActionResult.DONE
     }
 
+    /**
+     * Moves the plant of (fromA, fromB) to (toA, toB). A plant already standing there takes
+     * its place: both keep their stage. Paid once, whatever the destination holds.
+     */
+    suspend fun move(fromA: Int, fromB: Int, toA: Int, toB: Int): GardenActionResult = transact {
+        val state = gardenDao.getState() ?: return@transact GardenActionResult.NOT_ALLOWED
+        if (fromA == toA && fromB == toB) return@transact GardenActionResult.NOT_ALLOWED
+        val moved = gardenDao.getPlot(fromA, fromB) ?: return@transact GardenActionResult.NOT_ALLOWED
+        if (!isOnTerrain(toA, toB, state)) return@transact GardenActionResult.NOT_ALLOWED
+        val displaced = gardenDao.getPlot(toA, toB)
+        spend(state, GardenRules.MOVE_COST) {
+            gardenDao.deletePlot(fromA, fromB)
+            gardenDao.upsertPlot(moved.copy(cellA = toA, cellB = toB))
+            if (displaced != null) gardenDao.upsertPlot(displaced.copy(cellA = fromA, cellB = fromB))
+        }
+    }
+
+    /** Test aid, only reachable from debug builds: credits [drops] without a session. */
+    suspend fun debugGrantDrops(drops: Int) {
+        gardenDao.addDropsSpent(-drops)
+    }
+
     private suspend fun isOnTerrain(a: Int, b: Int, state: GardenState): Boolean {
         val returning = GardenRules.isReturningUser(sessionDao.getAllOnce(), state.createdAt)
         val size = GardenRules.terrainSize(state.createdAt, now(), returning)

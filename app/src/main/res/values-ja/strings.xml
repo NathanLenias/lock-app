@@ -179,6 +179,13 @@
     <plurals name="garden_grow_action">
         <item quantity="other">育てる（しずく%d個）</item>
     </plurals>
+    <plurals name="garden_move_action">
+        <item quantity="other">移動する（しずく%d個）</item>
+    </plurals>
+    <string name="garden_move_hint">移動先のマスをタップしてください。</string>
+    <string name="garden_hide_action">隠す</string>
+    <string name="garden_show_action">表示する</string>
+    <string name="garden_show_all">すべて表示</string>
     <string name="garden_replace_action">植え替える</string>
     <string name="garden_remove_confirm_title">この植物を取り除きますか？</string>
     <string name="garden_remove_confirm_body">マスが空き、別のものを植えられます。この植物に使ったしずくは戻りません。</string>

@@ -105,6 +105,21 @@ class GardenLayoutTest {
     }
 
     @Test
+    fun `a hidden tree lets the touch through to the tile behind`() {
+        val frame = 500f
+        val tree = Cell(1, 0)
+        val soil = GardenLayout.soilCenter(tree, frame)
+        val x = soil.x
+        val y = soil.y - 150f
+
+        assertEquals(tree, GardenLayout.cellAt(x, y, frame, 3, tallPlants = setOf(tree)))
+        // Hidden: the screen no longer lists it among the plants.
+        assertEquals(Cell(0, 1), GardenLayout.cellAt(x, y, frame, 3, tallPlants = emptySet()))
+        // Its own soil still answers, to bring it back.
+        assertEquals(tree, GardenLayout.cellAt(soil.x, soil.y, frame, 3))
+    }
+
+    @Test
     fun `the plant in front wins when two overlap`() {
         val frame = 500f
         val back = Cell(0, 1)

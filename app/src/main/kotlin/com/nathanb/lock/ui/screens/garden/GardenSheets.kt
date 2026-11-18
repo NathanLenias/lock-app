@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.nathanb.lock.R
+import com.nathanb.lock.data.garden.GardenRules
 import com.nathanb.lock.data.garden.PlantKind
 import com.nathanb.lock.data.repository.Planted
 import com.nathanb.lock.ui.components.LockBottomSheet
@@ -133,7 +134,10 @@ private fun SpriteThumbnail(sprite: Int, modifier: Modifier = Modifier) {
 fun PlotSheet(
     planted: Planted,
     drops: Int,
+    isHidden: Boolean,
     onGrow: () -> Unit,
+    onMove: () -> Unit,
+    onToggleHidden: () -> Unit,
     onReplace: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -178,15 +182,33 @@ fun PlotSheet(
                 }
                 Spacer(Modifier.height(8.dp))
             }
-            TextButton(onClick = onReplace, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(R.string.garden_replace_action),
-                    fontFamily = SatoshiFamily,
-                    color = colors.onSurfaceVariant,
-                )
-            }
+            val canMove = drops >= GardenRules.MOVE_COST
+            SheetTextAction(
+                label = pluralStringResource(
+                    R.plurals.garden_move_action, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                ),
+                enabled = canMove,
+                onClick = onMove,
+            )
+            SheetTextAction(
+                label = stringResource(if (isHidden) R.string.garden_show_action else R.string.garden_hide_action),
+                onClick = onToggleHidden,
+            )
+            SheetTextAction(label = stringResource(R.string.garden_replace_action), onClick = onReplace)
         },
     )
+}
+
+@Composable
+private fun SheetTextAction(label: String, onClick: () -> Unit, enabled: Boolean = true) {
+    val colors = LockTheme.colors
+    TextButton(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            fontFamily = SatoshiFamily,
+            color = colors.onSurfaceVariant.copy(alpha = if (enabled) 1f else 0.4f),
+        )
+    }
 }
 
 /** Removing a plant does not give its drops back: said before it happens. */
