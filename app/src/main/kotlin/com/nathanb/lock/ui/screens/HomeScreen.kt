@@ -92,6 +92,7 @@ fun HomeScreen(
     onNavigateToApps: () -> Unit = {},
     onNavigateToPermissions: () -> Unit = {},
     onNavigateToNfcTags: () -> Unit = {},
+    onNavigateToGarden: () -> Unit = {},
 ) {
     val colors = LockTheme.colors
     val context = LocalContext.current
@@ -253,10 +254,15 @@ fun HomeScreen(
             completedSessionCount >= supportNextThreshold
 
         if (changelogPending) {
+            val showFeatures = lastSeenVersionCode < Constants.CHANGELOG_FEATURES_SINCE_VERSION_CODE
             ChangelogCard(
                 versionName = com.nathanb.lock.BuildConfig.VERSION_NAME,
-                showFeatures = lastSeenVersionCode < Constants.CHANGELOG_FEATURES_SINCE_VERSION_CODE,
-                onDiscover = { viewModel.markVersionSeen(com.nathanb.lock.BuildConfig.VERSION_CODE) },
+                showFeatures = showFeatures,
+                onDiscover = {
+                    viewModel.markVersionSeen(com.nathanb.lock.BuildConfig.VERSION_CODE)
+                    // "Discover" leads to what the card presents; a fixes-only card just closes.
+                    if (showFeatures) onNavigateToGarden()
+                },
                 onDismiss = { viewModel.markVersionSeen(com.nathanb.lock.BuildConfig.VERSION_CODE) },
             )
         } else if (supportPending) {

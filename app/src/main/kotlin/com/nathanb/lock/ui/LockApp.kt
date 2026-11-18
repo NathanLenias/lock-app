@@ -153,6 +153,14 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
                         onNavigateToApps = { navController.navigate("app-picker/$defaultProfileId") },
                         onNavigateToPermissions = { navController.navigate("permissions") },
                         onNavigateToNfcTags = { navController.navigate("nfc-tags") },
+                        onNavigateToGarden = {
+                            // Same navigation as a tap on the Garden tab.
+                            navController.navigate("garden") {
+                                popUpTo("home") { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
                     )
                 }
 
