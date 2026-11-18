@@ -153,8 +153,46 @@
     <string name="app_picker_settings_warning_body">During a session you will not be able to open Settings, so you cannot disable the accessibility service or change Lock\'s permissions.\n\nTo get out, you will still have your tag, the emergency unlock, the end of the timer, or uninstalling Lock from the home screen.</string>
     <string name="app_picker_settings_warning_confirm">Block Settings</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">Garden</string>
+    <plurals name="garden_drops">
+        <item quantity="one">%d drop</item>
+        <item quantity="other">%d drops</item>
+    </plurals>
+    <string name="garden_empty_hint">Tap a tile to plant.</string>
+    <plurals name="garden_next_size">
+        <item quantity="one">The garden grows in %d day.</item>
+        <item quantity="other">The garden grows in %d days.</item>
+    </plurals>
+    <string name="garden_plant_title">What would you like to plant?</string>
+    <plurals name="garden_balance">
+        <item quantity="one">You have %d drop.</item>
+        <item quantity="other">You have %d drops.</item>
+    </plurals>
+    <string name="garden_earn_hint">One hour of session earns one drop, up to three a day.</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="one">%1$d drop per step, %2$d steps</item>
+        <item quantity="other">%1$d drops per step, %2$d steps</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">Red and yellow tulips</string>
+    <string name="garden_plant_tulips_mix">Mixed tulips</string>
+    <string name="garden_plant_flowers">Flower bed</string>
+    <string name="garden_plant_bush">Bush</string>
+    <string name="garden_plant_cherry">Cherry tree</string>
+    <string name="garden_plant_apple">Apple tree</string>
+    <string name="garden_stage">Step %1$d of %2$d.</string>
+    <string name="garden_fully_grown">This plant is fully grown.</string>
+    <string name="garden_not_enough">Not enough drops for the next step yet.</string>
+    <plurals name="garden_grow_action">
+        <item quantity="one">Grow (%d drop)</item>
+        <item quantity="other">Grow (%d drops)</item>
+    </plurals>
+    <string name="garden_replace_action">Replace</string>
+    <string name="garden_remove_confirm_title">Remove this plant?</string>
+    <string name="garden_remove_confirm_body">The tile will be free for something else. The drops spent on this plant will not be given back.</string>
+    <string name="garden_remove_confirm_action">Remove</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">Statistics</string>
     <string name="stats_sessions">sessions</string>
     <string name="stats_total">total</string>

@@ -150,8 +150,41 @@
     <string name="app_picker_settings_warning_body">세션 중에는 설정을 열 수 없으므로 접근성 서비스를 끄거나 Lock의 권한을 변경할 수 없습니다.\n\n세션에서 나가려면 태그, 긴급 잠금 해제, 타이머 종료, 또는 홈 화면에서 Lock 삭제를 이용할 수 있습니다.</string>
     <string name="app_picker_settings_warning_confirm">설정 차단</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">정원</string>
+    <plurals name="garden_drops">
+        <item quantity="other">물방울 %d개</item>
+    </plurals>
+    <string name="garden_empty_hint">칸을 눌러 심어 보세요.</string>
+    <plurals name="garden_next_size">
+        <item quantity="other">%d일 후에 정원이 넓어집니다.</item>
+    </plurals>
+    <string name="garden_plant_title">무엇을 심으시겠어요?</string>
+    <plurals name="garden_balance">
+        <item quantity="other">물방울이 %d개 있습니다.</item>
+    </plurals>
+    <string name="garden_earn_hint">세션 한 시간마다 물방울 하나를 얻으며, 하루 최대 세 개입니다.</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="other">단계당 물방울 %1$d개, %2$d단계</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">빨강·노랑 튤립</string>
+    <string name="garden_plant_tulips_mix">여러 색 튤립</string>
+    <string name="garden_plant_flowers">꽃밭</string>
+    <string name="garden_plant_bush">덤불</string>
+    <string name="garden_plant_cherry">벚나무</string>
+    <string name="garden_plant_apple">사과나무</string>
+    <string name="garden_stage">%2$d단계 중 %1$d단계.</string>
+    <string name="garden_fully_grown">이 식물은 다 자랐습니다.</string>
+    <string name="garden_not_enough">다음 단계에 필요한 물방울이 아직 부족합니다.</string>
+    <plurals name="garden_grow_action">
+        <item quantity="other">키우기 (물방울 %d개)</item>
+    </plurals>
+    <string name="garden_replace_action">바꾸기</string>
+    <string name="garden_remove_confirm_title">이 식물을 뽑을까요?</string>
+    <string name="garden_remove_confirm_body">칸이 비워져 다른 것을 심을 수 있습니다. 이 식물에 쓴 물방울은 돌려받지 못합니다.</string>
+    <string name="garden_remove_confirm_action">뽑기</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">통계</string>
     <string name="stats_sessions">세션</string>
     <string name="stats_total">합계</string>

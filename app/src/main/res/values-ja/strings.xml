@@ -150,8 +150,41 @@
     <string name="app_picker_settings_warning_body">セッション中は設定を開けなくなるため、ユーザー補助サービスの無効化や Lock の権限の変更ができなくなります。\n\nセッションを終える手段として、タグ、緊急解除、タイマーの終了、ホーム画面からの Lock のアンインストールは引き続き使用できます。</string>
     <string name="app_picker_settings_warning_confirm">設定をブロック</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">庭</string>
+    <plurals name="garden_drops">
+        <item quantity="other">しずく%d個</item>
+    </plurals>
+    <string name="garden_empty_hint">マスをタップして植えましょう。</string>
+    <plurals name="garden_next_size">
+        <item quantity="other">%d日後に庭が広がります。</item>
+    </plurals>
+    <string name="garden_plant_title">何を植えますか？</string>
+    <plurals name="garden_balance">
+        <item quantity="other">しずくが%d個あります。</item>
+    </plurals>
+    <string name="garden_earn_hint">セッション1時間につきしずくが1個、1日3個までもらえます。</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="other">1段階につきしずく%1$d個、全%2$d段階</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">赤と黄色のチューリップ</string>
+    <string name="garden_plant_tulips_mix">色とりどりのチューリップ</string>
+    <string name="garden_plant_flowers">花壇</string>
+    <string name="garden_plant_bush">低木</string>
+    <string name="garden_plant_cherry">桜の木</string>
+    <string name="garden_plant_apple">りんごの木</string>
+    <string name="garden_stage">全%2$d段階中の%1$d段階目。</string>
+    <string name="garden_fully_grown">この植物は育ちきりました。</string>
+    <string name="garden_not_enough">次の段階に必要なしずくがまだ足りません。</string>
+    <plurals name="garden_grow_action">
+        <item quantity="other">育てる（しずく%d個）</item>
+    </plurals>
+    <string name="garden_replace_action">植え替える</string>
+    <string name="garden_remove_confirm_title">この植物を取り除きますか？</string>
+    <string name="garden_remove_confirm_body">マスが空き、別のものを植えられます。この植物に使ったしずくは戻りません。</string>
+    <string name="garden_remove_confirm_action">取り除く</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">統計</string>
     <string name="stats_sessions">セッション</string>
     <string name="stats_total">合計</string>

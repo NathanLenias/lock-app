@@ -28,6 +28,8 @@ import com.nathanb.lock.data.model.ProfileType
 import com.nathanb.lock.data.model.Schedule
 import com.nathanb.lock.data.model.ScheduleProfileLink
 import com.nathanb.lock.data.model.Session
+import com.nathanb.lock.data.garden.PlantKind
+import com.nathanb.lock.data.repository.Garden
 import com.nathanb.lock.data.repository.LockRepository
 import com.nathanb.lock.nfc.NdefWriteResult
 import com.nathanb.lock.nfc.NfcManager
@@ -132,6 +134,23 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     val sessions: StateFlow<List<Session>> = repository.sessions
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // Garden (null until it has been created, a moment after the first launch)
+    private val gardenRepository = app.gardenRepository
+    val garden: StateFlow<Garden?> = gardenRepository.garden
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    fun plantInGarden(a: Int, b: Int, kind: PlantKind) {
+        viewModelScope.launch { gardenRepository.plant(a, b, kind) }
+    }
+
+    fun growInGarden(a: Int, b: Int) {
+        viewModelScope.launch { gardenRepository.grow(a, b) }
+    }
+
+    fun removeFromGarden(a: Int, b: Int) {
+        viewModelScope.launch { gardenRepository.remove(a, b) }
+    }
 
     val completedSessionCount: StateFlow<Int> = repository.completedSessionCount
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)

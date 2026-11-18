@@ -153,8 +153,46 @@
     <string name="app_picker_settings_warning_body">Oturum sırasında Ayarlar\'ı açamayacağınız için erişilebilirlik hizmetini kapatamaz veya Lock\'un izinlerini değiştiremezsiniz.\n\nÇıkmak için yine de etiketiniz, acil kilit açma, sayacın bitmesi veya Lock\'u ana ekrandan kaldırma seçenekleriniz olacak.</string>
     <string name="app_picker_settings_warning_confirm">Ayarlar\'ı engelle</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">Bahçe</string>
+    <plurals name="garden_drops">
+        <item quantity="one">%d damla</item>
+        <item quantity="other">%d damla</item>
+    </plurals>
+    <string name="garden_empty_hint">Dikmek için bir kareye dokunun.</string>
+    <plurals name="garden_next_size">
+        <item quantity="one">Bahçe %d gün sonra büyüyecek.</item>
+        <item quantity="other">Bahçe %d gün sonra büyüyecek.</item>
+    </plurals>
+    <string name="garden_plant_title">Ne dikmek istersiniz?</string>
+    <plurals name="garden_balance">
+        <item quantity="one">%d damlanız var.</item>
+        <item quantity="other">%d damlanız var.</item>
+    </plurals>
+    <string name="garden_earn_hint">Bir saatlik oturum bir damla kazandırır, günde en fazla üç.</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="one">Aşama başına %1$d damla, %2$d aşama</item>
+        <item quantity="other">Aşama başına %1$d damla, %2$d aşama</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">Kırmızı ve sarı laleler</string>
+    <string name="garden_plant_tulips_mix">Karışık laleler</string>
+    <string name="garden_plant_flowers">Çiçek tarhı</string>
+    <string name="garden_plant_bush">Çalı</string>
+    <string name="garden_plant_cherry">Kiraz ağacı</string>
+    <string name="garden_plant_apple">Elma ağacı</string>
+    <string name="garden_stage">Aşama %1$d / %2$d.</string>
+    <string name="garden_fully_grown">Bu bitki büyümesini tamamladı.</string>
+    <string name="garden_not_enough">Sonraki aşama için henüz yeterli damla yok.</string>
+    <plurals name="garden_grow_action">
+        <item quantity="one">Büyüt (%d damla)</item>
+        <item quantity="other">Büyüt (%d damla)</item>
+    </plurals>
+    <string name="garden_replace_action">Değiştir</string>
+    <string name="garden_remove_confirm_title">Bu bitki kaldırılsın mı?</string>
+    <string name="garden_remove_confirm_body">Kare başka bir bitki için boşalacak. Bu bitkiye harcanan damlalar geri verilmez.</string>
+    <string name="garden_remove_confirm_action">Kaldır</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">İstatistikler</string>
     <string name="stats_sessions">oturum</string>
     <string name="stats_total">toplam</string>

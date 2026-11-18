@@ -159,8 +159,51 @@
     <string name="app_picker_settings_warning_body">Pendant une session, vous ne pourrez plus ouvrir les Réglages, donc ni désactiver le service d\'accessibilité ni changer les permissions de Lock.\n\nPour sortir, il vous restera votre tag, le déblocage d\'urgence, la fin du minuteur, ou la désinstallation de Lock depuis l\'écran d\'accueil.</string>
     <string name="app_picker_settings_warning_confirm">Bloquer les Réglages</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">Jardin</string>
+    <plurals name="garden_drops">
+        <item quantity="one">%d goutte</item>
+        <item quantity="other">%d gouttes</item>
+        <item quantity="many">%d gouttes</item>
+    </plurals>
+    <string name="garden_empty_hint">Touchez une case pour planter.</string>
+    <plurals name="garden_next_size">
+        <item quantity="one">Le terrain s\'agrandit dans %d jour.</item>
+        <item quantity="other">Le terrain s\'agrandit dans %d jours.</item>
+        <item quantity="many">Le terrain s\'agrandit dans %d jours.</item>
+    </plurals>
+    <string name="garden_plant_title">Que voulez-vous planter ?</string>
+    <plurals name="garden_balance">
+        <item quantity="one">Vous avez %d goutte.</item>
+        <item quantity="other">Vous avez %d gouttes.</item>
+        <item quantity="many">Vous avez %d gouttes.</item>
+    </plurals>
+    <string name="garden_earn_hint">Une heure de session rapporte une goutte, trois par jour au maximum.</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="one">%1$d goutte par étape, %2$d étapes</item>
+        <item quantity="other">%1$d gouttes par étape, %2$d étapes</item>
+        <item quantity="many">%1$d gouttes par étape, %2$d étapes</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">Tulipes rouges et jaunes</string>
+    <string name="garden_plant_tulips_mix">Tulipes mélangées</string>
+    <string name="garden_plant_flowers">Massif de fleurs</string>
+    <string name="garden_plant_bush">Buisson</string>
+    <string name="garden_plant_cherry">Cerisier</string>
+    <string name="garden_plant_apple">Pommier</string>
+    <string name="garden_stage">Étape %1$d sur %2$d.</string>
+    <string name="garden_fully_grown">Cette plante a fini de grandir.</string>
+    <string name="garden_not_enough">Pas encore assez de gouttes pour l\'étape suivante.</string>
+    <plurals name="garden_grow_action">
+        <item quantity="one">Faire grandir (%d goutte)</item>
+        <item quantity="other">Faire grandir (%d gouttes)</item>
+        <item quantity="many">Faire grandir (%d gouttes)</item>
+    </plurals>
+    <string name="garden_replace_action">Remplacer</string>
+    <string name="garden_remove_confirm_title">Retirer cette plante ?</string>
+    <string name="garden_remove_confirm_body">La case sera libre pour autre chose. Les gouttes dépensées pour cette plante ne seront pas rendues.</string>
+    <string name="garden_remove_confirm_action">Retirer</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">Statistiques</string>
     <string name="stats_sessions">sessions</string>
     <string name="stats_total">total</string>

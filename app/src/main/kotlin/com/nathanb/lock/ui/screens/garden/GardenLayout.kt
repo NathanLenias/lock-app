@@ -63,4 +63,43 @@ object GardenLayout {
         if (unit.width <= 0f || unit.height <= 0f || width <= 0f || height <= 0f) return 0f
         return minOf(width / unit.width, height / unit.height, maxFrame)
     }
+
+    /** Centre of a tile's soil, below the frame centre (the camera aims above the ground). */
+    private const val GROUND_Y = 0.174f
+
+    /** How far above its soil a plant can be touched, as a fraction of the frame side. */
+    private const val LOW_PLANT_REACH = 0.10f
+    private const val TALL_PLANT_REACH = 0.34f
+    private const val PLANT_HALF_WIDTH = 0.17f
+
+    /**
+     * Cell under a touch at ([x], [y]), relative to the frame centre of cell (0, 0).
+     * A plant in front wins over the ground behind it: [lowPlants] and [tallPlants] are
+     * the planted cells, tall ones being trees past the sprout. Null outside the terrain.
+     */
+    fun cellAt(
+        x: Float,
+        y: Float,
+        frame: Float,
+        size: Int,
+        lowPlants: Set<Cell> = emptySet(),
+        tallPlants: Set<Cell> = emptySet(),
+    ): Cell? {
+        if (frame <= 0f || size <= 0) return null
+        val planted = (lowPlants + tallPlants).associateWith { it in tallPlants }
+        // Front cells first: the nearest plant under the finger is the one that is seen.
+        drawOrder(planted).asReversed().forEach { (cell, tall) ->
+            val c = center(cell, frame)
+            val groundY = c.y + GROUND_Y * frame
+            val reach = (if (tall) TALL_PLANT_REACH else LOW_PLANT_REACH) * frame
+            if (kotlin.math.abs(x - c.x) <= PLANT_HALF_WIDTH * frame && y <= groundY && y >= groundY - reach) {
+                return cell
+            }
+        }
+        val gx = x / (STEP_X * frame)
+        val gy = (y - GROUND_Y * frame) / (STEP_Y * frame)
+        val a = kotlin.math.floor((gx + gy) / 2f + 0.5f).toInt()
+        val b = kotlin.math.floor((gx - gy) / 2f + 0.5f).toInt()
+        return if (a in 0 until size && b in 0 until size) Cell(a, b) else null
+    }
 }

@@ -227,7 +227,7 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
 
                 composable("garden") {
                     Box(modifier = if (bannerVisible) Modifier.padding(top = 48.dp) else Modifier) {
-                        GardenScreen()
+                        GardenScreen(viewModel = viewModel)
                     }
                 }
 

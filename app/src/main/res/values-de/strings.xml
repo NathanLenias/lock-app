@@ -153,8 +153,46 @@
     <string name="app_picker_settings_warning_body">Während einer Sitzung können Sie die Einstellungen nicht öffnen, also weder den Bedienungshilfen-Dienst deaktivieren noch die Berechtigungen von Lock ändern.\n\nZum Beenden bleiben Ihnen Ihr Tag, die Notfall-Freigabe, das Ende des Timers oder die Deinstallation von Lock vom Startbildschirm.</string>
     <string name="app_picker_settings_warning_confirm">Einstellungen blockieren</string>
 
-    <!-- Stats Screen -->
+    <!-- Garden -->
     <string name="garden_title">Garten</string>
+    <plurals name="garden_drops">
+        <item quantity="one">%d Tropfen</item>
+        <item quantity="other">%d Tropfen</item>
+    </plurals>
+    <string name="garden_empty_hint">Tippen Sie auf ein Feld, um etwas zu pflanzen.</string>
+    <plurals name="garden_next_size">
+        <item quantity="one">Der Garten wächst in %d Tag.</item>
+        <item quantity="other">Der Garten wächst in %d Tagen.</item>
+    </plurals>
+    <string name="garden_plant_title">Was möchten Sie pflanzen?</string>
+    <plurals name="garden_balance">
+        <item quantity="one">Sie haben %d Tropfen.</item>
+        <item quantity="other">Sie haben %d Tropfen.</item>
+    </plurals>
+    <string name="garden_earn_hint">Eine Stunde Sitzung bringt einen Tropfen, höchstens drei pro Tag.</string>
+    <plurals name="garden_plant_cost">
+        <item quantity="one">%1$d Tropfen pro Stufe, %2$d Stufen</item>
+        <item quantity="other">%1$d Tropfen pro Stufe, %2$d Stufen</item>
+    </plurals>
+    <string name="garden_plant_tulips_red_yellow">Rote und gelbe Tulpen</string>
+    <string name="garden_plant_tulips_mix">Bunte Tulpen</string>
+    <string name="garden_plant_flowers">Blumenbeet</string>
+    <string name="garden_plant_bush">Strauch</string>
+    <string name="garden_plant_cherry">Kirschbaum</string>
+    <string name="garden_plant_apple">Apfelbaum</string>
+    <string name="garden_stage">Stufe %1$d von %2$d.</string>
+    <string name="garden_fully_grown">Diese Pflanze ist ausgewachsen.</string>
+    <string name="garden_not_enough">Noch nicht genug Tropfen für die nächste Stufe.</string>
+    <plurals name="garden_grow_action">
+        <item quantity="one">Wachsen lassen (%d Tropfen)</item>
+        <item quantity="other">Wachsen lassen (%d Tropfen)</item>
+    </plurals>
+    <string name="garden_replace_action">Ersetzen</string>
+    <string name="garden_remove_confirm_title">Diese Pflanze entfernen?</string>
+    <string name="garden_remove_confirm_body">Das Feld wird für etwas anderes frei. Die für diese Pflanze ausgegebenen Tropfen werden nicht erstattet.</string>
+    <string name="garden_remove_confirm_action">Entfernen</string>
+
+    <!-- Stats Screen -->
     <string name="stats_title">Statistik</string>
     <string name="stats_sessions">Sitzungen</string>
     <string name="stats_total">gesamt</string>
