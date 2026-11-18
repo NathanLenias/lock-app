@@ -180,6 +180,7 @@
     <string name="garden_plant_bush">Bush</string>
     <string name="garden_plant_cherry">Cherry tree</string>
     <string name="garden_plant_apple">Apple tree</string>
+    <string name="garden_planted">Planted.</string>
     <string name="garden_stage">Step %1$d of %2$d.</string>
     <string name="garden_fully_grown">This plant is fully grown.</string>
     <string name="garden_not_enough">Not enough drops for the next step yet.</string>
@@ -192,6 +193,14 @@
         <item quantity="other">Move (%d drops)</item>
     </plurals>
     <string name="garden_move_hint">Tap the tile to move it to.</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="one">Swap these two tiles for %d drop?</item>
+        <item quantity="other">Swap these two tiles for %d drops?</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="one">Move the plant here for %d drop?</item>
+        <item quantity="other">Move the plant here for %d drops?</item>
+    </plurals>
     <string name="garden_hide_action">Hide</string>
     <string name="garden_show_action">Show</string>
     <string name="garden_show_all">Show all</string>

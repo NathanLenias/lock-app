@@ -190,6 +190,7 @@
     <string name="garden_plant_bush">Buisson</string>
     <string name="garden_plant_cherry">Cerisier</string>
     <string name="garden_plant_apple">Pommier</string>
+    <string name="garden_planted">Plantation faite.</string>
     <string name="garden_stage">Étape %1$d sur %2$d.</string>
     <string name="garden_fully_grown">Cette plante a fini de grandir.</string>
     <string name="garden_not_enough">Pas encore assez de gouttes pour l\'étape suivante.</string>
@@ -204,6 +205,16 @@
         <item quantity="many">Déplacer (%d gouttes)</item>
     </plurals>
     <string name="garden_move_hint">Touchez la case de destination.</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="one">Échanger ces deux cases pour %d goutte ?</item>
+        <item quantity="other">Échanger ces deux cases pour %d gouttes ?</item>
+        <item quantity="many">Échanger ces deux cases pour %d gouttes ?</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="one">Déplacer la plante ici pour %d goutte ?</item>
+        <item quantity="other">Déplacer la plante ici pour %d gouttes ?</item>
+        <item quantity="many">Déplacer la plante ici pour %d gouttes ?</item>
+    </plurals>
     <string name="garden_hide_action">Masquer</string>
     <string name="garden_show_action">Afficher</string>
     <string name="garden_show_all">Tout afficher</string>

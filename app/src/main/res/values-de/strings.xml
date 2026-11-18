@@ -180,6 +180,7 @@
     <string name="garden_plant_bush">Strauch</string>
     <string name="garden_plant_cherry">Kirschbaum</string>
     <string name="garden_plant_apple">Apfelbaum</string>
+    <string name="garden_planted">Gepflanzt.</string>
     <string name="garden_stage">Stufe %1$d von %2$d.</string>
     <string name="garden_fully_grown">Diese Pflanze ist ausgewachsen.</string>
     <string name="garden_not_enough">Noch nicht genug Tropfen für die nächste Stufe.</string>
@@ -192,6 +193,14 @@
         <item quantity="other">Verschieben (%d Tropfen)</item>
     </plurals>
     <string name="garden_move_hint">Tippen Sie auf das Zielfeld.</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="one">Diese beiden Felder für %d Tropfen tauschen?</item>
+        <item quantity="other">Diese beiden Felder für %d Tropfen tauschen?</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="one">Die Pflanze für %d Tropfen hierher verschieben?</item>
+        <item quantity="other">Die Pflanze für %d Tropfen hierher verschieben?</item>
+    </plurals>
     <string name="garden_hide_action">Ausblenden</string>
     <string name="garden_show_action">Einblenden</string>
     <string name="garden_show_all">Alle einblenden</string>

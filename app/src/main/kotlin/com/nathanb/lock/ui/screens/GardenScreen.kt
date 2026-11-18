@@ -16,7 +16,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.Color
+import com.nathanb.lock.data.garden.GardenRules
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -84,6 +90,21 @@ fun GardenScreen(viewModel: LockViewModel) {
     var hidden by remember { mutableStateOf(emptySet<Cell>()) }
     // Plant being moved, waiting for its destination tile.
     var moving by remember { mutableStateOf<Cell?>(null) }
+    // Where it would go: chosen, shown outlined, and only applied once confirmed.
+    var destination by remember { mutableStateOf<Cell?>(null) }
+    // Tile planted a moment ago, while the planting can still be taken back.
+    var undoable by remember { mutableStateOf<Cell?>(null) }
+    LaunchedEffect(undoable) {
+        if (undoable != null) {
+            // A little short of the real window, so the button never outlives it.
+            delay(GardenRules.UNDO_PLANT_WINDOW_MS - 500)
+            undoable = null
+        }
+    }
+    val cancelMove = {
+        moving = null
+        destination = null
+    }
 
     Column(
         modifier = Modifier
@@ -120,19 +141,18 @@ fun GardenScreen(viewModel: LockViewModel) {
         GardenView(
             garden = current,
             hidden = hidden,
-            highlighted = moving,
+            highlighted = setOfNotNull(moving, destination),
             onCellTapped = { cell ->
+                undoable = null
                 val from = moving
-                if (from == null) {
-                    confirmRemoval = false
-                    selected = cell
-                } else {
-                    // Tapping the plant itself cancels the move.
-                    if (cell != from) {
-                        viewModel.moveInGarden(from.a, from.b, cell.a, cell.b)
-                        hidden = hidden - from - cell
+                when {
+                    from == null -> {
+                        confirmRemoval = false
+                        selected = cell
                     }
-                    moving = null
+                    // Tapping the plant itself cancels the move.
+                    cell == from -> cancelMove()
+                    else -> destination = cell
                 }
             },
             modifier = Modifier
@@ -153,14 +173,61 @@ fun GardenScreen(viewModel: LockViewModel) {
             modifier = Modifier.fillMaxWidth().padding(bottom = 88.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val from = moving
+            val to = destination
+            val planted = undoable
+            val message = when {
+                from != null && to != null -> pluralStringResource(
+                    if (current.plants.containsKey(to.a to to.b)) {
+                        R.plurals.garden_move_confirm_swap
+                    } else {
+                        R.plurals.garden_move_confirm_here
+                    },
+                    GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                )
+                from != null -> stringResource(R.string.garden_move_hint)
+                planted != null -> stringResource(R.string.garden_planted)
+                else -> footer
+            }
+            val busy = from != null || planted != null
             Text(
-                text = if (moving != null) stringResource(R.string.garden_move_hint) else footer,
+                text = message,
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (moving != null) colors.onSurface else colors.onSurfaceVariant,
+                color = if (busy) colors.onSurface else colors.onSurfaceVariant,
                 textAlign = TextAlign.Center,
             )
-            if (moving != null) {
-                TextButton(onClick = { moving = null }) {
+            when {
+                from != null -> Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    TextButton(onClick = cancelMove) {
+                        Text(text = stringResource(R.string.action_cancel), color = colors.onSurfaceVariant)
+                    }
+                    if (to != null) {
+                        Button(
+                            onClick = {
+                                viewModel.moveInGarden(from.a, from.b, to.a, to.b)
+                                hidden = hidden - from - to
+                                cancelMove()
+                            },
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.action_confirm),
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                        }
+                    }
+                }
+                planted != null -> TextButton(
+                    onClick = {
+                        viewModel.undoPlantInGarden(planted.a, planted.b)
+                        undoable = null
+                    },
+                ) {
                     Text(text = stringResource(R.string.action_cancel), color = colors.primary)
                 }
             }
@@ -179,6 +246,7 @@ fun GardenScreen(viewModel: LockViewModel) {
             drops = current.drops,
             onPlant = { kind ->
                 viewModel.plantInGarden(cell.a, cell.b, kind)
+                undoable = cell
                 close()
             },
             onDismiss = close,
@@ -195,6 +263,7 @@ fun GardenScreen(viewModel: LockViewModel) {
             drops = current.drops,
             isHidden = cell in hidden,
             onMove = {
+                destination = null
                 moving = cell
                 close()
             },
@@ -294,7 +363,7 @@ private fun place(cells: Collection<Cell>, area: Size, maxFrame: Float): Placeme
 private fun GardenView(
     garden: Garden,
     hidden: Set<Cell>,
-    highlighted: Cell?,
+    highlighted: Set<Cell>,
     onCellTapped: (Cell) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -363,8 +432,8 @@ private fun GardenView(
                 alpha = if (isHidden) HIDDEN_PLANT_ALPHA else 1f,
                 filterQuality = FilterQuality.High,
             )
-            if (cell == highlighted) {
-                // Outline of the soil of the plant being moved.
+            if (cell in highlighted) {
+                // Outline of the soil of the tiles a move is about.
                 val soil = GardenLayout.soilCenter(cell, placement.frame)
                 val cx = placement.originX + soil.x
                 val cy = placement.originY + soil.y

@@ -149,6 +149,10 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { gardenRepository.grow(a, b) }
     }
 
+    fun undoPlantInGarden(a: Int, b: Int) {
+        viewModelScope.launch { gardenRepository.undoPlant(a, b) }
+    }
+
     fun moveInGarden(fromA: Int, fromB: Int, toA: Int, toB: Int) {
         viewModelScope.launch { gardenRepository.move(fromA, fromB, toA, toB) }
     }

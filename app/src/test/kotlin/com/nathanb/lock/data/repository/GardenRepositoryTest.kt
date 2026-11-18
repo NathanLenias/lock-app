@@ -157,6 +157,40 @@ class GardenRepositoryTest {
         assertEquals(GardenActionResult.DONE, repository.plant(0, 0, PlantKind.TULIPS_RED_YELLOW))
     }
 
+    @Test
+    fun `a planting undone in time is refunded`() = runTest {
+        repository.ensureCreated()
+        earn(14)
+        repository.plant(0, 0, PlantKind.CHERRY)
+        assertEquals(0, garden().drops)
+        now += 9_000
+
+        assertEquals(GardenActionResult.DONE, repository.undoPlant(0, 0))
+
+        assertTrue(garden().plants.isEmpty())
+        assertEquals(15, garden().drops)
+        assertEquals(0, gardenDao.getState()!!.dropsSpent)
+    }
+
+    @Test
+    fun `a planting cannot be undone too late, once grown, or on an empty tile`() = runTest {
+        repository.ensureCreated()
+        earn(4)
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.undoPlant(0, 0))
+
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        repository.grow(0, 0)
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.undoPlant(0, 0))
+        repository.remove(0, 0)
+
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        now += 10_001
+        assertEquals(GardenActionResult.NOT_ALLOWED, repository.undoPlant(0, 0))
+
+        assertEquals(Planted(PlantKind.FLOWERS, 1), garden().plants[0 to 0])
+        assertEquals(2, garden().drops)
+    }
+
     /** Garden old enough for the 2x2 terrain, with [drops] drops to spend. */
     private suspend fun bigGarden(drops: Int) {
         repository.ensureCreated()

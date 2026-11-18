@@ -173,6 +173,7 @@
     <string name="garden_plant_bush">低木</string>
     <string name="garden_plant_cherry">桜の木</string>
     <string name="garden_plant_apple">りんごの木</string>
+    <string name="garden_planted">植えました。</string>
     <string name="garden_stage">全%2$d段階中の%1$d段階目。</string>
     <string name="garden_fully_grown">この植物は育ちきりました。</string>
     <string name="garden_not_enough">次の段階に必要なしずくがまだ足りません。</string>
@@ -183,6 +184,12 @@
         <item quantity="other">移動する（しずく%d個）</item>
     </plurals>
     <string name="garden_move_hint">移動先のマスをタップしてください。</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="other">しずく%d個でこの2マスを入れ替えますか？</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="other">しずく%d個で植物をここに移動しますか？</item>
+    </plurals>
     <string name="garden_hide_action">隠す</string>
     <string name="garden_show_action">表示する</string>
     <string name="garden_show_all">すべて表示</string>

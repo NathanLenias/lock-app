@@ -87,6 +87,21 @@ class GardenRepository(
         spend(state, kind.stepCost) { gardenDao.upsertPlot(plot.copy(stage = plot.stage + 1)) }
     }
 
+    /**
+     * Takes back a planting made by mistake: the sprout goes and its price is refunded.
+     * Only within [GardenRules.UNDO_PLANT_WINDOW_MS] and before the plant has grown.
+     */
+    suspend fun undoPlant(a: Int, b: Int): GardenActionResult = transact {
+        val plot = gardenDao.getPlot(a, b) ?: return@transact GardenActionResult.NOT_ALLOWED
+        val kind = PlantKind.fromKey(plot.plant) ?: return@transact GardenActionResult.NOT_ALLOWED
+        if (plot.stage != 1 || now() - plot.plantedAt > GardenRules.UNDO_PLANT_WINDOW_MS) {
+            return@transact GardenActionResult.NOT_ALLOWED
+        }
+        gardenDao.deletePlot(a, b)
+        gardenDao.addDropsSpent(-kind.stepCost)
+        GardenActionResult.DONE
+    }
+
     /** Frees the cell. The drops put into the plant are not given back. */
     suspend fun remove(a: Int, b: Int): GardenActionResult = transact {
         if (gardenDao.getPlot(a, b) == null) return@transact GardenActionResult.NOT_ALLOWED

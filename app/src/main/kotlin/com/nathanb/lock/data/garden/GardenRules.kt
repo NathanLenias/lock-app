@@ -37,6 +37,9 @@ object GardenRules {
     /** Price of moving a plant to another tile (or swapping two plants). */
     const val MOVE_COST = 3
 
+    /** How long a fresh planting can be undone, drops refunded (a slip of the finger). */
+    const val UNDO_PLANT_WINDOW_MS = 10_000L
+
     private const val HOUR_MS = 60 * 60 * 1000L
     private const val DAY_MS = 24 * HOUR_MS
 

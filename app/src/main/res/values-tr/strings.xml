@@ -180,6 +180,7 @@
     <string name="garden_plant_bush">Çalı</string>
     <string name="garden_plant_cherry">Kiraz ağacı</string>
     <string name="garden_plant_apple">Elma ağacı</string>
+    <string name="garden_planted">Dikildi.</string>
     <string name="garden_stage">Aşama %1$d / %2$d.</string>
     <string name="garden_fully_grown">Bu bitki büyümesini tamamladı.</string>
     <string name="garden_not_enough">Sonraki aşama için henüz yeterli damla yok.</string>
@@ -192,6 +193,14 @@
         <item quantity="other">Taşı (%d damla)</item>
     </plurals>
     <string name="garden_move_hint">Hedef kareye dokunun.</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="one">Bu iki kare %d damla karşılığında yer değiştirsin mi?</item>
+        <item quantity="other">Bu iki kare %d damla karşılığında yer değiştirsin mi?</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="one">Bitki %d damla karşılığında buraya taşınsın mı?</item>
+        <item quantity="other">Bitki %d damla karşılığında buraya taşınsın mı?</item>
+    </plurals>
     <string name="garden_hide_action">Gizle</string>
     <string name="garden_show_action">Göster</string>
     <string name="garden_show_all">Tümünü göster</string>

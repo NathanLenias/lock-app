@@ -173,6 +173,7 @@
     <string name="garden_plant_bush">덤불</string>
     <string name="garden_plant_cherry">벚나무</string>
     <string name="garden_plant_apple">사과나무</string>
+    <string name="garden_planted">심었습니다.</string>
     <string name="garden_stage">%2$d단계 중 %1$d단계.</string>
     <string name="garden_fully_grown">이 식물은 다 자랐습니다.</string>
     <string name="garden_not_enough">다음 단계에 필요한 물방울이 아직 부족합니다.</string>
@@ -183,6 +184,12 @@
         <item quantity="other">옮기기 (물방울 %d개)</item>
     </plurals>
     <string name="garden_move_hint">옮길 칸을 누르세요.</string>
+    <plurals name="garden_move_confirm_swap">
+        <item quantity="other">물방울 %d개로 두 칸을 서로 바꿀까요?</item>
+    </plurals>
+    <plurals name="garden_move_confirm_here">
+        <item quantity="other">물방울 %d개로 식물을 여기로 옮길까요?</item>
+    </plurals>
     <string name="garden_hide_action">숨기기</string>
     <string name="garden_show_action">보이기</string>
     <string name="garden_show_all">모두 보이기</string>
