@@ -155,17 +155,29 @@
     <plurals name="garden_drops">
         <item quantity="other">しずく%d個</item>
     </plurals>
-    <string name="garden_empty_hint">マスをタップして植えましょう。</string>
-    <plurals name="garden_next_size">
-        <item quantity="other">%d日後に庭が広がります。</item>
+    <string name="garden_day">%d日目</string>
+    <plurals name="garden_next_tier">
+        <item quantity="other">%2$d日後に%1$d × %1$d</item>
     </plurals>
-    <string name="garden_plant_title">何を植えますか？</string>
-    <plurals name="garden_balance">
-        <item quantity="other">しずくが%d個あります。</item>
-    </plurals>
-    <string name="garden_earn_hint">セッション1時間につきしずくが1個、1日3個までもらえます。</string>
+    <string name="garden_tier_size">%1$d × %1$d</string>
+    <string name="garden_tier_offered">プレゼント</string>
+    <string name="garden_hint_touch">マスをタップして植えたり育てたりしましょう。</string>
+    <string name="garden_hint_earn">セッション1時間につき、植えるためのしずくが1個もらえます。</string>
+    <string name="garden_info_title">庭は何のためにあるの？</string>
+    <string name="garden_info_point_days">Lockをアンインストールせずに過ごした日々へのごほうびです。</string>
+    <string name="garden_info_point_reinstall">このスマートフォンでLockをアンインストールして再インストールすると、庭は最初からやり直しになります。</string>
+    <string name="garden_info_point_device">機種変更してデータをインポートすれば、庭はそのまま引き継がれます。</string>
+    <string name="garden_info_point_support">サポートでも元に戻すことはできません。Lockはインターネットに接続しておらず、庭はお使いのスマートフォンの中にしかありません。</string>
+    <string name="garden_drops_title">しずく</string>
+    <string name="garden_drops_body_earn">セッション1時間につきしずくが1個もらえます（1日3個まで）。</string>
+    <string name="garden_drops_body_use">庭に植えたり育てたりするのに使います。</string>
+    <string name="garden_intro_title">庭は2 × 2から始まります</string>
+    <string name="garden_intro_body">すでに30日以上Lockをお使いのため、庭は1マスではなく4マスから始まります！</string>
+    <string name="garden_intro_body_next">その後、90日目と180日目に広がります。</string>
+    <string name="garden_intro_action">庭を見てみる</string>
+    <string name="garden_plant_title">ここに何を植えますか？</string>
     <plurals name="garden_plant_cost">
-        <item quantity="other">1段階につきしずく%1$d個、全%2$d段階</item>
+        <item quantity="other">1段階につきしずく%1$d個。全%2$d段階で合計%3$d個。</item>
     </plurals>
     <string name="garden_plant_tulips_red_yellow">赤と黄色のチューリップ</string>
     <string name="garden_plant_tulips_mix">色とりどりのチューリップ</string>
@@ -173,16 +185,25 @@
     <string name="garden_plant_bush">低木</string>
     <string name="garden_plant_cherry">桜の木</string>
     <string name="garden_plant_apple">りんごの木</string>
-    <string name="garden_planted">植えました。</string>
+    <string name="garden_stage_sprout">芽</string>
+    <string name="garden_stage_young">若木</string>
+    <string name="garden_stage_adult">成木</string>
+    <string name="garden_stage_small">小</string>
+    <string name="garden_stage_medium">中</string>
+    <string name="garden_stage_full">完成</string>
+    <string name="garden_plant_action">芽を植える</string>
+    <plurals name="garden_plant_remaining">
+        <item quantity="other">しずくが%d個残ります。</item>
+    </plurals>
+    <plurals name="garden_plant_missing">
+        <item quantity="other">しずくが%d個足りません。</item>
+    </plurals>
     <string name="garden_stage">全%2$d段階中の%1$d段階目。</string>
+    <string name="garden_just_planted">たった今植えました。</string>
     <string name="garden_fully_grown">この植物は育ちきりました。</string>
-    <string name="garden_not_enough">次の段階に必要なしずくがまだ足りません。</string>
-    <plurals name="garden_grow_action">
-        <item quantity="other">育てる（しずく%d個）</item>
-    </plurals>
-    <plurals name="garden_move_action">
-        <item quantity="other">移動する（しずく%d個）</item>
-    </plurals>
+    <string name="garden_grow_action">育てる</string>
+    <string name="garden_move_action">移動する</string>
+    <string name="garden_move_subtitle">別のマスへ</string>
     <string name="garden_move_hint">移動先のマスをタップしてください。</string>
     <plurals name="garden_move_confirm_swap">
         <item quantity="other">しずく%d個でこの2マスを入れ替えますか？</item>
@@ -191,12 +212,16 @@
         <item quantity="other">しずく%d個で植物をここに移動しますか？</item>
     </plurals>
     <string name="garden_hide_action">隠す</string>
+    <string name="garden_hide_subtitle">後ろのマスを見るために</string>
     <string name="garden_show_action">表示する</string>
+    <string name="garden_show_subtitle">植物をもう一度表示</string>
     <string name="garden_show_all">すべて表示</string>
-    <string name="garden_replace_action">植え替える</string>
-    <string name="garden_remove_confirm_title">この植物を取り除きますか？</string>
+    <string name="garden_undo_action">植え付けを取り消す</string>
+    <string name="garden_undo_subtitle">しずくは戻ってきます</string>
+    <string name="garden_delete_action">削除する</string>
+    <string name="garden_delete_subtitle">使ったしずくは戻りません</string>
+    <string name="garden_remove_confirm_title">この植物を削除しますか？</string>
     <string name="garden_remove_confirm_body">マスが空き、別のものを植えられます。この植物に使ったしずくは戻りません。</string>
-    <string name="garden_remove_confirm_action">取り除く</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">統計</string>

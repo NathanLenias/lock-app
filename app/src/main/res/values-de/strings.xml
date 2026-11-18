@@ -159,20 +159,31 @@
         <item quantity="one">%d Tropfen</item>
         <item quantity="other">%d Tropfen</item>
     </plurals>
-    <string name="garden_empty_hint">Tippen Sie auf ein Feld, um etwas zu pflanzen.</string>
-    <plurals name="garden_next_size">
-        <item quantity="one">Der Garten wächst in %d Tag.</item>
-        <item quantity="other">Der Garten wächst in %d Tagen.</item>
+    <string name="garden_day">Tag %d</string>
+    <plurals name="garden_next_tier">
+        <item quantity="one">%1$d × %1$d in %2$d Tag</item>
+        <item quantity="other">%1$d × %1$d in %2$d Tagen</item>
     </plurals>
-    <string name="garden_plant_title">Was möchten Sie pflanzen?</string>
-    <plurals name="garden_balance">
-        <item quantity="one">Sie haben %d Tropfen.</item>
-        <item quantity="other">Sie haben %d Tropfen.</item>
-    </plurals>
-    <string name="garden_earn_hint">Eine Stunde Sitzung bringt einen Tropfen, höchstens drei pro Tag.</string>
+    <string name="garden_tier_size">%1$d × %1$d</string>
+    <string name="garden_tier_offered">Geschenkt</string>
+    <string name="garden_hint_touch">Tippen Sie auf ein Feld, um zu pflanzen oder wachsen zu lassen.</string>
+    <string name="garden_hint_earn">Eine Stunde Sitzung bringt einen Tropfen zum Pflanzen.</string>
+    <string name="garden_info_title">Wozu dient der Garten?</string>
+    <string name="garden_info_point_days">Er belohnt die Tage, an denen Lock installiert bleibt.</string>
+    <string name="garden_info_point_reinstall">Wenn Sie Lock auf diesem Telefon deinstallieren und neu installieren, beginnt der Garten von vorn.</string>
+    <string name="garden_info_point_device">Wenn Sie das Gerät wechseln und Ihre Daten importieren, bleibt der Garten erhalten.</string>
+    <string name="garden_info_point_support">Der Support kann ihn nicht wiederherstellen. Lock ist nicht mit dem Internet verbunden: Der Garten existiert nur auf Ihrem Telefon.</string>
+    <string name="garden_drops_title">Tropfen</string>
+    <string name="garden_drops_body_earn">Sie erhalten 1 Tropfen pro Stunde Sitzung, höchstens 3 Tropfen pro Tag.</string>
+    <string name="garden_drops_body_use">Damit pflanzen Sie und lassen Ihren Garten wachsen.</string>
+    <string name="garden_intro_title">Ihr Garten beginnt mit 2 × 2</string>
+    <string name="garden_intro_body">Sie nutzen Lock bereits seit mehr als 30 Tagen, deshalb beginnt Ihr Garten mit 4 Feldern statt einem!</string>
+    <string name="garden_intro_body_next">Er wächst dann an Tag 90 und noch einmal an Tag 180.</string>
+    <string name="garden_intro_action">Garten entdecken</string>
+    <string name="garden_plant_title">Was hier pflanzen?</string>
     <plurals name="garden_plant_cost">
-        <item quantity="one">%1$d Tropfen pro Stufe, %2$d Stufen</item>
-        <item quantity="other">%1$d Tropfen pro Stufe, %2$d Stufen</item>
+        <item quantity="one">%1$d Tropfen pro Stufe. %2$d Stufen, insgesamt %3$d Tropfen.</item>
+        <item quantity="other">%1$d Tropfen pro Stufe. %2$d Stufen, insgesamt %3$d Tropfen.</item>
     </plurals>
     <string name="garden_plant_tulips_red_yellow">Rote und gelbe Tulpen</string>
     <string name="garden_plant_tulips_mix">Bunte Tulpen</string>
@@ -180,18 +191,27 @@
     <string name="garden_plant_bush">Strauch</string>
     <string name="garden_plant_cherry">Kirschbaum</string>
     <string name="garden_plant_apple">Apfelbaum</string>
-    <string name="garden_planted">Gepflanzt.</string>
+    <string name="garden_stage_sprout">Spross</string>
+    <string name="garden_stage_young">Jung</string>
+    <string name="garden_stage_adult">Ausgewachsen</string>
+    <string name="garden_stage_small">Klein</string>
+    <string name="garden_stage_medium">Mittel</string>
+    <string name="garden_stage_full">Voll</string>
+    <string name="garden_plant_action">Spross pflanzen</string>
+    <plurals name="garden_plant_remaining">
+        <item quantity="one">Ihnen bleibt %d Tropfen.</item>
+        <item quantity="other">Ihnen bleiben %d Tropfen.</item>
+    </plurals>
+    <plurals name="garden_plant_missing">
+        <item quantity="one">Ihnen fehlt %d Tropfen.</item>
+        <item quantity="other">Ihnen fehlen %d Tropfen.</item>
+    </plurals>
     <string name="garden_stage">Stufe %1$d von %2$d.</string>
+    <string name="garden_just_planted">Gerade gepflanzt.</string>
     <string name="garden_fully_grown">Diese Pflanze ist ausgewachsen.</string>
-    <string name="garden_not_enough">Noch nicht genug Tropfen für die nächste Stufe.</string>
-    <plurals name="garden_grow_action">
-        <item quantity="one">Wachsen lassen (%d Tropfen)</item>
-        <item quantity="other">Wachsen lassen (%d Tropfen)</item>
-    </plurals>
-    <plurals name="garden_move_action">
-        <item quantity="one">Verschieben (%d Tropfen)</item>
-        <item quantity="other">Verschieben (%d Tropfen)</item>
-    </plurals>
+    <string name="garden_grow_action">Wachsen lassen</string>
+    <string name="garden_move_action">Verschieben</string>
+    <string name="garden_move_subtitle">Auf ein anderes Feld</string>
     <string name="garden_move_hint">Tippen Sie auf das Zielfeld.</string>
     <plurals name="garden_move_confirm_swap">
         <item quantity="one">Diese beiden Felder für %d Tropfen tauschen?</item>
@@ -202,12 +222,16 @@
         <item quantity="other">Die Pflanze für %d Tropfen hierher verschieben?</item>
     </plurals>
     <string name="garden_hide_action">Ausblenden</string>
+    <string name="garden_hide_subtitle">Um die Felder dahinter zu sehen</string>
     <string name="garden_show_action">Einblenden</string>
+    <string name="garden_show_subtitle">Pflanze wieder anzeigen</string>
     <string name="garden_show_all">Alle einblenden</string>
-    <string name="garden_replace_action">Ersetzen</string>
-    <string name="garden_remove_confirm_title">Diese Pflanze entfernen?</string>
+    <string name="garden_undo_action">Pflanzung rückgängig machen</string>
+    <string name="garden_undo_subtitle">Sie erhalten Ihre Tropfen zurück</string>
+    <string name="garden_delete_action">Löschen</string>
+    <string name="garden_delete_subtitle">Ausgegebene Tropfen werden nicht erstattet</string>
+    <string name="garden_remove_confirm_title">Diese Pflanze löschen?</string>
     <string name="garden_remove_confirm_body">Das Feld wird für etwas anderes frei. Die für diese Pflanze ausgegebenen Tropfen werden nicht erstattet.</string>
-    <string name="garden_remove_confirm_action">Entfernen</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">Statistik</string>

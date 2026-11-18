@@ -35,6 +35,19 @@ private fun PlantKind.sprites(): List<Int> = when (this) {
 @DrawableRes
 fun Planted.sprite(): Int = kind.sprites().let { it[(stage - 1).coerceIn(0, it.lastIndex)] }
 
+/** Sprite of every stage, sprout first. */
+fun PlantKind.stageSprites(): List<Int> = sprites()
+
+/** Name of every stage, sprout first: trees have three, the others four. */
+fun PlantKind.stageNames(): List<Int> = if (stages == 3) {
+    listOf(R.string.garden_stage_sprout, R.string.garden_stage_young, R.string.garden_stage_adult)
+} else {
+    listOf(
+        R.string.garden_stage_sprout, R.string.garden_stage_small,
+        R.string.garden_stage_medium, R.string.garden_stage_full,
+    )
+}
+
 /** The plant fully grown, to show what is being bought. */
 @DrawableRes
 fun PlantKind.grownSprite(): Int = sprites().last()

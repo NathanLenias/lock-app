@@ -155,17 +155,29 @@
     <plurals name="garden_drops">
         <item quantity="other">물방울 %d개</item>
     </plurals>
-    <string name="garden_empty_hint">칸을 눌러 심어 보세요.</string>
-    <plurals name="garden_next_size">
-        <item quantity="other">%d일 후에 정원이 넓어집니다.</item>
+    <string name="garden_day">%d일째</string>
+    <plurals name="garden_next_tier">
+        <item quantity="other">%2$d일 후 %1$d × %1$d</item>
     </plurals>
-    <string name="garden_plant_title">무엇을 심으시겠어요?</string>
-    <plurals name="garden_balance">
-        <item quantity="other">물방울이 %d개 있습니다.</item>
-    </plurals>
-    <string name="garden_earn_hint">세션 한 시간마다 물방울 하나를 얻으며, 하루 최대 세 개입니다.</string>
+    <string name="garden_tier_size">%1$d × %1$d</string>
+    <string name="garden_tier_offered">선물</string>
+    <string name="garden_hint_touch">칸을 눌러 심거나 키워 보세요.</string>
+    <string name="garden_hint_earn">세션 한 시간마다 심는 데 쓸 물방울 하나를 얻습니다.</string>
+    <string name="garden_info_title">정원은 무엇을 위한 것인가요?</string>
+    <string name="garden_info_point_days">Lock을 삭제하지 않고 보낸 날들에 대한 보상입니다.</string>
+    <string name="garden_info_point_reinstall">이 휴대폰에서 Lock을 삭제했다가 다시 설치하면 정원이 처음부터 다시 시작됩니다.</string>
+    <string name="garden_info_point_device">기기를 바꾸고 데이터를 가져오면 정원은 그대로 유지됩니다.</string>
+    <string name="garden_info_point_support">고객 지원에서도 되돌려 드릴 수 없습니다. Lock은 인터넷에 연결되지 않으며, 정원은 휴대폰에만 존재합니다.</string>
+    <string name="garden_drops_title">물방울</string>
+    <string name="garden_drops_body_earn">세션 한 시간마다 물방울 1개를 얻으며, 하루 최대 3개까지입니다.</string>
+    <string name="garden_drops_body_use">정원에 심고 키우는 데 사용합니다.</string>
+    <string name="garden_intro_title">정원이 2 × 2로 시작합니다</string>
+    <string name="garden_intro_body">Lock을 이미 30일 넘게 사용하셨기 때문에 정원이 한 칸이 아닌 네 칸으로 시작합니다!</string>
+    <string name="garden_intro_body_next">이후 90일째와 180일째에 더 넓어집니다.</string>
+    <string name="garden_intro_action">정원 둘러보기</string>
+    <string name="garden_plant_title">여기에 무엇을 심을까요?</string>
     <plurals name="garden_plant_cost">
-        <item quantity="other">단계당 물방울 %1$d개, %2$d단계</item>
+        <item quantity="other">단계당 물방울 %1$d개. 총 %2$d단계, 모두 %3$d개.</item>
     </plurals>
     <string name="garden_plant_tulips_red_yellow">빨강·노랑 튤립</string>
     <string name="garden_plant_tulips_mix">여러 색 튤립</string>
@@ -173,16 +185,25 @@
     <string name="garden_plant_bush">덤불</string>
     <string name="garden_plant_cherry">벚나무</string>
     <string name="garden_plant_apple">사과나무</string>
-    <string name="garden_planted">심었습니다.</string>
+    <string name="garden_stage_sprout">새싹</string>
+    <string name="garden_stage_young">어린 나무</string>
+    <string name="garden_stage_adult">다 자람</string>
+    <string name="garden_stage_small">작음</string>
+    <string name="garden_stage_medium">중간</string>
+    <string name="garden_stage_full">완성</string>
+    <string name="garden_plant_action">새싹 심기</string>
+    <plurals name="garden_plant_remaining">
+        <item quantity="other">물방울이 %d개 남습니다.</item>
+    </plurals>
+    <plurals name="garden_plant_missing">
+        <item quantity="other">물방울이 %d개 부족합니다.</item>
+    </plurals>
     <string name="garden_stage">%2$d단계 중 %1$d단계.</string>
+    <string name="garden_just_planted">방금 심었습니다.</string>
     <string name="garden_fully_grown">이 식물은 다 자랐습니다.</string>
-    <string name="garden_not_enough">다음 단계에 필요한 물방울이 아직 부족합니다.</string>
-    <plurals name="garden_grow_action">
-        <item quantity="other">키우기 (물방울 %d개)</item>
-    </plurals>
-    <plurals name="garden_move_action">
-        <item quantity="other">옮기기 (물방울 %d개)</item>
-    </plurals>
+    <string name="garden_grow_action">키우기</string>
+    <string name="garden_move_action">옮기기</string>
+    <string name="garden_move_subtitle">다른 칸으로</string>
     <string name="garden_move_hint">옮길 칸을 누르세요.</string>
     <plurals name="garden_move_confirm_swap">
         <item quantity="other">물방울 %d개로 두 칸을 서로 바꿀까요?</item>
@@ -191,12 +212,16 @@
         <item quantity="other">물방울 %d개로 식물을 여기로 옮길까요?</item>
     </plurals>
     <string name="garden_hide_action">숨기기</string>
+    <string name="garden_hide_subtitle">뒤쪽 칸을 보려면</string>
     <string name="garden_show_action">보이기</string>
+    <string name="garden_show_subtitle">식물 다시 보이기</string>
     <string name="garden_show_all">모두 보이기</string>
-    <string name="garden_replace_action">바꾸기</string>
-    <string name="garden_remove_confirm_title">이 식물을 뽑을까요?</string>
+    <string name="garden_undo_action">심기 취소</string>
+    <string name="garden_undo_subtitle">물방울을 돌려받습니다</string>
+    <string name="garden_delete_action">삭제</string>
+    <string name="garden_delete_subtitle">사용한 물방울은 돌려받지 못합니다</string>
+    <string name="garden_remove_confirm_title">이 식물을 삭제할까요?</string>
     <string name="garden_remove_confirm_body">칸이 비워져 다른 것을 심을 수 있습니다. 이 식물에 쓴 물방울은 돌려받지 못합니다.</string>
-    <string name="garden_remove_confirm_action">뽑기</string>
 
     <!-- Stats Screen -->
     <string name="stats_title">통계</string>

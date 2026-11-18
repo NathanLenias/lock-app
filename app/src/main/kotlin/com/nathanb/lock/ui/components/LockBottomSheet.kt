@@ -51,21 +51,7 @@ fun LockBottomSheet(
 ) {
     val colors = LockTheme.colors
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = colors.surfaceContainer,
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(top = 14.dp, bottom = 10.dp)
-                    .size(width = 40.dp, height = 4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(Color.White.copy(alpha = 0.3f)),
-            )
-        },
-    ) {
+    LockSheetFrame(onDismiss = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,5 +93,36 @@ fun LockBottomSheet(
 
             actions()
         }
+    }
+}
+
+/**
+ * The sheet itself (drag handle, background, rounded top), for sheets whose content does
+ * not fit the icon, title and body layout of [LockBottomSheet].
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LockSheetFrame(
+    onDismiss: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val colors = LockTheme.colors
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = colors.surfaceContainer,
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        dragHandle = {
+            Box(
+                modifier = Modifier
+                    .padding(top = 14.dp, bottom = 10.dp)
+                    .size(width = 40.dp, height = 4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(Color.White.copy(alpha = 0.3f)),
+            )
+        },
+    ) {
+        content()
     }
 }

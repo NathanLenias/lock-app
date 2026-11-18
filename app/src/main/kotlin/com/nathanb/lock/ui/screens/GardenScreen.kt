@@ -1,35 +1,36 @@
 package com.nathanb.lock.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
-import com.nathanb.lock.data.garden.GardenRules
-import kotlinx.coroutines.delay
-import androidx.compose.foundation.clickable
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,16 +39,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -60,7 +66,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nathanb.lock.BuildConfig
 import com.nathanb.lock.R
+import com.nathanb.lock.data.garden.GardenRules
 import com.nathanb.lock.data.repository.Garden
+import com.nathanb.lock.ui.screens.garden.DropsInfoSheet
+import com.nathanb.lock.ui.screens.garden.GardenInfoSheet
+import com.nathanb.lock.ui.screens.garden.GardenIntroSheet
 import com.nathanb.lock.ui.screens.garden.GardenLayout
 import com.nathanb.lock.ui.screens.garden.GardenLayout.Cell
 import com.nathanb.lock.ui.screens.garden.PlantPickerSheet
@@ -82,8 +92,9 @@ private const val HIDDEN_PLANT_ALPHA = 0.25f
 fun GardenScreen(viewModel: LockViewModel) {
     val colors = LockTheme.colors
     val garden by viewModel.garden.collectAsStateWithLifecycle()
+    val introSeen by viewModel.gardenIntroSeen.collectAsStateWithLifecycle()
 
-    // Tile whose sheet is open, and whether the removal confirmation replaced it.
+    // Tile whose sheet is open, and whether the delete confirmation replaced it.
     var selected by remember { mutableStateOf<Cell?>(null) }
     var confirmRemoval by remember { mutableStateOf(false) }
     // Plants faded out to see and reach what stands behind. Screen state only: never stored.
@@ -92,15 +103,8 @@ fun GardenScreen(viewModel: LockViewModel) {
     var moving by remember { mutableStateOf<Cell?>(null) }
     // Where it would go: chosen, shown outlined, and only applied once confirmed.
     var destination by remember { mutableStateOf<Cell?>(null) }
-    // Tile planted a moment ago, while the planting can still be taken back.
-    var undoable by remember { mutableStateOf<Cell?>(null) }
-    LaunchedEffect(undoable) {
-        if (undoable != null) {
-            // A little short of the real window, so the button never outlives it.
-            delay(GardenRules.UNDO_PLANT_WINDOW_MS - 500)
-            undoable = null
-        }
-    }
+    var showGardenInfo by remember { mutableStateOf(false) }
+    var showDropsInfo by remember { mutableStateOf(false) }
     val cancelMove = {
         moving = null
         destination = null
@@ -132,121 +136,104 @@ fun GardenScreen(viewModel: LockViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (hidden.isNotEmpty()) ShowAllButton(onClick = { hidden = emptySet() })
-                garden?.let { DropsBadge(drops = it.drops, onDebugLongPress = viewModel::debugGrantGardenDrops) }
+                garden?.let {
+                    DropsBadge(
+                        drops = it.drops,
+                        onClick = { showDropsInfo = true },
+                        onDebugLongPress = viewModel::debugGrantGardenDrops,
+                    )
+                }
             }
         }
 
         val current = garden ?: return@Column
 
-        GardenView(
-            garden = current,
-            hidden = hidden,
-            highlighted = setOfNotNull(moving, destination),
-            onCellTapped = { cell ->
-                undoable = null
-                val from = moving
-                when {
-                    from == null -> {
-                        confirmRemoval = false
-                        selected = cell
-                    }
-                    // Tapping the plant itself cancels the move.
-                    cell == from -> cancelMove()
-                    else -> destination = cell
-                }
-            },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(vertical = 16.dp),
-        )
-
-        val footer = when {
-            current.plants.isEmpty() -> stringResource(R.string.garden_empty_hint)
-            current.daysUntilNextSize != null -> pluralStringResource(
-                R.plurals.garden_next_size, current.daysUntilNextSize, current.daysUntilNextSize,
-            )
-            else -> ""
-        }
-        // Keeps the bottom line clear of the floating tab bar.
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 88.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(vertical = 16.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(colors.surfaceContainer),
         ) {
-            val from = moving
-            val to = destination
-            val planted = undoable
-            val message = when {
-                from != null && to != null -> pluralStringResource(
-                    if (current.plants.containsKey(to.a to to.b)) {
-                        R.plurals.garden_move_confirm_swap
-                    } else {
-                        R.plurals.garden_move_confirm_here
-                    },
-                    GardenRules.MOVE_COST, GardenRules.MOVE_COST,
-                )
-                from != null -> stringResource(R.string.garden_move_hint)
-                planted != null -> stringResource(R.string.garden_planted)
-                else -> footer
-            }
-            val busy = from != null || planted != null
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (busy) colors.onSurface else colors.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-            when {
-                from != null -> Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    TextButton(onClick = cancelMove) {
-                        Text(text = stringResource(R.string.action_cancel), color = colors.onSurfaceVariant)
-                    }
-                    if (to != null) {
-                        Button(
-                            onClick = {
-                                viewModel.moveInGarden(from.a, from.b, to.a, to.b)
-                                hidden = hidden - from - to
-                                cancelMove()
-                            },
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.action_confirm),
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                            )
+            GardenView(
+                garden = current,
+                hidden = hidden,
+                highlighted = setOfNotNull(moving, destination),
+                onCellTapped = { cell ->
+                    val from = moving
+                    when {
+                        from == null -> {
+                            confirmRemoval = false
+                            selected = cell
                         }
+                        // Tapping the plant itself cancels the move.
+                        cell == from -> cancelMove()
+                        else -> destination = cell
                     }
-                }
-                planted != null -> TextButton(
-                    onClick = {
-                        viewModel.undoPlantInGarden(planted.a, planted.b)
-                        undoable = null
-                    },
-                ) {
-                    Text(text = stringResource(R.string.action_cancel), color = colors.primary)
-                }
-            }
+                },
+                modifier = Modifier.fillMaxSize().padding(12.dp),
+            )
         }
+
+        val from = moving
+        if (from != null) {
+            val to = destination
+            MoveControls(
+                message = when {
+                    to == null -> stringResource(R.string.garden_move_hint)
+                    current.plants.containsKey(to.a to to.b) -> pluralStringResource(
+                        R.plurals.garden_move_confirm_swap, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                    )
+                    else -> pluralStringResource(
+                        R.plurals.garden_move_confirm_here, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                    )
+                },
+                onCancel = cancelMove,
+                onConfirm = if (to == null) {
+                    null
+                } else {
+                    {
+                        viewModel.moveInGarden(from.a, from.b, to.a, to.b)
+                        hidden = hidden - from - to
+                        cancelMove()
+                    }
+                },
+            )
+        } else {
+            TerrainSummary(garden = current, onInfo = { showGardenInfo = true })
+            Text(
+                text = stringResource(
+                    if (current.drops == 0) R.string.garden_hint_earn else R.string.garden_hint_touch,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            )
+        }
+        // Room for the floating tab bar.
+        Spacer(Modifier.height(88.dp))
     }
 
     val current = garden ?: return
-    val cell = selected ?: return
-    val planted = current.plants[cell.a to cell.b]
+    val cell = selected
+    val planted = cell?.let { current.plants[it.a to it.b] }
     val close = {
         selected = null
         confirmRemoval = false
     }
     when {
+        showGardenInfo -> GardenInfoSheet(onDismiss = { showGardenInfo = false })
+        showDropsInfo -> DropsInfoSheet(onDismiss = { showDropsInfo = false })
+        // Long-time users are told once why they start with four tiles.
+        current.startedLarger && introSeen == false ->
+            GardenIntroSheet(onDismiss = viewModel::markGardenIntroSeen)
+        cell == null -> Unit
         planted == null -> PlantPickerSheet(
             drops = current.drops,
             onPlant = { kind ->
                 viewModel.plantInGarden(cell.a, cell.b, kind)
-                undoable = cell
                 close()
             },
             onDismiss = close,
@@ -254,14 +241,20 @@ fun GardenScreen(viewModel: LockViewModel) {
         confirmRemoval -> RemovePlantSheet(
             onConfirm = {
                 viewModel.removeFromGarden(cell.a, cell.b)
+                hidden = hidden - cell
                 close()
             },
             onDismiss = close,
         )
         else -> PlotSheet(
             planted = planted,
+            plantedAt = current.plantedAt[cell.a to cell.b] ?: 0L,
             drops = current.drops,
             isHidden = cell in hidden,
+            onGrow = {
+                viewModel.growInGarden(cell.a, cell.b)
+                close()
+            },
             onMove = {
                 destination = null
                 moving = cell
@@ -271,13 +264,187 @@ fun GardenScreen(viewModel: LockViewModel) {
                 hidden = if (cell in hidden) hidden - cell else hidden + cell
                 close()
             },
-            onGrow = {
-                viewModel.growInGarden(cell.a, cell.b)
+            onUndoPlanting = {
+                viewModel.undoPlantInGarden(cell.a, cell.b)
+                hidden = hidden - cell
                 close()
             },
-            onReplace = { confirmRemoval = true },
+            onDelete = { confirmRemoval = true },
             onDismiss = close,
         )
+    }
+}
+
+/** Day of the garden, when the terrain grows next, and the four terrain sizes. */
+@Composable
+private fun TerrainSummary(garden: Garden, onInfo: () -> Unit) {
+    val colors = LockTheme.colors
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.garden_day, garden.day),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Black,
+                        fontSize = 36.sp,
+                    ),
+                    color = colors.primary,
+                )
+                val infoLabel = stringResource(R.string.garden_info_title)
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(colors.surfaceContainer)
+                        .clickable(role = Role.Button, onClickLabel = infoLabel, onClick = onInfo),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = infoLabel,
+                        tint = colors.onSurface,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+            garden.daysUntilNextSize?.let { days ->
+                Text(
+                    text = pluralStringResource(R.plurals.garden_next_tier, days, garden.size + 1, days),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.onSurface,
+                    modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            (1..GardenRules.MAX_TERRAIN_SIZE).forEach { size ->
+                val label = when {
+                    size == 1 -> stringResource(R.string.garden_day, 1)
+                    size == 2 && garden.startedLarger -> stringResource(R.string.garden_tier_offered)
+                    else -> stringResource(R.string.garden_day, GardenRules.TERRAIN_THRESHOLD_DAYS[size - 2])
+                }
+                TerrainTier(
+                    size = size,
+                    label = label,
+                    state = when {
+                        size == garden.size -> TierState.CURRENT
+                        size < garden.size -> TierState.REACHED
+                        else -> TierState.AHEAD
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+private enum class TierState { REACHED, CURRENT, AHEAD }
+
+@Composable
+private fun TerrainTier(size: Int, label: String, state: TierState, modifier: Modifier = Modifier) {
+    val colors = LockTheme.colors
+    val shape = RoundedCornerShape(14.dp)
+    val tileColor = when (state) {
+        TierState.REACHED -> colors.primary.copy(alpha = 0.45f)
+        TierState.CURRENT -> colors.primary
+        TierState.AHEAD -> colors.onSurfaceVariant.copy(alpha = 0.25f)
+    }
+    val textColor = if (state == TierState.AHEAD) colors.onSurfaceVariant.copy(alpha = 0.7f) else colors.onSurface
+    Column(
+        modifier = modifier
+            .clip(shape)
+            .then(
+                if (state == TierState.CURRENT) {
+                    Modifier.background(colors.cardContainer).border(1.5.dp, colors.primary, shape)
+                } else {
+                    Modifier
+                },
+            )
+            .padding(vertical = 12.dp)
+            .semantics(mergeDescendants = true) {},
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // Miniature of the terrain: size x size squares.
+        Canvas(modifier = Modifier.size(32.dp)) {
+            val gap = 2.dp.toPx()
+            val side = (this.size.width - gap * (size - 1)) / size
+            val radius = CornerRadius(if (size == 1) 3.dp.toPx() else 2.dp.toPx())
+            for (row in 0 until size) {
+                for (col in 0 until size) {
+                    drawRoundRect(
+                        color = tileColor,
+                        topLeft = Offset(col * (side + gap), row * (side + gap)),
+                        size = Size(side, side),
+                        cornerRadius = radius,
+                    )
+                }
+            }
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = stringResource(R.string.garden_tier_size, size),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (state == TierState.CURRENT) FontWeight.Black else FontWeight.Bold,
+                color = textColor,
+                maxLines = 1,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = if (state == TierState.AHEAD) textColor else colors.onSurfaceVariant,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+/** Shown in place of the terrain summary while a plant is being moved. */
+@Composable
+private fun MoveControls(message: String, onCancel: () -> Unit, onConfirm: (() -> Unit)?) {
+    val colors = LockTheme.colors
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = colors.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TextButton(onClick = onCancel) {
+                Text(text = stringResource(R.string.action_cancel), color = colors.onSurfaceVariant)
+            }
+            if (onConfirm != null) {
+                Button(
+                    onClick = onConfirm,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
+                ) {
+                    Text(
+                        text = stringResource(R.string.action_confirm),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -308,21 +475,20 @@ private fun ShowAllButton(onClick: () -> Unit) {
     }
 }
 
+/** Balance of drops. A tap explains them; debug builds credit 100 on a long press. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun DropsBadge(drops: Int, onDebugLongPress: () -> Unit) {
+private fun DropsBadge(drops: Int, onClick: () -> Unit, onDebugLongPress: () -> Unit) {
     val colors = LockTheme.colors
     val description = pluralStringResource(R.plurals.garden_drops, drops, drops)
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(colors.cardContainer)
-            // Debug builds: a long press credits 100 drops, to test without waiting for sessions.
-            .then(
-                if (BuildConfig.DEBUG) {
-                    Modifier.pointerInput(Unit) { detectTapGestures(onLongPress = { onDebugLongPress() }) }
-                } else {
-                    Modifier
-                },
+            .combinedClickable(
+                role = Role.Button,
+                onLongClick = if (BuildConfig.DEBUG) onDebugLongPress else null,
+                onClick = onClick,
             )
             .padding(horizontal = 12.dp, vertical = 6.dp)
             .clearAndSetSemantics { contentDescription = description },
