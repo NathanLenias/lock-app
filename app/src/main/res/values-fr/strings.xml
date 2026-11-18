@@ -489,6 +489,7 @@
     <plurals name="overlay_attempts">
         <item quantity="one">Vous avez tenté d\'ouvrir %1$s %2$d fois cette session.</item>
         <item quantity="other">Vous avez tenté d\'ouvrir %1$s %2$d fois cette session.</item>
+        <item quantity="many">Vous avez tenté d\'ouvrir %1$s %2$d fois cette session.</item>
     </plurals>
     <string name="overlay_button">Ok</string>
 
@@ -594,10 +595,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Du nouveau dans Lock</string>
     <string name="inapp_changelog_cta">Découvrir</string>
-    <string name="inapp_changelog_1_title">Sites web</string>
-    <string name="inapp_changelog_1_body">Nouveau : bloquez aussi des sites dans votre navigateur, comme youtube.com ou reddit.com. Le site entier est bloqué, sous-domaines compris.</string>
-    <string name="inapp_changelog_2_title">Dans vos profils</string>
-    <string name="inapp_changelog_2_body">Chaque profil a sa propre liste de sites, et vos plannings les bloquent aussi. Un profil peut même ne bloquer que des sites.</string>
+    <string name="inapp_changelog_1_title">Jardin</string>
+    <string name="inapp_changelog_1_body">Nouveau : un jardin, dans son propre onglet, qui pousse avec vos sessions.</string>
+    <string name="inapp_changelog_2_title">Gouttes</string>
+    <string name="inapp_changelog_2_body">Une heure de session rapporte une goutte, trois par jour au maximum. Elles servent à planter et à faire grandir.</string>
 
     <!-- Plannings -->
     <string name="schedule_settings_entry">Plannings</string>
@@ -673,12 +674,10 @@
     <string name="schedule_scan_pause_hint">Débloque un temps limité, puis le blocage reprend automatiquement.</string>
     <string name="schedule_pause_duration_label">Durée de la pause</string>
     <string name="duration_unit_hour">h</string>
-    <string name="inapp_changelog_3_title">Facultatif</string>
-    <string name="inapp_changelog_3_body">Il faut une autorisation à part, que vous activez seulement si vous bloquez des sites. Pour vos apps, rien ne change.</string>
-    <string name="inapp_changelog_4_title">Durée de session</string>
-    <string name="inapp_changelog_4_body">Nouveau : une durée maximale de session personnalisée, de 1 à 24 h, dans Réglages > Session.</string>
+    <string name="inapp_changelog_3_title">Jour après jour</string>
+    <string name="inapp_changelog_3_body">Le terrain s\'agrandit aux jours 15, 90 et 180, tant que Lock reste installé.</string>
     <string name="inapp_changelog_fixes_title">Corrections</string>
-    <string name="inapp_changelog_fixes_body">Les sites sont de nouveau bloqués dans Firefox, et une app rouverte depuis le tiroir d\'apps est bien bloquée. Nouveau : l\'écran de blocage indique combien de fois vous avez tenté d\'ouvrir l\'app pendant la session.</string>
+    <string name="inapp_changelog_fixes_body">Corrections de bugs mineurs.</string>
     <string name="inapp_changelog_ok">Compris</string>
 
     <!-- Website blocking -->

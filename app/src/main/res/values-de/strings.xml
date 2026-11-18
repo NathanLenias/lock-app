@@ -582,10 +582,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">Neu in Lock</string>
     <string name="inapp_changelog_cta">Entdecken</string>
-    <string name="inapp_changelog_1_title">Websites</string>
-    <string name="inapp_changelog_1_body">Neu: Blockieren Sie auch Websites in Ihrem Browser, etwa youtube.com oder reddit.com. Die gesamte Website wird blockiert, Subdomains eingeschlossen.</string>
-    <string name="inapp_changelog_2_title">In Ihren Profilen</string>
-    <string name="inapp_changelog_2_body">Jedes Profil hat seine eigene Liste von Websites, und Ihre Zeitpläne blockieren sie ebenfalls. Ein Profil kann sogar nur Websites blockieren.</string>
+    <string name="inapp_changelog_1_title">Garten</string>
+    <string name="inapp_changelog_1_body">Neu: ein Garten in einem eigenen Tab, der mit Ihren Sitzungen wächst.</string>
+    <string name="inapp_changelog_2_title">Tropfen</string>
+    <string name="inapp_changelog_2_body">Eine Stunde Sitzung bringt einen Tropfen, höchstens drei pro Tag. Damit pflanzen Sie und lassen wachsen.</string>
 
     <!-- Zeitpläne -->
     <string name="schedule_settings_entry">Zeitpläne</string>
@@ -661,12 +661,10 @@
     <string name="schedule_scan_pause_hint">Entsperrt für begrenzte Zeit, danach wird die Blockierung automatisch fortgesetzt.</string>
     <string name="schedule_pause_duration_label">Pausendauer</string>
     <string name="duration_unit_hour">Std.</string>
-    <string name="inapp_changelog_3_title">Optional</string>
-    <string name="inapp_changelog_3_body">Dafür ist eine separate Berechtigung nötig, die Sie nur aktivieren, wenn Sie Websites blockieren. Für Ihre Apps ändert sich nichts.</string>
-    <string name="inapp_changelog_4_title">Sitzungsdauer</string>
-    <string name="inapp_changelog_4_body">Neu: eine benutzerdefinierte maximale Sitzungsdauer von 1 bis 24 Stunden, unter Einstellungen > Sitzung.</string>
+    <string name="inapp_changelog_3_title">Tag für Tag</string>
+    <string name="inapp_changelog_3_body">Das Gelände wächst an Tag 15, 90 und 180, solange Lock installiert bleibt.</string>
     <string name="inapp_changelog_fixes_title">Korrekturen</string>
-    <string name="inapp_changelog_fixes_body">Websites werden in Firefox wieder blockiert, und eine aus der App-Liste erneut geöffnete App wird jetzt zuverlässig blockiert. Neu: Der Blockierbildschirm zeigt, wie oft Sie in dieser Sitzung versucht haben, die App zu öffnen.</string>
+    <string name="inapp_changelog_fixes_body">Kleinere Fehlerbehebungen.</string>
     <string name="inapp_changelog_ok">Verstanden</string>
 
     <!-- Website blocking -->

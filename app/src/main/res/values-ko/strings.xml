@@ -567,10 +567,10 @@
     <string name="inapp_changelog_version">버전 %s</string>
     <string name="inapp_changelog_title">Lock의 새로운 기능</string>
     <string name="inapp_changelog_cta">살펴보기</string>
-    <string name="inapp_changelog_1_title">웹사이트</string>
-    <string name="inapp_changelog_1_body">새 기능: youtube.com, reddit.com 같은 웹사이트도 브라우저에서 차단할 수 있습니다. 하위 도메인을 포함해 사이트 전체가 차단됩니다.</string>
-    <string name="inapp_changelog_2_title">프로필별 설정</string>
-    <string name="inapp_changelog_2_body">프로필마다 웹사이트 목록이 따로 있으며, 일정에서도 차단됩니다. 웹사이트만 차단하는 프로필도 만들 수 있습니다.</string>
+    <string name="inapp_changelog_1_title">정원</string>
+    <string name="inapp_changelog_1_body">새 기능: 세션과 함께 자라는 정원이 별도 탭에 생겼습니다.</string>
+    <string name="inapp_changelog_2_title">물방울</string>
+    <string name="inapp_changelog_2_body">세션 한 시간마다 물방울 하나를 얻으며, 하루 최대 세 개입니다. 물방울로 심고 키울 수 있습니다.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">일정</string>
@@ -646,12 +646,10 @@
     <string name="schedule_scan_pause_hint">정해진 시간 동안 차단을 해제한 뒤 자동으로 재개합니다.</string>
     <string name="schedule_pause_duration_label">일시중지 시간</string>
     <string name="duration_unit_hour">시간</string>
-    <string name="inapp_changelog_3_title">선택 사항</string>
-    <string name="inapp_changelog_3_body">별도의 권한이 필요하며, 웹사이트를 차단할 때만 켜면 됩니다. 앱 차단은 그대로입니다.</string>
-    <string name="inapp_changelog_4_title">세션 시간</string>
-    <string name="inapp_changelog_4_body">새 기능: 설정 > 세션에서 최대 세션 시간을 1~24시간 사이로 직접 설정할 수 있습니다.</string>
+    <string name="inapp_changelog_3_title">하루하루</string>
+    <string name="inapp_changelog_3_body">Lock을 삭제하지 않는 한 15일째, 90일째, 180일째에 땅이 넓어집니다.</string>
     <string name="inapp_changelog_fixes_title">수정 사항</string>
-    <string name="inapp_changelog_fixes_body">Firefox에서 웹사이트가 다시 차단되고, 앱 서랍에서 다시 연 앱도 이제 확실하게 차단됩니다. 새 기능: 차단 화면에 이번 세션에서 앱을 열려고 시도한 횟수가 표시됩니다.</string>
+    <string name="inapp_changelog_fixes_body">사소한 버그를 수정했습니다.</string>
     <string name="inapp_changelog_ok">확인</string>
 
     <!-- Website blocking -->

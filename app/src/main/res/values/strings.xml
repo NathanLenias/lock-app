@@ -582,10 +582,10 @@
     <string name="inapp_changelog_version">VERSION %s</string>
     <string name="inapp_changelog_title">What\'s new in Lock</string>
     <string name="inapp_changelog_cta">Discover</string>
-    <string name="inapp_changelog_1_title">Websites</string>
-    <string name="inapp_changelog_1_body">New: also block websites in your browser, like youtube.com or reddit.com. The whole site is blocked, subdomains included.</string>
-    <string name="inapp_changelog_2_title">In your profiles</string>
-    <string name="inapp_changelog_2_body">Each profile has its own list of websites, and your schedules block them too. A profile can even block websites only.</string>
+    <string name="inapp_changelog_1_title">Garden</string>
+    <string name="inapp_changelog_1_body">New: a garden in its own tab, which grows with your sessions.</string>
+    <string name="inapp_changelog_2_title">Drops</string>
+    <string name="inapp_changelog_2_body">One hour of session earns one drop, up to three a day. Drops let you plant and grow.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Schedules</string>
@@ -661,12 +661,10 @@
     <string name="schedule_scan_pause_hint">Unblocks for a limited time, then blocking resumes automatically.</string>
     <string name="schedule_pause_duration_label">Pause duration</string>
     <string name="duration_unit_hour">h</string>
-    <string name="inapp_changelog_3_title">Optional</string>
-    <string name="inapp_changelog_3_body">It needs a separate permission, which you only turn on if you block websites. Nothing changes for your apps.</string>
-    <string name="inapp_changelog_4_title">Session duration</string>
-    <string name="inapp_changelog_4_body">New: a custom maximum session duration, from 1 to 24 hours, in Settings > Session.</string>
+    <string name="inapp_changelog_3_title">Day after day</string>
+    <string name="inapp_changelog_3_body">The terrain grows on day 15, 90 and 180, as long as Lock stays installed.</string>
     <string name="inapp_changelog_fixes_title">Fixes</string>
-    <string name="inapp_changelog_fixes_body">Websites are blocked in Firefox again, and an app reopened from the app drawer is now reliably blocked. New: the block screen shows how many times you tried to open the app this session.</string>
+    <string name="inapp_changelog_fixes_body">Minor bug fixes.</string>
     <string name="inapp_changelog_ok">Got it</string>
 
     <!-- Website blocking -->

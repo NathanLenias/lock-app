@@ -567,10 +567,10 @@
     <string name="inapp_changelog_version">バージョン %s</string>
     <string name="inapp_changelog_title">Lock の新機能</string>
     <string name="inapp_changelog_cta">見てみる</string>
-    <string name="inapp_changelog_1_title">ウェブサイト</string>
-    <string name="inapp_changelog_1_body">新機能：youtube.com や reddit.com などのサイトもブラウザでブロックできます。サブドメインを含め、サイト全体がブロックされます。</string>
-    <string name="inapp_changelog_2_title">プロフィールごとに</string>
-    <string name="inapp_changelog_2_body">プロフィールごとにサイトのリストがあり、スケジュールでもブロックされます。サイトだけをブロックするプロフィールも作れます。</string>
+    <string name="inapp_changelog_1_title">庭</string>
+    <string name="inapp_changelog_1_body">新機能：セッションとともに育つ庭が、専用タブに加わりました。</string>
+    <string name="inapp_changelog_2_title">しずく</string>
+    <string name="inapp_changelog_2_body">セッション1時間につきしずくが1個、1日3個までもらえます。しずくで植えたり育てたりできます。</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">スケジュール</string>
@@ -646,12 +646,10 @@
     <string name="schedule_scan_pause_hint">一定時間だけ解除し、その後自動的にブロックを再開します。</string>
     <string name="schedule_pause_duration_label">一時停止の時間</string>
     <string name="duration_unit_hour">時間</string>
-    <string name="inapp_changelog_3_title">任意</string>
-    <string name="inapp_changelog_3_body">別の許可が必要ですが、オンにするのはサイトをブロックする場合だけです。アプリのブロックはこれまでどおりです。</string>
-    <string name="inapp_changelog_4_title">セッション時間</string>
-    <string name="inapp_changelog_4_body">新機能：設定 > セッション で、最大セッション時間を 1〜24 時間の間で自由に設定できます。</string>
+    <string name="inapp_changelog_3_title">一日一日</string>
+    <string name="inapp_changelog_3_body">Lockをインストールしたままにしておくと、15日目・90日目・180日目に土地が広がります。</string>
     <string name="inapp_changelog_fixes_title">修正</string>
-    <string name="inapp_changelog_fixes_body">Firefox でサイトが再びブロックされるようになり、アプリ一覧から開き直したアプリも確実にブロックされます。新機能：ブロック画面に、このセッションでアプリを開こうとした回数が表示されます。</string>
+    <string name="inapp_changelog_fixes_body">軽微な不具合を修正しました。</string>
     <string name="inapp_changelog_ok">OK</string>
 
     <!-- Website blocking -->

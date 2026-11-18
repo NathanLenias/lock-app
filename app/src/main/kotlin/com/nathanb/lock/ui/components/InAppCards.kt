@@ -22,9 +22,8 @@ import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Shield
-import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material.icons.outlined.Yard
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -225,16 +224,15 @@ fun ChangelogCard(
         )
         Spacer(Modifier.height(16.dp))
         if (showFeatures) {
-            ChangelogRow(Icons.Outlined.Language, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
+            ChangelogRow(Icons.Outlined.Yard, R.string.inapp_changelog_1_title, R.string.inapp_changelog_1_body)
             Spacer(Modifier.height(14.dp))
-            ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
+            ChangelogRow(Icons.Outlined.WaterDrop, R.string.inapp_changelog_2_title, R.string.inapp_changelog_2_body)
             Spacer(Modifier.height(14.dp))
-            ChangelogRow(Icons.Outlined.Shield, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
-            Spacer(Modifier.height(14.dp))
-            ChangelogRow(Icons.Outlined.Timer, R.string.inapp_changelog_4_title, R.string.inapp_changelog_4_body)
-            Spacer(Modifier.height(14.dp))
+            ChangelogRow(Icons.Outlined.CalendarMonth, R.string.inapp_changelog_3_title, R.string.inapp_changelog_3_body)
+        } else {
+            // A later bug-fix release: the features were already seen.
+            ChangelogRow(Icons.Outlined.Build, R.string.inapp_changelog_fixes_title, R.string.inapp_changelog_fixes_body)
         }
-        ChangelogRow(Icons.Outlined.Build, R.string.inapp_changelog_fixes_title, R.string.inapp_changelog_fixes_body)
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = onDiscover,

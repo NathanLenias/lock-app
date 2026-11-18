@@ -582,10 +582,10 @@
     <string name="inapp_changelog_version">SÜRÜM %s</string>
     <string name="inapp_changelog_title">Lock\'ta yenilikler</string>
     <string name="inapp_changelog_cta">Keşfet</string>
-    <string name="inapp_changelog_1_title">Web siteleri</string>
-    <string name="inapp_changelog_1_body">Yeni: youtube.com veya reddit.com gibi siteleri tarayıcınızda da engelleyin. Alt alan adları dahil sitenin tamamı engellenir.</string>
-    <string name="inapp_changelog_2_title">Profillerinizde</string>
-    <string name="inapp_changelog_2_body">Her profilin kendi site listesi vardır ve zamanlamalarınız da bu siteleri engeller. Bir profil yalnızca siteleri de engelleyebilir.</string>
+    <string name="inapp_changelog_1_title">Bahçe</string>
+    <string name="inapp_changelog_1_body">Yeni: kendi sekmesinde, oturumlarınızla büyüyen bir bahçe.</string>
+    <string name="inapp_changelog_2_title">Damlalar</string>
+    <string name="inapp_changelog_2_body">Bir saatlik oturum bir damla kazandırır, günde en fazla üç. Damlalarla dikim yapar ve bitkileri büyütürsünüz.</string>
 
     <!-- Schedules -->
     <string name="schedule_settings_entry">Zamanlamalar</string>
@@ -661,12 +661,10 @@
     <string name="schedule_scan_pause_hint">Sınırlı bir süre için engellemeyi kaldırır, ardından engelleme otomatik olarak devam eder.</string>
     <string name="schedule_pause_duration_label">Mola süresi</string>
     <string name="duration_unit_hour">sa</string>
-    <string name="inapp_changelog_3_title">İsteğe bağlı</string>
-    <string name="inapp_changelog_3_body">Ayrı bir izin gerekir; bu izni yalnızca site engelliyorsanız açarsınız. Uygulamalarınız için hiçbir şey değişmez.</string>
-    <string name="inapp_changelog_4_title">Oturum süresi</string>
-    <string name="inapp_changelog_4_body">Yeni: Ayarlar > Oturum bölümünde 1 ile 24 saat arasında özel bir maksimum oturum süresi.</string>
+    <string name="inapp_changelog_3_title">Gün be gün</string>
+    <string name="inapp_changelog_3_body">Lock yüklü kaldığı sürece alan 15., 90. ve 180. günlerde büyür.</string>
     <string name="inapp_changelog_fixes_title">Düzeltmeler</string>
-    <string name="inapp_changelog_fixes_body">Web siteleri Firefox\'ta yeniden engelleniyor ve uygulama çekmecesinden yeniden açılan uygulamalar artık güvenilir şekilde engelleniyor. Yeni: engelleme ekranı, bu oturumda uygulamayı kaç kez açmayı denediğinizi gösterir.</string>
+    <string name="inapp_changelog_fixes_body">Küçük hata düzeltmeleri.</string>
     <string name="inapp_changelog_ok">Anladım</string>
 
     <!-- Website blocking -->
