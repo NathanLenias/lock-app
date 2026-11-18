@@ -2,6 +2,7 @@ package com.nathanb.lock.data.backup
 
 import android.content.Context
 import android.net.Uri
+import com.nathanb.lock.data.model.GardenPlot
 import com.nathanb.lock.data.model.NfcTag
 import com.nathanb.lock.data.model.Profile
 import com.nathanb.lock.data.model.Schedule
@@ -21,11 +22,24 @@ data class BackupData(
     val sessions: List<Session>,
     val schedules: List<Schedule> = emptyList(),
     val scheduleLinks: List<ScheduleProfileLink> = emptyList(),
+    /** Absent from backups older than v5. */
+    val garden: GardenBackup? = null,
+)
+
+/**
+ * The garden as it travels in a backup. [device] is the fingerprint of the phone that
+ * wrote the file (see DeviceIdentity): the garden is only restored on another phone.
+ */
+data class GardenBackup(
+    val device: String?,
+    val createdAt: Long,
+    val dropsSpent: Int,
+    val plots: List<GardenPlot>,
 )
 
 object BackupManager {
 
-    private const val BACKUP_VERSION = 4
+    private const val BACKUP_VERSION = 5
     private val FILE_NAME_FORMAT = DateTimeFormatter.ofPattern("ddMMyyyyHHmm")
 
     fun suggestFileName(): String {
@@ -41,6 +55,7 @@ object BackupManager {
         sessions: List<Session>,
         schedules: List<Schedule> = emptyList(),
         scheduleLinks: List<ScheduleProfileLink> = emptyList(),
+        garden: GardenBackup? = null,
     ): Unit = withContext(Dispatchers.IO) {
         val json = JSONObject().apply {
             put("version", BACKUP_VERSION)
@@ -50,6 +65,7 @@ object BackupManager {
             put("sessions", serializeSessions(sessions))
             put("schedules", serializeSchedules(schedules))
             put("scheduleLinks", serializeScheduleLinks(scheduleLinks))
+            if (garden != null) put("garden", serializeGarden(garden))
         }
 
         context.contentResolver.openOutputStream(uri)?.use { stream ->
@@ -73,6 +89,46 @@ object BackupManager {
             // Absent from v1/v2 backups — default to empty
             schedules = parseSchedules(json.optJSONArray("schedules") ?: JSONArray()),
             scheduleLinks = parseScheduleLinks(json.optJSONArray("scheduleLinks") ?: JSONArray()),
+            garden = json.optJSONObject("garden")?.let { parseGarden(it) },
+        )
+    }
+
+    // --- Garden ---
+
+    private fun serializeGarden(garden: GardenBackup): JSONObject = JSONObject().apply {
+        if (garden.device != null) put("device", garden.device)
+        put("createdAt", garden.createdAt)
+        put("dropsSpent", garden.dropsSpent)
+        put("plots", JSONArray().apply {
+            garden.plots.forEach { plot ->
+                put(JSONObject().apply {
+                    put("a", plot.cellA)
+                    put("b", plot.cellB)
+                    put("plant", plot.plant)
+                    put("stage", plot.stage)
+                    put("plantedAt", plot.plantedAt)
+                })
+            }
+        })
+    }
+
+    private fun parseGarden(obj: JSONObject): GardenBackup? {
+        if (!obj.has("createdAt")) return null
+        val plots = obj.optJSONArray("plots") ?: JSONArray()
+        return GardenBackup(
+            device = obj.optString("device", "").ifEmpty { null },
+            createdAt = obj.getLong("createdAt"),
+            dropsSpent = obj.optInt("dropsSpent", 0),
+            plots = (0 until plots.length()).map { i ->
+                val plot = plots.getJSONObject(i)
+                GardenPlot(
+                    cellA = plot.getInt("a"),
+                    cellB = plot.getInt("b"),
+                    plant = plot.getString("plant"),
+                    stage = plot.optInt("stage", 1),
+                    plantedAt = plot.optLong("plantedAt", 0L),
+                )
+            },
         )
     }
 

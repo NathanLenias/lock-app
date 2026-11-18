@@ -12,6 +12,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import android.net.Uri
 import androidx.room.withTransaction
 import com.nathanb.lock.data.backup.BackupManager
+import com.nathanb.lock.data.backup.GardenBackup
 import com.nathanb.lock.data.database.LockDatabase
 import com.nathanb.lock.data.database.NfcTagDao
 import com.nathanb.lock.data.database.ProfileDao
@@ -719,13 +720,21 @@ class LockRepository(
     val longestSessionMs: Flow<Long?> = sessionDao.getLongestSessionMs()
 
     // Backup
+    /**
+     * Garden side of a backup, wired by the application: the garden has its own repository.
+     * The restorer runs inside the import transaction, after everything else is back.
+     */
+    var gardenBackupSource: (suspend () -> GardenBackup?)? = null
+    var gardenBackupRestorer: (suspend (GardenBackup?) -> Unit)? = null
+
     suspend fun exportBackup(uri: Uri) {
         val profiles = profileDao.getAllOnce()
         val nfcTags = nfcTagDao.getAllOnce()
         val sessions = sessionDao.getAllOnce()
         val schedules = scheduleDao.getAllOnce()
         val scheduleLinks = scheduleProfileDao.getAllOnce()
-        BackupManager.export(context!!, uri, profiles, nfcTags, sessions, schedules, scheduleLinks)
+        val garden = gardenBackupSource?.invoke()
+        BackupManager.export(context!!, uri, profiles, nfcTags, sessions, schedules, scheduleLinks, garden)
     }
 
     // Theme preference
@@ -842,6 +851,8 @@ class LockRepository(
             ScheduleProfileLink(scheduleId, profileId)
         }
         if (remappedLinks.isNotEmpty()) scheduleProfileDao.insertAll(remappedLinks)
+
+        gardenBackupRestorer?.invoke(data.garden)
     }
 
     private suspend fun ensureSingleDefault() {

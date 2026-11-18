@@ -1,5 +1,6 @@
 package com.nathanb.lock.data.repository
 
+import com.nathanb.lock.data.backup.GardenBackup
 import com.nathanb.lock.data.database.GardenDao
 import com.nathanb.lock.data.database.SessionDao
 import com.nathanb.lock.data.garden.GardenRules
@@ -43,6 +44,8 @@ class GardenRepository(
     private val transact: suspend (suspend () -> GardenActionResult) -> GardenActionResult = { it() },
     private val now: () -> Long = System::currentTimeMillis,
     private val zone: () -> ZoneId = ZoneId::systemDefault,
+    /** Fingerprint of this phone (see DeviceIdentity), null when unknown. */
+    private val deviceId: () -> String? = { null },
 ) {
 
     /** Null until [ensureCreated] has run. */
@@ -133,6 +136,41 @@ class GardenRepository(
             gardenDao.upsertPlot(moved.copy(cellA = toA, cellB = toB))
             if (displaced != null) gardenDao.upsertPlot(displaced.copy(cellA = fromA, cellB = fromB))
         }
+    }
+
+    /** The garden as written into a backup, stamped with this phone's fingerprint. */
+    suspend fun exportForBackup(): GardenBackup? {
+        val state = gardenDao.getState() ?: return null
+        return GardenBackup(
+            device = deviceId(),
+            createdAt = state.createdAt,
+            dropsSpent = state.dropsSpent,
+            plots = gardenDao.getAllPlots(),
+        )
+    }
+
+    /**
+     * Brings back the garden of a backup, but only one written by another phone: after a
+     * reinstall on the same phone the garden starts over, which is the point of it.
+     * A backup without a garden or without a fingerprint changes nothing either.
+     * Runs inside the import transaction. Returns true when the garden was replaced.
+     */
+    suspend fun restoreFromBackup(backup: GardenBackup?): Boolean {
+        val from = backup?.device
+        val here = deviceId()
+        if (backup == null || from.isNullOrEmpty() || here.isNullOrEmpty() || from == here) return false
+        gardenDao.deleteAllPlots()
+        gardenDao.replaceState(
+            GardenState(
+                // A file is not trusted blindly: no birth in the future, no negative spending.
+                createdAt = backup.createdAt.coerceAtMost(now()),
+                dropsSpent = backup.dropsSpent.coerceAtLeast(0),
+            ),
+        )
+        backup.plots
+            .filter { it.cellA in 0 until GardenRules.MAX_TERRAIN_SIZE && it.cellB in 0 until GardenRules.MAX_TERRAIN_SIZE }
+            .forEach { gardenDao.upsertPlot(it.copy(stage = it.stage.coerceAtLeast(1))) }
+        return true
     }
 
     /** Test aid, only reachable from debug builds: credits [drops] without a session. */

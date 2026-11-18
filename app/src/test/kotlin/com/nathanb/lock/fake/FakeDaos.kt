@@ -222,4 +222,14 @@ class FakeGardenDao : GardenDao {
     override suspend fun deletePlot(a: Int, b: Int) {
         plots.update { list -> list.filterNot { it.cellA == a && it.cellB == b } }
     }
+
+    override suspend fun getAllPlots(): List<GardenPlot> = plots.value
+
+    override suspend fun deleteAllPlots() {
+        plots.value = emptyList()
+    }
+
+    override suspend fun replaceState(state: GardenState) {
+        this.state.value = state
+    }
 }

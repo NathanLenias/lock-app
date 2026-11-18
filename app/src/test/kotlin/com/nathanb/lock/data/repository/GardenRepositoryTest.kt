@@ -1,5 +1,6 @@
 package com.nathanb.lock.data.repository
 
+import com.nathanb.lock.data.backup.GardenBackup
 import com.nathanb.lock.data.garden.PlantKind
 import com.nathanb.lock.data.model.GardenPlot
 import com.nathanb.lock.data.model.Session
@@ -21,6 +22,7 @@ class GardenRepositoryTest {
     private val born = 20_000 * day
 
     private var now = born
+    private var device: String? = "this-phone"
     private lateinit var gardenDao: FakeGardenDao
     private lateinit var sessionDao: FakeSessionDao
     private lateinit var repository: GardenRepository
@@ -28,9 +30,12 @@ class GardenRepositoryTest {
     @Before
     fun setUp() {
         now = born
+        device = "this-phone"
         gardenDao = FakeGardenDao()
         sessionDao = FakeSessionDao()
-        repository = GardenRepository(gardenDao, sessionDao, now = { now }, zone = { ZoneId.of("UTC") })
+        repository = GardenRepository(
+            gardenDao, sessionDao, now = { now }, zone = { ZoneId.of("UTC") }, deviceId = { device },
+        )
     }
 
     /** Adds finished sessions worth [drops] drops (3 a day) after the birth of the garden. */
@@ -247,6 +252,98 @@ class GardenRepositoryTest {
         assertEquals(GardenActionResult.NOT_ALLOWED, repository.move(0, 0, 2, 0)) // off the terrain
         assertEquals(GardenActionResult.NOT_ALLOWED, repository.move(1, 1, 0, 1)) // nothing to move
         assertEquals(rich, garden())
+    }
+
+    // --- Backup ---
+
+    /** A garden saved on [from]: born 100 days before these tests, one grown cherry tree. */
+    private fun savedGarden(from: String?) = GardenBackup(
+        device = from,
+        createdAt = born - 100 * day,
+        dropsSpent = 45,
+        plots = listOf(GardenPlot(cellA = 1, cellB = 2, plant = "cherry", stage = 3, plantedAt = born - 50 * day)),
+    )
+
+    @Test
+    fun `the export carries the garden and this phone's fingerprint`() = runTest {
+        assertNull(repository.exportForBackup())
+
+        repository.ensureCreated()
+        repository.plant(0, 0, PlantKind.FLOWERS)
+
+        val backup = repository.exportForBackup()!!
+        assertEquals("this-phone", backup.device)
+        assertEquals(born, backup.createdAt)
+        assertEquals(1, backup.dropsSpent)
+        assertEquals(listOf("flowers"), backup.plots.map { it.plant })
+    }
+
+    @Test
+    fun `a backup from another phone replaces the garden`() = runTest {
+        repository.ensureCreated()
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        // 60 drops earned on the old phone, since its garden was born.
+        (1..20).forEach { d ->
+            val start = born - d * day
+            sessionDao.insert(Session(profileId = 1, startTime = start, endTime = start + 3 * hour))
+        }
+
+        assertTrue(repository.restoreFromBackup(savedGarden(from = "old-phone")))
+
+        val garden = garden()
+        assertEquals(mapOf((1 to 2) to Planted(PlantKind.CHERRY, 3)), garden.plants)
+        assertEquals(101, garden.day)
+        assertEquals(3, garden.size)
+        // Welcome drop + 60 earned - 45 spent.
+        assertEquals(16, garden.drops)
+    }
+
+    @Test
+    fun `a backup from this phone leaves the garden as it is`() = runTest {
+        repository.ensureCreated()
+        repository.plant(0, 0, PlantKind.FLOWERS)
+        val before = garden()
+
+        assertEquals(false, repository.restoreFromBackup(savedGarden(from = "this-phone")))
+
+        assertEquals(before, garden())
+        assertEquals(born, gardenDao.getState()!!.createdAt)
+    }
+
+    @Test
+    fun `a backup without a garden or a fingerprint changes nothing`() = runTest {
+        repository.ensureCreated()
+        val before = garden()
+
+        assertEquals(false, repository.restoreFromBackup(null))
+        assertEquals(false, repository.restoreFromBackup(savedGarden(from = null)))
+        assertEquals(false, repository.restoreFromBackup(savedGarden(from = "")))
+        // This phone gives no identifier: nothing can be told apart, nothing is restored.
+        device = null
+        assertEquals(false, repository.restoreFromBackup(savedGarden(from = "old-phone")))
+
+        assertEquals(before, garden())
+    }
+
+    @Test
+    fun `a restored file is not trusted blindly`() = runTest {
+        repository.ensureCreated()
+        val tampered = GardenBackup(
+            device = "old-phone",
+            createdAt = born + 30 * day, // born in the future
+            dropsSpent = -500,
+            plots = listOf(
+                GardenPlot(cellA = 0, cellB = 0, plant = "flowers", stage = 0, plantedAt = born),
+                GardenPlot(cellA = 9, cellB = 0, plant = "cherry", stage = 3, plantedAt = born),
+            ),
+        )
+
+        assertTrue(repository.restoreFromBackup(tampered))
+
+        assertEquals(born, gardenDao.getState()!!.createdAt)
+        assertEquals(0, gardenDao.getState()!!.dropsSpent)
+        assertEquals(1, garden().drops)
+        assertEquals(listOf(GardenPlot(0, 0, "flowers", 1, born)), gardenDao.getAllPlots())
     }
 
     @Test

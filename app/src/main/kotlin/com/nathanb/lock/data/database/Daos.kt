@@ -184,4 +184,13 @@ interface GardenDao {
 
     @Query("DELETE FROM garden_plots WHERE cellA = :a AND cellB = :b")
     suspend fun deletePlot(a: Int, b: Int)
+
+    @Query("SELECT * FROM garden_plots")
+    suspend fun getAllPlots(): List<GardenPlot>
+
+    @Query("DELETE FROM garden_plots")
+    suspend fun deleteAllPlots()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun replaceState(state: GardenState)
 }

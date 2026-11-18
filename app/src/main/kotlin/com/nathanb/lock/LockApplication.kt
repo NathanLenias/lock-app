@@ -15,6 +15,7 @@ import com.nathanb.lock.data.repository.GardenRepository
 import com.nathanb.lock.data.repository.LockRepository
 import androidx.room.withTransaction
 import com.nathanb.lock.schedule.AndroidScheduleEffects
+import com.nathanb.lock.util.DeviceIdentity
 import com.nathanb.lock.schedule.ScheduleManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +63,11 @@ class LockApplication : Application() {
             gardenDao = database.gardenDao(),
             sessionDao = database.sessionDao(),
             transact = { block -> database.withTransaction { block() } },
+            deviceId = { DeviceIdentity.fingerprint(this) },
         )
+        // The garden travels in the backup, restored only on another phone.
+        repository.gardenBackupSource = { gardenRepository.exportForBackup() }
+        repository.gardenBackupRestorer = { gardenRepository.restoreFromBackup(it) }
         // The garden is born on the first launch that knows about it.
         appScope.launch { gardenRepository.ensureCreated() }
 

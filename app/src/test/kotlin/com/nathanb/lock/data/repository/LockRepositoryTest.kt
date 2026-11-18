@@ -426,6 +426,30 @@ class LockRepositoryTest {
     }
 
     @Test
+    fun `restoreBackupData hands the garden of the backup to the garden side`() = testScope.runTest {
+        val received = mutableListOf<com.nathanb.lock.data.backup.GardenBackup?>()
+        repository.gardenBackupRestorer = { received.add(it) }
+        val garden = com.nathanb.lock.data.backup.GardenBackup(
+            device = "old-phone", createdAt = 1_000L, dropsSpent = 4, plots = emptyList(),
+        )
+        val profile = com.nathanb.lock.data.model.Profile(id = 1, name = "A", blockedPackages = emptyList())
+
+        repository.restoreBackupData(
+            com.nathanb.lock.data.backup.BackupData(
+                profiles = listOf(profile), nfcTags = emptyList(), sessions = emptyList(), garden = garden,
+            ),
+        )
+        // A backup made before the garden existed: the garden side is told there is none.
+        repository.restoreBackupData(
+            com.nathanb.lock.data.backup.BackupData(
+                profiles = listOf(profile), nfcTags = emptyList(), sessions = emptyList(),
+            ),
+        )
+
+        assertEquals(listOf(garden, null), received)
+    }
+
+    @Test
     fun `restoreBackupData guarantees exactly one standard default`() = testScope.runTest {
         val data = com.nathanb.lock.data.backup.BackupData(
             profiles = listOf(
