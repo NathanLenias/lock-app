@@ -109,10 +109,16 @@ class GardenRulesTest {
     }
 
     @Test
-    fun `returning user starts on the 2x2 terrain, 15 days ahead`() {
+    fun `returning user is given the 2x2 terrain, later sizes come at the same age`() {
         assertEquals(2, GardenRules.terrainSize(born, born, true))
-        assertEquals(3, GardenRules.terrainSize(born, born + 75 * day, true))
-        assertEquals(75, GardenRules.daysUntilNextSize(born, born, true))
+        assertEquals(2, GardenRules.terrainSize(born, born + 89 * day, true))
+        assertEquals(3, GardenRules.terrainSize(born, born + 90 * day, true))
+        assertEquals(4, GardenRules.terrainSize(born, born + 180 * day, true))
+        // The 2x2 is already there: the next size announced is the 3x3, at day 90.
+        assertEquals(90, GardenRules.daysUntilNextSize(born, born, true))
+        assertEquals(80, GardenRules.daysUntilNextSize(born, born + 10 * day, true))
+        assertEquals(90, GardenRules.daysUntilNextSize(born, born + 90 * day, true))
+        assertNull(GardenRules.daysUntilNextSize(born, born + 180 * day, true))
     }
 
     @Test

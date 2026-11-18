@@ -49,8 +49,8 @@ object GardenRules {
     /** Garden age (days) at which the terrain becomes 2x2, 3x3 and 4x4. */
     private val TERRAIN_THRESHOLD_DAYS = listOf(15, 90, 180)
 
-    /** Returning users start with the 2x2 terrain. */
-    private val RETURNING_HEAD_START_DAYS = TERRAIN_THRESHOLD_DAYS.first()
+    /** Returning users are given the 2x2 terrain from day one; later sizes come at the same age. */
+    private const val RETURNING_MIN_SIZE = 2
 
     /**
      * One drop per full hour of finished sessions, hours being added up per day (the day a
@@ -88,19 +88,24 @@ object GardenRules {
         return first <= createdAt - RETURNING_AFTER_MS
     }
 
-    private fun gardenAgeDays(createdAt: Long, now: Long, returning: Boolean): Long =
-        (now - createdAt).coerceAtLeast(0L) / DAY_MS + if (returning) RETURNING_HEAD_START_DAYS else 0
+    /** Full days since the garden was born (0 on the first day). */
+    fun gardenAgeDays(createdAt: Long, now: Long): Long = (now - createdAt).coerceAtLeast(0L) / DAY_MS
+
+    /** Side of the terrain a garden of [age] days has earned by its age alone. */
+    private fun sizeAtAge(age: Long): Int = 1 + TERRAIN_THRESHOLD_DAYS.count { age >= it }
 
     /** Side of the square terrain: 1 at first, up to [MAX_TERRAIN_SIZE]. */
     fun terrainSize(createdAt: Long, now: Long, returning: Boolean): Int {
-        val age = gardenAgeDays(createdAt, now, returning)
-        return 1 + TERRAIN_THRESHOLD_DAYS.count { age >= it }
+        val size = sizeAtAge(gardenAgeDays(createdAt, now))
+        return if (returning) maxOf(size, RETURNING_MIN_SIZE) else size
     }
 
     /** Days left before the terrain grows again, or null once it is at its largest. */
     fun daysUntilNextSize(createdAt: Long, now: Long, returning: Boolean): Int? {
-        val age = gardenAgeDays(createdAt, now, returning)
-        val next = TERRAIN_THRESHOLD_DAYS.firstOrNull { age < it } ?: return null
+        val age = gardenAgeDays(createdAt, now)
+        val current = terrainSize(createdAt, now, returning)
+        // A size already given (the 2x2 of a returning user) is not announced again.
+        val next = TERRAIN_THRESHOLD_DAYS.firstOrNull { sizeAtAge(it.toLong()) > current } ?: return null
         return (next - age).toInt()
     }
 }
