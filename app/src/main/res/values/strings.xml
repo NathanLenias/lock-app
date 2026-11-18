@@ -191,6 +191,8 @@
     <string name="garden_drops_title">Drops</string>
     <string name="garden_drops_body_earn">You earn 1 drop per hour of session, up to 3 drops a day.</string>
     <string name="garden_drops_body_use">They are used to plant and grow your garden.</string>
+    <string name="garden_tile_empty">Empty tile, row %1$d, column %2$d</string>
+    <string name="garden_tile_planted">%1$s, step %2$d of %3$d, row %4$d, column %5$d</string>
     <string name="garden_plant_title">What to plant here?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">%1$d drop per step. %2$d steps, %3$d drops in all.</item>

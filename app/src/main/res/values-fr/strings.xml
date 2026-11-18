@@ -201,6 +201,8 @@
     <string name="garden_drops_title">Gouttes</string>
     <string name="garden_drops_body_earn">Vous gagnez 1 goutte par heure de session, dans la limite de 3 gouttes par jour.</string>
     <string name="garden_drops_body_use">Elles servent à planter et à faire grandir votre jardin.</string>
+    <string name="garden_tile_empty">Case vide, rangée %1$d, colonne %2$d</string>
+    <string name="garden_tile_planted">%1$s, étape %2$d sur %3$d, rangée %4$d, colonne %5$d</string>
     <string name="garden_plant_title">Que planter ici ?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">%1$d goutte par étape. %2$d étapes, soit %3$d gouttes en tout.</item>

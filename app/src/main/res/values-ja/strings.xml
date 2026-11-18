@@ -184,6 +184,8 @@
     <string name="garden_drops_title">しずく</string>
     <string name="garden_drops_body_earn">セッション1時間につきしずくが1個もらえます（1日3個まで）。</string>
     <string name="garden_drops_body_use">庭に植えたり育てたりするのに使います。</string>
+    <string name="garden_tile_empty">空きマス、%1$d行目、%2$d列目</string>
+    <string name="garden_tile_planted">%1$s、全%3$d段階中の%2$d段階目、%4$d行目、%5$d列目</string>
     <string name="garden_plant_title">ここに何を植えますか？</string>
     <plurals name="garden_plant_cost">
         <item quantity="other">1段階につきしずく%1$d個。全%2$d段階で合計%3$d個。</item>

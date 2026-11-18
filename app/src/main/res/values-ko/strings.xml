@@ -184,6 +184,8 @@
     <string name="garden_drops_title">물방울</string>
     <string name="garden_drops_body_earn">세션 한 시간마다 물방울 1개를 얻으며, 하루 최대 3개까지입니다.</string>
     <string name="garden_drops_body_use">정원에 심고 키우는 데 사용합니다.</string>
+    <string name="garden_tile_empty">빈 칸, %1$d번째 줄, %2$d번째 칸</string>
+    <string name="garden_tile_planted">%1$s, %3$d단계 중 %2$d단계, %4$d번째 줄, %5$d번째 칸</string>
     <string name="garden_plant_title">여기에 무엇을 심을까요?</string>
     <plurals name="garden_plant_cost">
         <item quantity="other">단계당 물방울 %1$d개. 총 %2$d단계, 모두 %3$d개.</item>

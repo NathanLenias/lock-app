@@ -9,6 +9,17 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import com.nathanb.lock.ui.screens.garden.nameRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -152,72 +163,100 @@ fun GardenScreen(viewModel: LockViewModel) {
 
         val current = garden ?: return@Column
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(vertical = 16.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(colors.surfaceContainer),
-        ) {
-            GardenView(
-                garden = current,
-                hidden = hidden,
-                highlighted = setOfNotNull(moving, destination),
-                onCellTapped = { cell ->
-                    val from = moving
-                    when {
-                        from == null -> {
-                            confirmRemoval = false
-                            selected = cell
+        val gardenCard: @Composable (Modifier) -> Unit = { cardModifier ->
+            Box(
+                modifier = cardModifier
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(colors.surfaceContainer),
+            ) {
+                GardenView(
+                    garden = current,
+                    hidden = hidden,
+                    highlighted = setOfNotNull(moving, destination),
+                    onCellTapped = { cell ->
+                        val from = moving
+                        when {
+                            from == null -> {
+                                confirmRemoval = false
+                                selected = cell
+                            }
+                            // Tapping the plant itself cancels the move.
+                            cell == from -> cancelMove()
+                            else -> destination = cell
                         }
-                        // Tapping the plant itself cancels the move.
-                        cell == from -> cancelMove()
-                        else -> destination = cell
-                    }
-                },
-                modifier = Modifier.fillMaxSize().padding(12.dp),
-            )
+                    },
+                    modifier = Modifier.fillMaxSize().padding(12.dp),
+                )
+            }
+        }
+        // Under the garden: the terrain summary, or the move being set up.
+        val controls: @Composable () -> Unit = {
+            val from = moving
+            if (from != null) {
+                val to = destination
+                MoveControls(
+                    message = when {
+                        to == null -> stringResource(R.string.garden_move_hint)
+                        current.plants.containsKey(to.a to to.b) -> pluralStringResource(
+                            R.plurals.garden_move_confirm_swap, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                        )
+                        else -> pluralStringResource(
+                            R.plurals.garden_move_confirm_here, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
+                        )
+                    },
+                    onCancel = cancelMove,
+                    onConfirm = if (to == null) {
+                        null
+                    } else {
+                        {
+                            viewModel.moveInGarden(from.a, from.b, to.a, to.b)
+                            hidden = hidden - from - to
+                            cancelMove()
+                        }
+                    },
+                )
+            } else {
+                TerrainSummary(
+                    garden = current,
+                    onInfo = { showGardenInfo = true },
+                    onTier = { tierInfo = it },
+                )
+                Text(
+                    text = stringResource(
+                        if (current.drops == 0) R.string.garden_hint_earn else R.string.garden_hint_touch,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                )
+            }
         }
 
-        val from = moving
-        if (from != null) {
-            val to = destination
-            MoveControls(
-                message = when {
-                    to == null -> stringResource(R.string.garden_move_hint)
-                    current.plants.containsKey(to.a to to.b) -> pluralStringResource(
-                        R.plurals.garden_move_confirm_swap, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
-                    )
-                    else -> pluralStringResource(
-                        R.plurals.garden_move_confirm_here, GardenRules.MOVE_COST, GardenRules.MOVE_COST,
-                    )
-                },
-                onCancel = cancelMove,
-                onConfirm = if (to == null) {
-                    null
-                } else {
-                    {
-                        viewModel.moveInGarden(from.a, from.b, to.a, to.b)
-                        hidden = hidden - from - to
-                        cancelMove()
-                    }
-                },
-            )
+        if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Landscape: too short to stack. Garden on the left, the rest beside it; the
+            // tab bar is a rail on the left edge there, so nothing to clear at the bottom.
+            Row(
+                modifier = Modifier.fillMaxWidth().weight(1f).padding(vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                gardenCard(Modifier.weight(1f).fillMaxHeight())
+                Column(
+                    modifier = Modifier
+                        .width(320.dp)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    controls()
+                }
+            }
         } else {
-            TerrainSummary(garden = current, onInfo = { showGardenInfo = true }, onTier = { tierInfo = it })
-            Text(
-                text = stringResource(
-                    if (current.drops == 0) R.string.garden_hint_earn else R.string.garden_hint_touch,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-            )
+            gardenCard(Modifier.fillMaxWidth().weight(1f).padding(vertical = 16.dp))
+            controls()
+            // Room for the floating tab bar.
+            Spacer(Modifier.height(88.dp))
         }
-        // Room for the floating tab bar.
-        Spacer(Modifier.height(88.dp))
     }
 
     val current = garden ?: return
@@ -554,60 +593,103 @@ private fun GardenView(
     }
     val highlightColor = LockTheme.colors.primary
     val maxFrame = with(LocalDensity.current) { MAX_FRAME.toPx() }
-    val description = stringResource(R.string.garden_title)
+    val density = LocalDensity.current
+    // Spoken name of every tile, for the screen reader nodes laid over the drawing.
+    val labels: Map<Cell, String> = cells.associateWith { cell ->
+        val planted = garden.plants[cell.a to cell.b]
+        if (planted == null) {
+            stringResource(R.string.garden_tile_empty, cell.a + 1, cell.b + 1)
+        } else {
+            stringResource(
+                R.string.garden_tile_planted,
+                stringResource(planted.kind.nameRes()), planted.stage, planted.kind.stages, cell.a + 1, cell.b + 1,
+            )
+        }
+    }
 
-    Canvas(
-        modifier = modifier
-            .semantics { contentDescription = description }
-            .pointerInput(cells, lowPlants, tallPlants, maxFrame) {
-                detectTapGestures { tap: Offset ->
-                    val area = Size(size.width.toFloat(), size.height.toFloat())
-                    val placement = place(cells, area, maxFrame) ?: return@detectTapGestures
-                    GardenLayout.cellAt(
-                        x = tap.x - placement.originX,
-                        y = tap.y - placement.originY,
-                        frame = placement.frame,
-                        size = garden.size,
-                        lowPlants = lowPlants,
-                        tallPlants = tallPlants,
-                    )?.let(onCellTapped)
-                }
-            },
-    ) {
-        val placement = place(cells, size, maxFrame) ?: return@Canvas
-        val side = placement.frame.roundToInt()
-        ordered.forEach { (cell, spriteRes) ->
-            val image = images[spriteRes] ?: return@forEach
-            val center = GardenLayout.center(cell, placement.frame)
-            val offset = IntOffset(
-                (placement.originX + center.x - placement.frame / 2f).roundToInt(),
-                (placement.originY + center.y - placement.frame / 2f).roundToInt(),
-            )
-            val isHidden = cell in hidden && spriteRes != R.drawable.garden_tile
-            if (isHidden) {
-                // Bare soil underneath, then the plant as a ghost.
-                images[R.drawable.garden_tile]?.let {
-                    drawImage(it, dstOffset = offset, dstSize = IntSize(side, side), filterQuality = FilterQuality.High)
-                }
-            }
-            drawImage(
-                image = image,
-                dstOffset = offset,
-                dstSize = IntSize(side, side),
-                alpha = if (isHidden) HIDDEN_PLANT_ALPHA else 1f,
-                filterQuality = FilterQuality.High,
-            )
-            if (cell in highlighted) {
-                // Outline of the soil of the tiles a move is about.
+    BoxWithConstraints(modifier = modifier) {
+        val area = Size(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
+        place(cells, area, maxFrame)?.let { placement ->
+            // The garden is one drawing: these invisible nodes give each tile a name and an
+            // action for TalkBack. They hold no pointer input, so touches still reach the canvas.
+            val halfW = GardenLayout.STEP_X * placement.frame * 0.9f
+            val halfH = GardenLayout.STEP_Y * placement.frame * 0.9f
+            cells.forEach { cell ->
                 val soil = GardenLayout.soilCenter(cell, placement.frame)
-                val cx = placement.originX + soil.x
-                val cy = placement.originY + soil.y
-                val halfW = GardenLayout.STEP_X * placement.frame * 0.9f
-                val halfH = GardenLayout.STEP_Y * placement.frame * 0.9f
-                val diamond = Path().apply {
-                    moveTo(cx, cy - halfH); lineTo(cx + halfW, cy); lineTo(cx, cy + halfH); lineTo(cx - halfW, cy); close()
+                val label = labels.getValue(cell)
+                Box(
+                    modifier = Modifier
+                        .offset {
+                            IntOffset(
+                                (placement.originX + soil.x - halfW).roundToInt(),
+                                (placement.originY + soil.y - halfH).roundToInt(),
+                            )
+                        }
+                        .size(with(density) { (halfW * 2).toDp() }, with(density) { (halfH * 2).toDp() })
+                        .semantics {
+                            contentDescription = label
+                            role = Role.Button
+                            onClick {
+                                onCellTapped(cell)
+                                true
+                            }
+                        },
+                )
+            }
+        }
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(cells, lowPlants, tallPlants, maxFrame) {
+                    detectTapGestures { tap: Offset ->
+                        val tapArea = Size(size.width.toFloat(), size.height.toFloat())
+                        val placement = place(cells, tapArea, maxFrame) ?: return@detectTapGestures
+                        GardenLayout.cellAt(
+                            x = tap.x - placement.originX,
+                            y = tap.y - placement.originY,
+                            frame = placement.frame,
+                            size = garden.size,
+                            lowPlants = lowPlants,
+                            tallPlants = tallPlants,
+                        )?.let(onCellTapped)
+                    }
+                },
+        ) {
+            val placement = place(cells, size, maxFrame) ?: return@Canvas
+            val side = placement.frame.roundToInt()
+            ordered.forEach { (cell, spriteRes) ->
+                val image = images[spriteRes] ?: return@forEach
+                val center = GardenLayout.center(cell, placement.frame)
+                val offset = IntOffset(
+                    (placement.originX + center.x - placement.frame / 2f).roundToInt(),
+                    (placement.originY + center.y - placement.frame / 2f).roundToInt(),
+                )
+                val isHidden = cell in hidden && spriteRes != R.drawable.garden_tile
+                if (isHidden) {
+                    // Bare soil underneath, then the plant as a ghost.
+                    images[R.drawable.garden_tile]?.let {
+                        drawImage(it, dstOffset = offset, dstSize = IntSize(side, side), filterQuality = FilterQuality.High)
+                    }
                 }
-                drawPath(diamond, color = highlightColor, style = Stroke(width = 3.dp.toPx()))
+                drawImage(
+                    image = image,
+                    dstOffset = offset,
+                    dstSize = IntSize(side, side),
+                    alpha = if (isHidden) HIDDEN_PLANT_ALPHA else 1f,
+                    filterQuality = FilterQuality.High,
+                )
+                if (cell in highlighted) {
+                    // Outline of the soil of the tiles a move is about.
+                    val soil = GardenLayout.soilCenter(cell, placement.frame)
+                    val cx = placement.originX + soil.x
+                    val cy = placement.originY + soil.y
+                    val halfW = GardenLayout.STEP_X * placement.frame * 0.9f
+                    val halfH = GardenLayout.STEP_Y * placement.frame * 0.9f
+                    val diamond = Path().apply {
+                        moveTo(cx, cy - halfH); lineTo(cx + halfW, cy); lineTo(cx, cy + halfH); lineTo(cx - halfW, cy); close()
+                    }
+                    drawPath(diamond, color = highlightColor, style = Stroke(width = 3.dp.toPx()))
+                }
             }
         }
     }

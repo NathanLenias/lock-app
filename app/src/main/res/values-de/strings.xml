@@ -191,6 +191,8 @@
     <string name="garden_drops_title">Tropfen</string>
     <string name="garden_drops_body_earn">Sie erhalten 1 Tropfen pro Stunde Sitzung, höchstens 3 Tropfen pro Tag.</string>
     <string name="garden_drops_body_use">Damit pflanzen Sie und lassen Ihren Garten wachsen.</string>
+    <string name="garden_tile_empty">Leeres Feld, Reihe %1$d, Spalte %2$d</string>
+    <string name="garden_tile_planted">%1$s, Stufe %2$d von %3$d, Reihe %4$d, Spalte %5$d</string>
     <string name="garden_plant_title">Was hier pflanzen?</string>
     <plurals name="garden_plant_cost">
         <item quantity="one">%1$d Tropfen pro Stufe. %2$d Stufen, insgesamt %3$d Tropfen.</item>
