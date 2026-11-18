@@ -18,6 +18,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
+    <string name="nav_garden">Garden</string>
     <string name="nav_stats">Stats</string>
     <string name="nav_settings">Settings</string>
 
@@ -153,6 +154,7 @@
     <string name="app_picker_settings_warning_confirm">Block Settings</string>
 
     <!-- Stats Screen -->
+    <string name="garden_title">Garden</string>
     <string name="stats_title">Statistics</string>
     <string name="stats_sessions">sessions</string>
     <string name="stats_total">total</string>

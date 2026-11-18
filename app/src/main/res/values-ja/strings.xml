@@ -18,6 +18,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">ホーム</string>
+    <string name="nav_garden">庭</string>
     <string name="nav_stats">統計</string>
     <string name="nav_settings">設定</string>
 
@@ -150,6 +151,7 @@
     <string name="app_picker_settings_warning_confirm">設定をブロック</string>
 
     <!-- Stats Screen -->
+    <string name="garden_title">庭</string>
     <string name="stats_title">統計</string>
     <string name="stats_sessions">セッション</string>
     <string name="stats_total">合計</string>

@@ -40,6 +40,7 @@ import com.nathanb.lock.ui.screens.AppPickerScreen
 import com.nathanb.lock.ui.screens.ProfileDetailScreen
 import com.nathanb.lock.ui.screens.ProfilesListScreen
 import com.nathanb.lock.ui.screens.NewProfileWizardScreen
+import com.nathanb.lock.ui.screens.GardenScreen
 import com.nathanb.lock.ui.screens.HomeScreen
 import com.nathanb.lock.ui.screens.NfcTagsScreen
 import com.nathanb.lock.ui.screens.SettingsScreen
@@ -60,7 +61,7 @@ import com.nathanb.lock.ui.viewmodel.LockViewModel
 import android.content.res.Configuration
 import androidx.compose.ui.platform.LocalConfiguration
 
-private val TAB_ROUTES = setOf("home", "stats", "settings")
+private val TAB_ROUTES = setOf("home", "garden", "stats", "settings")
 
 @Composable
 fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
@@ -222,6 +223,12 @@ fun LockApp(viewModel: LockViewModel, isNfcLaunch: Boolean = false) {
                         onBack = { navController.popBackStack() },
                         preselectProfileId = pid.takeIf { it >= 0 },
                     )
+                }
+
+                composable("garden") {
+                    Box(modifier = if (bannerVisible) Modifier.padding(top = 48.dp) else Modifier) {
+                        GardenScreen()
+                    }
                 }
 
                 composable("stats") {

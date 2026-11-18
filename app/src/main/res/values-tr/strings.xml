@@ -18,6 +18,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">Ana sayfa</string>
+    <string name="nav_garden">Bahçe</string>
     <string name="nav_stats">İstatistikler</string>
     <string name="nav_settings">Ayarlar</string>
 
@@ -153,6 +154,7 @@
     <string name="app_picker_settings_warning_confirm">Ayarlar\'ı engelle</string>
 
     <!-- Stats Screen -->
+    <string name="garden_title">Bahçe</string>
     <string name="stats_title">İstatistikler</string>
     <string name="stats_sessions">oturum</string>
     <string name="stats_total">toplam</string>

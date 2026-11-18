@@ -19,9 +19,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Yard
 import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Yard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,6 +49,7 @@ private enum class NavTab(
     val unselectedIcon: ImageVector,
 ) {
     Home("home", R.string.nav_home, Icons.Rounded.Home, Icons.Outlined.Home),
+    Garden("garden", R.string.nav_garden, Icons.Rounded.Yard, Icons.Outlined.Yard),
     Stats("stats", R.string.nav_stats, Icons.Rounded.BarChart, Icons.Outlined.BarChart),
     Settings("settings", R.string.nav_settings, Icons.Rounded.Settings, Icons.Outlined.Settings),
 }
@@ -173,6 +176,8 @@ private fun NavBarItem(
                 color = contentColor,
                 fontSize = 11.sp,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                maxLines = 1,
+                softWrap = false,
             )
         }
     }

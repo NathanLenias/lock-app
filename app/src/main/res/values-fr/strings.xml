@@ -21,6 +21,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">Accueil</string>
+    <string name="nav_garden">Jardin</string>
     <string name="nav_stats">Stats</string>
     <string name="nav_settings">Réglages</string>
 
@@ -159,6 +160,7 @@
     <string name="app_picker_settings_warning_confirm">Bloquer les Réglages</string>
 
     <!-- Stats Screen -->
+    <string name="garden_title">Jardin</string>
     <string name="stats_title">Statistiques</string>
     <string name="stats_sessions">sessions</string>
     <string name="stats_total">total</string>
